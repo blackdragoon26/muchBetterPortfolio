@@ -264,7 +264,7 @@ export const DATA = {
         "KubeCon CloudNativeCon India 2024 logo.jpeg",
       links: [
           {
-          type: "LinkedIn",
+          title: "LinkedIn",
           href: "https://www.linkedin.com/posts/sankalp-jha-18a95a244_wasm-activity-7273777600446013440-GAKT?utm_source=social_share_send&utm_medium=member_desktop_web&rcm=ACoAADynRXoByTKgoc9YS3dOMkn3RoKHYUfZ2oI",
           icon: <Icons.linkedin className="size-3" />,
         },
@@ -287,7 +287,7 @@ export const DATA = {
       mlh: "https://s3.amazonaws.com/logged-assets/trust-badge/2019/mlh-trust-badge-2019-white.svg",
       links: [
           {
-          type: "LinkedIn",
+          title: "LinkedIn",
           href: "https://www.linkedin.com/posts/sankalp-jha-18a95a244_kubecon-kubecon-kubecon-activity-7272333260670533632-Knkb?utm_source=social_share_send&utm_medium=member_desktop_web&rcm=ACoAADynRXoByTKgoc9YS3dOMkn3RoKHYUfZ2oI",
           icon: <Icons.linkedin className="size-3" />,
         },
@@ -309,7 +309,7 @@ export const DATA = {
         "The Ace Logo.jpeg",
       links: [
           {
-          type: "LinkedIn",
+          title: "LinkedIn",
           href: "https://www.linkedin.com/posts/sankalp-jha-18a95a244_the-lore-for-this-event-goes-like-this-activity-7240102105275846656-94Tm?utm_source=social_share_send&utm_medium=member_desktop_web&rcm=ACoAADynRXoByTKgoc9YS3dOMkn3RoKHYUfZ2oI",
           icon: <Icons.linkedin className="size-3" />,
         },
@@ -331,7 +331,7 @@ export const DATA = {
         "WoW Post Image.jpeg",
       links: [
           {
-          type: "LinkedIn",
+          title: "LinkedIn",
           href: "https://www.linkedin.com/posts/sankalp-jha-18a95a244_google-wow-delhi-ncr24-canon-event-yes-activity-7239033685814001664-Rx0M?utm_source=social_share_send&utm_medium=member_desktop_web&rcm=ACoAADynRXoByTKgoc9YS3dOMkn3RoKHYUfZ2oI",
           icon: <Icons.linkedin className="size-3" />,
         },
