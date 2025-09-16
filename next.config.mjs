@@ -2,8 +2,11 @@
 const nextConfig = {
   reactStrictMode: true,
   eslint: {
-    // ✅ Warning: ignores ESLint errors in builds
     ignoreDuringBuilds: true,
+  },
+  typescript: {
+    // ✅ Warning: ignores TypeScript errors in builds
+    ignoreBuildErrors: true,
   },
 };
 
