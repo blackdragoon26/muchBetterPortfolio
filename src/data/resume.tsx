@@ -68,7 +68,7 @@ export const DATA = {
       },
       email: {
         name: "Send Email",
-        url: "sankalp.jha9643@gmail.com",
+        url: "mailto:sankalp.jha9643@gmail.com",
         icon: Icons.email,
 
         navbar: true,
@@ -204,7 +204,6 @@ export const DATA = {
     },
     {
       title: "Keploy GitHub Stargazers",
-      href: "https://llm.report",
       dates: "April 2025",
       active: true,
       description:
@@ -227,7 +226,6 @@ export const DATA = {
     },
         {
       title: "W2W: What to Watch",
-      href: "https://llm.report",
       dates: "April 2024",
       active: true,
       description:
@@ -326,7 +324,7 @@ export const DATA = {
       dates: "April 2024",
       location: "IIIT Delhi",
       description:
-        "Developed a web application which aggregates social media data regarding cryptocurrencies and predicts future prices.",
+        "From funny writer to Discover Track host, this event turned out to be my true turning point in finding power of community, passion, and voice!",
       image:
         "WoW Post Image.jpeg",
       links: [
