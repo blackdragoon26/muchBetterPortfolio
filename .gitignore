@@ -39,3 +39,7 @@ next-env.d.ts
 /tmp/
 /resume/*.pdf
 __pycache__/
+
+# OAuth Credentials (NEVER COMMIT)
+client_secret.json
+token.json
