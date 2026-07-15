@@ -25,7 +25,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       MIN_REPO_STARS: ${{ vars.PORTFOLIO_MIN_REPO_STARS || '300' }}
-      DRIVE_SERVICE_ACCOUNT_JSON: ${{ secrets.DRIVE_SERVICE_ACCOUNT_JSON }}
+      # CHANGED: Use OAuth token instead of Service Account JSON
+      DRIVE_OAUTH_TOKEN: ${{ secrets.DRIVE_OAUTH_TOKEN }}
       DRIVE_FOLDER_ID: ${{ secrets.DRIVE_FOLDER_ID }}
     steps:
       - name: Check out portfolio
@@ -63,17 +64,17 @@ jobs:
         run: mv resume/resume.pdf public/resume/Sankalp-Jha-Resume.pdf
 
       - name: Set up Python for Google Drive
-        if: ${{ env.DRIVE_SERVICE_ACCOUNT_JSON != '' && env.DRIVE_FOLDER_ID != '' }}
+        if: ${{ env.DRIVE_OAUTH_TOKEN != '' && env.DRIVE_FOLDER_ID != '' }}
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
       - name: Install Google Drive client
-        if: ${{ env.DRIVE_SERVICE_ACCOUNT_JSON != '' && env.DRIVE_FOLDER_ID != '' }}
-        run: python -m pip install google-api-python-client google-auth
+        if: ${{ env.DRIVE_OAUTH_TOKEN != '' && env.DRIVE_FOLDER_ID != '' }}
+        run: python -m pip install google-api-python-client google-auth google-auth-oauthlib
 
       - name: Update the shared Google Drive resume
-        if: ${{ env.DRIVE_SERVICE_ACCOUNT_JSON != '' && env.DRIVE_FOLDER_ID != '' }}
+        if: ${{ env.DRIVE_OAUTH_TOKEN != '' && env.DRIVE_FOLDER_ID != '' }}
         run: python scripts/sync-resume-drive.py
 
       - name: Commit generated content
