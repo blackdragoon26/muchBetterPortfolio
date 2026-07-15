@@ -1,0 +1,86 @@
+name: Sync portfolio and resume
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/sync-portfolio.yml
+      - scripts/**
+      - resume/resume.tex
+  repository_dispatch:
+    types: [profile-readme-updated]
+  schedule:
+    - cron: "17 5 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: portfolio-content-sync
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    env:
+      MIN_REPO_STARS: ${{ vars.PORTFOLIO_MIN_REPO_STARS || '300' }}
+      DRIVE_SERVICE_ACCOUNT_JSON: ${{ secrets.DRIVE_SERVICE_ACCOUNT_JSON }}
+      DRIVE_FOLDER_ID: ${{ secrets.DRIVE_FOLDER_ID }}
+    steps:
+      - name: Check out portfolio
+        uses: actions/checkout@v4
+
+      - name: Check out profile README
+        uses: actions/checkout@v4
+        with:
+          repository: blackdragoon26/blackdragoon26
+          path: .profile-source
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Generate projects and featured PRs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          PROFILE_README_PATH: .profile-source/README.md
+        run: node scripts/sync-portfolio.mjs
+
+      - name: Generate resume appendix
+        run: node scripts/generate-resume-highlights.mjs
+
+      - name: Compile LaTeX resume
+        uses: xu-cheng/latex-action@v4
+        with:
+          working_directory: resume
+          root_file: resume.tex
+          latexmk_use_xelatex: true
+
+      - name: Publish resume PDF
+        run: mv resume/resume.pdf public/resume/Sankalp-Jha-Resume.pdf
+
+      - name: Set up Python for Google Drive
+        if: ${{ env.DRIVE_SERVICE_ACCOUNT_JSON != '' && env.DRIVE_FOLDER_ID != '' }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Google Drive client
+        if: ${{ env.DRIVE_SERVICE_ACCOUNT_JSON != '' && env.DRIVE_FOLDER_ID != '' }}
+        run: python -m pip install google-api-python-client google-auth
+
+      - name: Update the shared Google Drive resume
+        if: ${{ env.DRIVE_SERVICE_ACCOUNT_JSON != '' && env.DRIVE_FOLDER_ID != '' }}
+        run: python scripts/sync-resume-drive.py
+
+      - name: Commit generated content
+        run: |
+          git config user.name "portfolio-sync[bot]"
+          git config user.email "portfolio-sync[bot]@users.noreply.github.com"
+          git add src/generated public/generated public/resume resume/generated
+          git diff --cached --quiet && exit 0
+          git commit -m "chore: sync portfolio content and resume"
+          git push

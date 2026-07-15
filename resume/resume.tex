@@ -1,0 +1,181 @@
+\documentclass[9pt]{extarticle}
+\usepackage[top=0.18in, bottom=0.14in, left=0.15in, right=0.15in, headheight=0pt, headsep=0pt]{geometry}
+\setlength{\topskip}{0pt}
+\usepackage[most]{tcolorbox}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{xcolor,colortbl}
+\usepackage[T1]{fontenc}
+\usepackage{multicol}
+
+\newcommand{\mc}[2]{\multicolumn{#1}{c}{#2}}
+\definecolor{Gray}{gray}{0.87}
+
+\setlist{noitemsep, topsep=2pt, partopsep=0pt, parsep=0pt}
+\setlist[itemize]{leftmargin=12pt}
+
+\newcolumntype{g}{>{\columncolor{Gray}}c}
+\renewcommand{\arraystretch}{1.02}
+
+% Entry header with comfortable breathing room above each entry
+\newcommand{\entryhead}[3]{%
+  \par\vspace{0.5pt}%
+  \noindent\textbf{#1}\ifx&#2&\else{ | \textit{#2}}\fi \hfill(\textit{#3})\par\vspace{0.5pt}%
+}
+
+\tcbset{
+    frame code={},
+    center title,
+    left=0pt, right=0pt, top=0pt, bottom=0pt,
+    colback=gray!42,
+    width=\dimexpr\textwidth\relax,
+    enlarge left by=0mm,
+    boxsep=1.2pt,
+    arc=0pt, outer arc=0pt,
+    before skip=1pt,
+    after skip=0.5pt,
+}
+
+\begin{document}
+\vspace*{-\topskip}
+\setlength{\parskip}{0pt}
+\setlength{\parsep}{0pt}
+\setlength{\topsep}{0pt}
+\setlength{\partopsep}{0pt}
+\setlength{\multicolsep}{4pt}
+
+% ── HEADER ──────────────────────────────────────────────────────────────────
+\noindent{\LARGE\textbf{Sankalp Jha}} \hfill
+\textbf{\href{https://sankalpjha.dev}{Portfolio} $|$
+\href{https://www.linkedin.com/in/sankalp-jha-18a95a244/}{LinkedIn} $|$
+\href{https://github.com/blackdragoon26}{GitHub}}\\[1pt]
+Open Source Developer $|$ Systems Engineer $|$ Technical Content Writer $|$ Public Speaker \hfill sankalp.jha9643@gmail.com\\[1pt]
+Delhi NCR, India \hfill +91-8800117422
+
+\noindent\rule[0.5ex]{\linewidth}{0.4pt}%
+% ── EDUCATION ───────────────────────────────────────────────────────────────
+{\large\textbf{\begin{tcolorbox}\textsc{Education}\end{tcolorbox}}}%
+\noindent\begin{tabular}{|p{3.2cm}|p{5.8cm}|p{8.5cm}|p{1.5cm}|}
+\hline
+\centering\textbf{Year} & \centering\textbf{Degree/Certificate} & \centering\textbf{Institute} & \textbf{CPI/$\%$}\\
+\hline
+\centering Oct 2022 -- Aug 2026 & \centering B.Tech in CS \& IT & \centering Ajay Kumar Garg Engineering College, Delhi NCR & 7.25/10\\
+\hline
+\centering 2021 -- 2022 & \centering Senior Secondary (XII) & \centering New Era School, Delhi NCR & 91.2$\%$\\
+\hline
+\centering 2017 -- 2020 & \centering High School (X) & \centering SJN International School, Coimbatore & 92.6$\%$\\
+\hline
+\end{tabular}%
+
+% ── EXPERIENCE ──────────────────────────────────────────────────────────────
+{\large\textbf{\begin{tcolorbox}\textsc{Experience}\end{tcolorbox}}}%
+\entryhead{Contributor}{P4 Language Consortium (GSoC 2025), Stanford, CA}{May 2025 -- Sept 2025}%
+\noindent\begin{tabular}{|m{1.8cm}|m{17.1cm}|}
+\hline
+\centering\textbf{Objective} & To optimize packet inference and automate control-plane validations for the SpliDT framework.\\
+\hline
+\centering\textbf{Approach} & \(\bullet\) Engineered a Jinja2-based testing pipeline automating \textbf{25+} P4Runtime validations on Intel Tofino and Mininet.\newline\(\bullet\) Implemented Partitioned Decision Trees (PDTs) with TCAM-efficient Subtree IDs (SIDs) to resolve ASIC constraints.\\
+\hline
+\centering\textbf{Impact} & Reduced packet inference latency by \textbf{20\%} via optimized recirculation and improved deployment reliability by \textbf{30\%}.\\
+\hline
+\end{tabular}%
+
+% ── PROJECTS & OPEN SOURCE ──────────────────────────────────────────────────
+{\large\textbf{\begin{tcolorbox}\textsc{Key Projects / Open Source Contributions}\end{tcolorbox}}}%
+\entryhead{Open Source Contributions}{}{Various}%
+\noindent\begin{tabular}{|m{1.8cm}|m{17.1cm}|}
+\hline
+\centering\textbf{Overview} &
+\(\bullet\) \textbf{WasmEdge (\href{https://github.com/WasmEdge/WasmEdge/pull/4470}{PR \#4470}, \href{https://github.com/WasmEdge/WasmEdge/pull/4466}{\#4466}, \href{https://github.com/WasmEdge/WasmEdge/pull/4440}{\#4440}):} Patched undefined-behavior and memory-safety issues in the C++ host-function bindings and WASM execution engine; fixes were merged into the main runtime, improving spec-compliance and cross-platform stability.\newline
+\(\bullet\) \textbf{Facebook/bpfilter (\href{https://github.com/facebook/bpfilter/pull/507}{PR \#507}):} Extended the eBPF-based packet-filtering daemon by adding missing rule-matching logic and hardening the netlink interface; the patch was accepted into the upstream codebase, strengthening kernel-level traffic filtering correctness.\\
+\hline
+\end{tabular}%
+\entryhead{SpliDT: Network Traffic Analysis with ML}{P4, Python, P4Runtime, Docker, Python, C++, P4Studio, Scripting}{\href{https://github.com/p4lang/gsoc/blob/main/2025/projects/spliDT/README.md}{Project Link}}%
+\noindent\begin{tabular}{|m{1.8cm}|m{17.1cm}|}
+\hline
+\centering\textbf{Objective} & To compile machine learning decision trees directly into P4 data planes using Partitioned Decision Trees (PDTs).\\
+\hline
+\centering\textbf{Approach} & \(\bullet\) Architected a switch-native ML framework overcoming ASIC memory limits via Subtree ID (SID) recirculation.\\
+\hline
+\centering\textbf{Impact} & Achieved \textbf{10 Gbps} line-rate throughput and \textbf{5x} lower latency compared to standard control-plane inference.\\
+\hline
+\end{tabular}%
+\entryhead{P4 Lens}{React, FastAPI, Docker, React Flow}{\href{https://github.com/openlabnetworks/p4Lens}{Project Link}}%
+\noindent\begin{tabular}{|m{1.8cm}|m{17.1cm}|}
+\hline
+\centering\textbf{Objective} & To engineer a full-stack P4 visualizer that parses major language standards (P414/P416).\\
+\hline
+\centering\textbf{Approach} & \(\bullet\) Built interactive pipeline topologies rendering in under \textbf{200ms}, visualizing 4 core architectural blocks.\\
+\hline
+\centering\textbf{Impact} & Reduced control-plane debugging time by \textbf{$\sim$40\%} through granular header and table inspection.\\
+\hline
+\end{tabular}%
+\entryhead{Stelltron}{Go, TypeScript, Rust, Python, C++}{\href{https://github.com/blackdragoon26/Los-Tecnicos}{Project Link}}%
+\noindent\begin{tabular}{|m{1.8cm}|m{17.1cm}|}
+\hline
+\centering\textbf{Objective} & A Decentralized Energy Grid on Stellar Ecosystem which turns energy into Tokenized Assets, and Energy into Stable Income.\\
+\hline
+\centering\textbf{Approach} & \(\bullet\) Creating Hardware Mesh Server of RaspberryPi3B and ESP32's pinging to our Software Server\newline\(\bullet\) Built a Robust Go Backend and 3  Smart Contracts on Soroban, with intuitive UI\\
+\hline
+\centering\textbf{Impact} & Won Asia-Pacific across Bounties in Web3 space and recognized by Govt. Of India\\
+\hline
+\end{tabular}%
+\entryhead{Does My Idea Exist?}{TypeScript, Python, Dockerfile, JavaScipt, VectorDB, LLM/AI}{\href{https://idea-checker.vercel.app/}{Project Link}}%
+\noindent\begin{tabular}{|m{1.8cm}|m{17.1cm}|}
+\hline
+\centering\textbf{Objective} & Built end-to-end SaaS Product which iterates over 500,000 Startups and help to answer whether their idea is unique?\\
+\hline
+\centering\textbf{Approach} & \(\bullet\) A cron-job scraper, which updates our Database Periodically and have consistently updated records \newline\(\bullet\) LLM inferencing the request of users and properly filtering via backend to relevant requests\\
+\hline
+\centering\textbf{Impact} & Raised over USD10,000, and active product being used by over 100+ users across Globe\\
+\hline
+\end{tabular}%
+
+% ── TECHNICAL SKILLS ────────────────────────────────────────────────────────
+{\large\textbf{\begin{tcolorbox}\textsc{Technical Skills}\end{tcolorbox}}}%
+\noindent\begin{itemize}[topsep=0pt, itemsep=0pt]
+\item Python, C, C++, JavaScript, TypeScript, Go, P4
+\item \textbf{Libraries/Frameworks:} NodeJS, Numpy, Matplotlib, eBPF, gRPC, Protobufs, Next.js, Scapy, MLIR, LLVM, Sklearn, React, Web Services
+\item \textbf{Tools/Platforms:} Docker, CI/CD, VS Code, UTM, GitHub, GitLab, DaVinci Resolve, Linux (x86\_64, ARM64 \& AMD64)
+\item \textbf{Databases:} SQL, MongoDB, GraphQL, Redis, PostgreSQL, MySQL
+\end{itemize}%
+% ── POSITIONS OF LEADERSHIP ─────────────────────────────────────────────────
+{\large\textbf{\begin{tcolorbox}\textsc{Positions of Leadership}\end{tcolorbox}}}%
+\noindent\begin{itemize}[leftmargin=14pt, topsep=0pt]
+  \item \textbf{Technical Writer, Cloud Native Community Group, New Delhi} \hfill (\textit{May 2024 -- Dec 2024})
+  \begin{itemize}[leftmargin=10pt, label={--}]
+    \item Led a team of \textbf{6+} content writers and \textbf{4} designers to deliver documentation and event management support.
+    \item Partnered with marketing to revamp social media presence across LinkedIn, Instagram, and Twitter, achieving a \textbf{60\%} increase in follower engagement.
+  \end{itemize}
+  \item \textbf{Co-Organizer \& Anchor, Google Developer Groups \& GDSC WOW 2024, Delhi NCR} \hfill (\textit{Nov 2023 -- Nov 2025})
+  \begin{itemize}[leftmargin=10pt, label={--}]
+    \item Co-led \textbf{10+} tech events and anchored the GDSC WOW flagship event at IIIT Delhi, coordinating \textbf{31+} crew members across web, social, and on-ground operations.
+    \item Engaged a live audience of \textbf{800+} at WOW and \textbf{500+} developers overall, boosting participation by \textbf{30\%} and visibility by \textbf{40\%}.
+  \end{itemize}
+\end{itemize}%
+% ── PUBLICATIONS ────────────────────────────────────────────────────────────
+{\large\textbf{\begin{tcolorbox}\textsc{Publications}\end{tcolorbox}}}%
+\noindent\begin{itemize}[topsep=0pt, itemsep=0pt]
+\item R. Bharadwaj, \textbf{S. Jha}, V. Malyan, R. Gupta, ``Trusture: A Blockchain-Based Decentralized Framework for Secure, Transparent, and Auditable NGO Transactions,'' \textit{2026 International Conference on Computing, Sciences and Communications (ICCSC)}, Ghaziabad, India, Feb. 2026. \href{https://ieeexplore.ieee.org/abstract/document/11468597/}{IEEE Xplore $\nearrow$} \hfill DOI: 10.1109/ICCSC67078.2026.11468597
+\end{itemize}%
+% ── CERTIFICATIONS & HONORS ─────────────────────────────────────────────────
+{\large\textbf{\begin{tcolorbox}\textsc{Certifications \& Honors}\end{tcolorbox}}}%
+\noindent\begin{tabular}{|m{2.6cm}|m{16.3cm}|}
+\hline
+\centering\textbf{Certifications} &
+\(\bullet\) \textbf{Open Science 101} -- NASA \quad
+\(\bullet\) \textbf{Data Science for Engineers} -- NPTEL \quad
+\(\bullet\) \textbf{Enhancing Soft Skills \& Personality} -- NPTEL \quad
+\(\bullet\) \textbf{IIRS Satellite Remote Sensing} -- ISRO\\
+\hline
+\centering\textbf{Honors \&\\[0pt]Awards} &
+\(\bullet\) \textbf{2x} AKTU State Men Singles TT Gold (2023, 2024) \quad
+\(\bullet\) International Robotics Olympiad Bronze, Thailand (2019) \quad
+\(\bullet\) Merit Certification at Carnic Model United Nation (2021) \quad
+\(\bullet\) NCC Cadet, National Cadet Corps (2019)\\
+\hline
+\end{tabular}%
+
+\input{generated/portfolio-highlights.tex}
+
+\end{document}

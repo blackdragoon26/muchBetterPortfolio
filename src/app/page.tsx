@@ -1,17 +1,21 @@
 "use client";
 
 import { HackathonCard } from "@/components/hackathon-card";
+import { ContributionCard } from "@/components/contribution-card";
 import BlurFade from "@/components/magicui/blur-fade";
 import BlurFadeText from "@/components/magicui/blur-fade-text";
 import { ProjectCard } from "@/components/project-card";
+import { OtherStuffCard } from "@/components/otherstuff-card";
 import { ResumeCard } from "@/components/resume-card";
+import { ResumeActions } from "@/components/resume-actions";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { DATA } from "@/data/resume";
+import portfolio from "@/generated/portfolio.json";
+import { ExternalLink, Github } from "lucide-react";
 import Link from "next/link";
 import Markdown from "react-markdown";
 import { useState } from "react";
-// import { OtherStuffCard } from "@/components/otherstuff-card";
 
 const BLUR_FADE_DELAY = 0.04;
 
@@ -121,7 +125,7 @@ export default function Page() {
             </div>
           </BlurFade>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 max-w-[800px] mx-auto">
-            {DATA.projects.map((project, id) => (
+            {portfolio.projects.map((project, id) => (
               <BlurFade
                 key={project.title}
                 delay={BLUR_FADE_DELAY * 12 + id * 0.05}
@@ -131,16 +135,68 @@ export default function Page() {
                   key={project.title}
                   title={project.title}
                   description={project.description}
-                  dates={project.dates}
+                  dates={project.stars ? `${project.stars.toLocaleString("en-US")} GitHub stars` : "Featured project"}
                   tags={project.technologies}
                   image={project.image}
-                  video={project.video}
-                  links={project.links}
+                  links={[
+                    ...(project.repositoryUrl ? [{
+                      type: "Repository",
+                      href: project.repositoryUrl,
+                      icon: <Github className="size-3" />,
+                    }] : []),
+                    ...(project.liveUrl && project.liveUrl !== project.repositoryUrl ? [{
+                      type: "Live",
+                      href: project.liveUrl,
+                      icon: <ExternalLink className="size-3" />,
+                    }] : []),
+                  ]}
                 />
               </BlurFade>
             ))}
           </div>
         </div>
+      </section>
+      <section id="pull-requests">
+        <div className="w-full space-y-12 py-12">
+          <BlurFade delay={BLUR_FADE_DELAY * 13}>
+            <div className="flex flex-col items-center justify-center space-y-4 text-center">
+              <div className="space-y-2">
+                <div className="inline-block rounded-lg bg-foreground px-3 py-1 text-sm text-background">
+                  Open Source
+                </div>
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                  PRs I like to show
+                </h2>
+                <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                  Merged upstream work, automatically selected from repositories with at least {portfolio.filter.minimumRepositoryStars.toLocaleString("en-US")} stars.
+                </p>
+              </div>
+            </div>
+          </BlurFade>
+          <div className="mx-auto grid max-w-[800px] grid-cols-1 gap-3 sm:grid-cols-2">
+            {portfolio.pullRequests.map((pullRequest, id) => (
+              <BlurFade key={pullRequest.id} delay={BLUR_FADE_DELAY * 14 + id * 0.05}>
+                <ContributionCard {...pullRequest} />
+              </BlurFade>
+            ))}
+          </div>
+        </div>
+      </section>
+      <section id="resume">
+        <BlurFade delay={BLUR_FADE_DELAY * 15}>
+          <div className="flex min-h-0 flex-col gap-y-3">
+            <h2 className="text-xl font-bold">Résumé</h2>
+            <div className="rounded-lg border p-4">
+              <div className="space-y-1 pb-4">
+                <h3 className="font-semibold">Sankalp Jha</h3>
+                <p className="text-sm text-muted-foreground">
+                  Automatically rebuilt when featured projects or merged upstream PRs change.
+                </p>
+              </div>
+              <ResumeActions />
+            </div>
+          </div>
+        </BlurFade>
       </section>
       <section id="hackathons">
         <div className="space-y-12 w-full py-12">
@@ -253,13 +309,12 @@ export default function Page() {
                   delay={0.2 + id * 0.05}
                 >
                   <OtherStuffCard
-                  title={otherStuff.title}
-                  image={otherStuff.image}
-                  // description={otherStuff.description}
-                  date={otherStuff.date}
-                  type={otherStuff.type}
-                  // location={otherStuff.location}
-                />
+                    title={otherStuff.title}
+                    image={otherStuff.image}
+                    description={"description" in otherStuff ? otherStuff.description : ""}
+                    dates={otherStuff.date}
+                    tags={[otherStuff.type]}
+                  />
                 </BlurFade>
               ))}
             </div>

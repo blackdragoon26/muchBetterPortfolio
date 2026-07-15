@@ -1,0 +1,260 @@
+{
+  "generatedAt": "2026-07-15T14:27:54.555Z",
+  "filter": {
+    "minimumRepositoryStars": 300,
+    "maximumPullRequests": 12
+  },
+  "projects": [
+    {
+      "id": "los-tecnicos",
+      "title": "Los-Tecnicos",
+      "description": "A Decentralized Energy Grid on Stellar Ecosystem which will turn energy into Tokenized Assets, and Energy into Stable Income. Repo: , a super cool residency project",
+      "href": "https://los-tecnicos.vercel.app/",
+      "liveUrl": "https://los-tecnicos.vercel.app/",
+      "repository": "blackdragoon26/Los-Tecnicos",
+      "repositoryUrl": "https://github.com/blackdragoon26/Los-Tecnicos",
+      "technologies": [
+        "TypeScript",
+        "go",
+        "iot",
+        "stellar"
+      ],
+      "stars": 1,
+      "image": "/generated/projects/los-tecnicos.svg"
+    },
+    {
+      "id": "dmie",
+      "title": "DMIE",
+      "description": "A simple solution to every person's question, does my idea already exists, and also get your idea's comparative analysis of existing competition as we scraped and built on 500,000 Indian Startups. Private Repo in Collab with a Cracked DevFriend of mine.",
+      "href": "https://www.doesmyideaexist.com/",
+      "liveUrl": "https://www.doesmyideaexist.com/",
+      "repository": null,
+      "repositoryUrl": null,
+      "technologies": [],
+      "stars": null,
+      "image": "/generated/projects/dmie.svg"
+    },
+    {
+      "id": "do-it",
+      "title": "Do-It",
+      "description": "A self-hosted binary (for Raspberry Pi, adv. routers, old phones), built in Go, running SSE/HTTP server, allowing simple synced notes/multimedia files across all devices connected to ur local home wifi.",
+      "href": "https://repo-tawny-iota.vercel.app",
+      "liveUrl": "https://repo-tawny-iota.vercel.app",
+      "repository": "blackdragoon26/Do-It",
+      "repositoryUrl": "https://github.com/blackdragoon26/Do-It",
+      "technologies": [
+        "Go",
+        "golang",
+        "local-first",
+        "multimedia",
+        "notes-app",
+        "sse"
+      ],
+      "stars": 1,
+      "image": "/generated/projects/do-it.png"
+    },
+    {
+      "id": "gsoc-splidt-scaling-stateful-decision-tree-algorithms-in-p4",
+      "title": "GSoC- SpliDT: Scaling Stateful Decision Tree Algorithms in P4",
+      "description": "It is a switch-native compiler framework that enables stateful decision tree inference directly in programmable switches, bringing real-time machine learning into the network data plane. IT helps to compile high-performance decision tree models to enable detection and observability of security-significant flow behaviors across diverse traffic workloads on Intel Tofino ASICs. Report: (Codebase Private due to Research nature of the project)",
+      "href": "https://p4lang.github.io/gsoc/blog/",
+      "liveUrl": "https://p4lang.github.io/gsoc/blog/",
+      "repository": "p4lang/gsoc",
+      "repositoryUrl": "https://github.com/p4lang/gsoc",
+      "technologies": [
+        "HTML",
+        "gsoc",
+        "p4",
+        "p4lang"
+      ],
+      "stars": 30,
+      "image": "/generated/projects/gsoc-splidt-scaling-stateful-decision-tree-algorithms-in-p4.png"
+    },
+    {
+      "id": "p4lens",
+      "title": "p4Lens",
+      "description": "An Interactive P4 Program Visualiser, which allows to Upload and visualise P4 programs with an intuitive and interactive pipeline flow diagram, to those who are beginning to learn P4Lang.",
+      "href": "https://repo-tawny-iota.vercel.app/",
+      "liveUrl": "https://repo-tawny-iota.vercel.app/",
+      "repository": "openlabnetworks/p4Lens",
+      "repositoryUrl": "https://github.com/openlabnetworks/p4Lens",
+      "technologies": [
+        "JavaScript"
+      ],
+      "stars": 3,
+      "image": "/generated/projects/p4lens.png"
+    },
+    {
+      "id": "slix",
+      "title": "Slix",
+      "description": "A full-stack movie streaming and review platform, built with React and Go, where admins can add movies and reviews, and Azure OpenAI does sentiment analysis on curator reviews so users can understand movie vibe at a glance. Live:",
+      "href": "https://magic-stream-movies-beige.vercel.app/",
+      "liveUrl": "https://magic-stream-movies-beige.vercel.app/",
+      "repository": "blackdragoon26/Slix",
+      "repositoryUrl": "https://github.com/blackdragoon26/Slix",
+      "technologies": [
+        "JavaScript"
+      ],
+      "stars": 1,
+      "image": "/generated/projects/slix.png"
+    },
+    {
+      "id": "moodish",
+      "title": "Moodish",
+      "description": "A mood-based food planning app for Swiggy-style ordering, where user gives craving, budget and diet needs, and it gives ranked meal options with transparent AI summary, recommendation trace and safe cart preview. Live:",
+      "href": "https://moodish.onrender.com/",
+      "liveUrl": "https://moodish.onrender.com/",
+      "repository": "blackdragoon26/Moodish",
+      "repositoryUrl": "https://github.com/blackdragoon26/Moodish",
+      "technologies": [
+        "JavaScript",
+        "mcp-server"
+      ],
+      "stars": 1,
+      "image": "/generated/projects/moodish.png"
+    },
+    {
+      "id": "ebpf-mcp-tracer",
+      "title": "ebpf-mcp-tracer",
+      "description": "A secure MCP server which lets LLMs write and run bpftrace scripts against Linux kernel, with strict probe allowlist, dry-run validation and hard timeout, so AI agents can debug system bottlenecks without raw unsafe eBPF access.",
+      "href": "https://github.com/blackdragoon26/ebpf-mcp-tracer",
+      "liveUrl": null,
+      "repository": "blackdragoon26/ebpf-mcp-tracer",
+      "repositoryUrl": "https://github.com/blackdragoon26/ebpf-mcp-tracer",
+      "technologies": [
+        "Python",
+        "c",
+        "ebpf",
+        "kernel",
+        "mcp",
+        "mcp-server"
+      ],
+      "stars": 1,
+      "image": "/generated/projects/ebpf-mcp-tracer.png"
+    }
+  ],
+  "pullRequests": [
+    {
+      "id": "WasmEdge/WasmEdge#4470",
+      "title": "fix(wasi): resolve 100% CPU usage on macOS due to clock mismatch",
+      "number": 4470,
+      "href": "https://github.com/WasmEdge/WasmEdge/pull/4470",
+      "repository": "WasmEdge/WasmEdge",
+      "repositoryUrl": "https://github.com/WasmEdge/WasmEdge",
+      "repositoryDescription": "WasmEdge is a lightweight, high-performance, and extensible WebAssembly runtime for cloud native, edge, and decentralized applications. It powers serverless apps, embedded functions, microservices, smart contracts, and IoT devices.",
+      "stars": 10715,
+      "mergedAt": "2026-01-15T08:51:19Z",
+      "additions": 51,
+      "deletions": 7,
+      "changedFiles": 1,
+      "languages": [
+        "C++",
+        "artificial-intelligence",
+        "cloud",
+        "cloud-native",
+        "cncf",
+        "container"
+      ]
+    },
+    {
+      "id": "WasmEdge/WasmEdge#4440",
+      "title": "Upgrade Alpine base to 3.23 and restore static LLD support",
+      "number": 4440,
+      "href": "https://github.com/WasmEdge/WasmEdge/pull/4440",
+      "repository": "WasmEdge/WasmEdge",
+      "repositoryUrl": "https://github.com/WasmEdge/WasmEdge",
+      "repositoryDescription": "WasmEdge is a lightweight, high-performance, and extensible WebAssembly runtime for cloud native, edge, and decentralized applications. It powers serverless apps, embedded functions, microservices, smart contracts, and IoT devices.",
+      "stars": 10715,
+      "mergedAt": "2025-12-26T03:51:04Z",
+      "additions": 28,
+      "deletions": 8,
+      "changedFiles": 1,
+      "languages": [
+        "C++",
+        "artificial-intelligence",
+        "cloud",
+        "cloud-native",
+        "cncf",
+        "container"
+      ]
+    },
+    {
+      "id": "WasmEdge/WasmEdge#4466",
+      "title": "feat(docker): add standalone alpine-base image build pipeline",
+      "number": 4466,
+      "href": "https://github.com/WasmEdge/WasmEdge/pull/4466",
+      "repository": "WasmEdge/WasmEdge",
+      "repositoryUrl": "https://github.com/WasmEdge/WasmEdge",
+      "repositoryDescription": "WasmEdge is a lightweight, high-performance, and extensible WebAssembly runtime for cloud native, edge, and decentralized applications. It powers serverless apps, embedded functions, microservices, smart contracts, and IoT devices.",
+      "stars": 10715,
+      "mergedAt": "2025-12-24T16:09:11Z",
+      "additions": 120,
+      "deletions": 0,
+      "changedFiles": 3,
+      "languages": [
+        "C++",
+        "artificial-intelligence",
+        "cloud",
+        "cloud-native",
+        "cncf",
+        "container"
+      ]
+    },
+    {
+      "id": "WasmEdge/WasmEdge#4452",
+      "title": "docs(README): fix broken introduction and blog links",
+      "number": 4452,
+      "href": "https://github.com/WasmEdge/WasmEdge/pull/4452",
+      "repository": "WasmEdge/WasmEdge",
+      "repositoryUrl": "https://github.com/WasmEdge/WasmEdge",
+      "repositoryDescription": "WasmEdge is a lightweight, high-performance, and extensible WebAssembly runtime for cloud native, edge, and decentralized applications. It powers serverless apps, embedded functions, microservices, smart contracts, and IoT devices.",
+      "stars": 10715,
+      "mergedAt": "2025-12-18T14:53:20Z",
+      "additions": 4,
+      "deletions": 5,
+      "changedFiles": 1,
+      "languages": [
+        "C++",
+        "artificial-intelligence",
+        "cloud",
+        "cloud-native",
+        "cncf",
+        "container"
+      ]
+    },
+    {
+      "id": "p4lang/tutorials#681",
+      "title": "Update README.md in reference to #680",
+      "number": 681,
+      "href": "https://github.com/p4lang/tutorials/pull/681",
+      "repository": "p4lang/tutorials",
+      "repositoryUrl": "https://github.com/p4lang/tutorials",
+      "repositoryDescription": "P4 language tutorials",
+      "stars": 1580,
+      "mergedAt": "2025-04-14T22:26:09Z",
+      "additions": 22,
+      "deletions": 8,
+      "changedFiles": 1,
+      "languages": [
+        "Python"
+      ]
+    },
+    {
+      "id": "facebook/bpfilter#507",
+      "title": "style: add missing braces to satisfy readability-braces-around-statem…",
+      "number": 507,
+      "href": "https://github.com/facebook/bpfilter/pull/507",
+      "repository": "facebook/bpfilter",
+      "repositoryUrl": "https://github.com/facebook/bpfilter",
+      "repositoryDescription": "eBPF-based packet filtering framework",
+      "stars": 343,
+      "mergedAt": "2026-04-24T10:52:56Z",
+      "additions": 7,
+      "deletions": 4,
+      "changedFiles": 4,
+      "languages": [
+        "C"
+      ]
+    }
+  ]
+}

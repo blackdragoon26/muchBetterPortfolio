@@ -267,7 +267,7 @@ export const DATA = {
           icon: <Icons.linkedin className="size-3" />,
         },
         {
-          type: "X",
+          title: "X",
           href: "https://x.com/SankalpJha26/status/1866883467348512785",
           icon: <Icons.x className="size-3" />,
         },
@@ -290,7 +290,7 @@ export const DATA = {
           icon: <Icons.linkedin className="size-3" />,
         },
         {
-          type: "X",
+          title: "X",
           href: "https://x.com/SankalpJha26/status/1865708893550035393",
           icon: <Icons.x className="size-3" />,
         },
@@ -312,7 +312,7 @@ export const DATA = {
           icon: <Icons.linkedin className="size-3" />,
         },
         {
-          type: "X",
+          title: "X",
           href: "https://x.com/SankalpJha26/status/1829783610691387712",
           icon: <Icons.x className="size-3" />,
         },
