@@ -14,7 +14,10 @@ FILE_NAME = PDF_PATH.name
 
 def main() -> None:
     credentials_info = json.loads(os.environ["DRIVE_SERVICE_ACCOUNT_JSON"])
-    folder_id = os.environ["DRIVE_FOLDER_ID"]
+    folder_id = os.environ["DRIVE_FOLDER_ID"].strip()
+    if not folder_id:
+        raise ValueError("DRIVE_FOLDER_ID is missing, empty, or only contains whitespace!")
+
     credentials = service_account.Credentials.from_service_account_info(
         credentials_info,
         scopes=["https://www.googleapis.com/auth/drive"],
