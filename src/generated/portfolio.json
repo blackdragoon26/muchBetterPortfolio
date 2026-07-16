@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-15T20:46:29.308Z",
+  "generatedAt": "2026-07-16T07:33:21.160Z",
   "filter": {
     "minimumRepositoryStars": 300,
     "maximumPullRequests": 12
@@ -82,7 +82,7 @@
         "JavaScript"
       ],
       "stars": 3,
-      "image": "/generated/projects/p4lens.svg"
+      "image": "/generated/projects/p4lens.png"
     },
     {
       "id": "slix",
@@ -96,7 +96,7 @@
         "JavaScript"
       ],
       "stars": 1,
-      "image": "/generated/projects/slix.png"
+      "image": "/generated/projects/slix.svg"
     },
     {
       "id": "moodish",
@@ -130,7 +130,7 @@
         "mcp-server"
       ],
       "stars": 1,
-      "image": "/generated/projects/ebpf-mcp-tracer.svg"
+      "image": "/generated/projects/ebpf-mcp-tracer.png"
     }
   ],
   "pullRequests": [
@@ -230,7 +230,7 @@
       "repository": "p4lang/tutorials",
       "repositoryUrl": "https://github.com/p4lang/tutorials",
       "repositoryDescription": "P4 language tutorials",
-      "stars": 1580,
+      "stars": 1581,
       "mergedAt": "2025-04-14T22:26:09Z",
       "additions": 22,
       "deletions": 8,
@@ -247,7 +247,7 @@
       "repository": "facebook/bpfilter",
       "repositoryUrl": "https://github.com/facebook/bpfilter",
       "repositoryDescription": "eBPF-based packet filtering framework",
-      "stars": 343,
+      "stars": 344,
       "mergedAt": "2026-04-24T10:52:56Z",
       "additions": 7,
       "deletions": 4,
