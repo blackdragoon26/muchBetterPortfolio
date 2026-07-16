@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-16T08:00:15.804Z",
+  "generatedAt": "2026-07-16T08:36:45.460Z",
   "filter": {
     "minimumRepositoryStars": 300,
     "maximumPullRequests": 12
@@ -313,7 +313,7 @@
       "repositoryUrl": "https://github.com/p4lang/tutorials",
       "repositoryDescription": "P4 language tutorials",
       "repositoryAvatar": "https://avatars.githubusercontent.com/u/10765181?v=4",
-      "stars": 1581,
+      "stars": 1580,
       "mergedAt": "2025-04-14T22:26:09Z",
       "additions": 22,
       "deletions": 8,
