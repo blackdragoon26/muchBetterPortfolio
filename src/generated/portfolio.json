@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-16T10:27:36.338Z",
+  "generatedAt": "2026-07-16T10:31:37.930Z",
   "filter": {
     "minimumRepositoryStars": 300,
     "maximumPullRequests": 12
@@ -257,7 +257,7 @@
       "screenshot": "auto",
       "screenshotWaitSeconds": 7,
       "stars": 0,
-      "image": "/generated/projects/myprod.svg",
+      "image": "/generated/projects/myprod.jpg",
       "resume": {
         "include": true,
         "objective": "Turn manually provisioned VPS machines into a low-overhead personal compute pool for backend services.",
