@@ -36,6 +36,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: blackdragoon26/blackdragoon26
+          ref: main
           path: .profile-source
 
       - name: Set up Node.js
