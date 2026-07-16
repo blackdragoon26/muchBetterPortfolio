@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-16T10:31:37.930Z",
+  "generatedAt": "2026-07-16T15:26:38.604Z",
   "filter": {
     "minimumRepositoryStars": 300,
     "maximumPullRequests": 12
@@ -69,8 +69,8 @@
       "id": "do-it",
       "title": "Do-It",
       "description": "A self-hosted binary (for Raspberry Pi, adv. routers, old phones), built in Go, running SSE/HTTP server, allowing simple synced notes/multimedia files across all devices connected to ur local home wifi.",
-      "href": "https://github.com/blackdragoon26/Do-It",
-      "liveUrl": null,
+      "href": "https://repo-tawny-iota.vercel.app/",
+      "liveUrl": "https://repo-tawny-iota.vercel.app/",
       "repository": "blackdragoon26/Do-It",
       "repositoryUrl": "https://github.com/blackdragoon26/Do-It",
       "technologies": [
@@ -83,7 +83,7 @@
       "screenshot": "auto",
       "screenshotWaitSeconds": 7,
       "stars": 1,
-      "image": "/generated/projects/do-it.png",
+      "image": "/generated/projects/do-it.jpg",
       "resume": {
         "include": true,
         "objective": "Provide private, synchronized notes and media across devices on a local network.",
@@ -97,8 +97,8 @@
       "id": "gsoc-splidt-scaling-stateful-decision-tree-algorithms-in-p4",
       "title": "GSoC- SpliDT: Scaling Stateful Decision Tree Algorithms in P4",
       "description": "It is a switch-native compiler framework that enables stateful decision tree inference directly in programmable switches, bringing real-time machine learning into the network data plane. IT helps to compile high-performance decision tree models to enable detection and observability of security-significant flow behaviors across diverse traffic workloads on Intel Tofino ASICs. (Codebase Private due to Research nature of the project)",
-      "href": "https://summerofcode.withgoogle.com/archive/2025/projects/Qvq4a3yR",
-      "liveUrl": "https://summerofcode.withgoogle.com/archive/2025/projects/Qvq4a3yR",
+      "href": "https://splidt-showcase.vercel.app/",
+      "liveUrl": "https://splidt-showcase.vercel.app/",
       "repository": "p4lang/gsoc",
       "repositoryUrl": "https://github.com/p4lang/gsoc",
       "technologies": [
@@ -127,8 +127,8 @@
       "id": "p4lens",
       "title": "p4Lens",
       "description": "An Interactive P4 Program Visualiser, which allows to Upload and visualise P4 programs with an intuitive and interactive pipeline flow diagram, to those who are beginning to learn P4Lang.",
-      "href": "https://repo-tawny-iota.vercel.app/",
-      "liveUrl": "https://repo-tawny-iota.vercel.app/",
+      "href": "https://github.com/openlabnetworks/p4Lens",
+      "liveUrl": null,
       "repository": "openlabnetworks/p4Lens",
       "repositoryUrl": "https://github.com/openlabnetworks/p4Lens",
       "technologies": [
@@ -141,7 +141,7 @@
       "screenshot": "auto",
       "screenshotWaitSeconds": 7,
       "stars": 3,
-      "image": "/generated/projects/p4lens.jpg",
+      "image": "/generated/projects/p4lens.png",
       "resume": {
         "include": true,
         "objective": "Make P4 programs easier to learn and debug through an interactive visualization of their processing pipeline.",
