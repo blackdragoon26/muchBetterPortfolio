@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-16T09:12:07.776Z",
+  "generatedAt": "2026-07-16T09:31:43.788Z",
   "filter": {
     "minimumRepositoryStars": 300,
     "maximumPullRequests": 12
@@ -85,7 +85,7 @@
       "stars": 1,
       "image": "/generated/projects/do-it.png",
       "resume": {
-        "include": false,
+        "include": true,
         "objective": "Provide private, synchronized notes and media across devices on a local network.",
         "approach": [
           "Packaged a lightweight Go SSE and HTTP server for Raspberry Pi, routers, and repurposed phones"
@@ -171,7 +171,7 @@
       "stars": 1,
       "image": "/generated/projects/slix.jpg",
       "resume": {
-        "include": false,
+        "include": true,
         "objective": "Combine movie streaming, reviews, and machine-generated sentiment summaries in one full-stack application.",
         "approach": [
           "Built the frontend in React and the service layer in Go",
@@ -199,7 +199,7 @@
       "stars": 1,
       "image": "/generated/projects/moodish.jpg",
       "resume": {
-        "include": false,
+        "include": true,
         "objective": "Rank meal options from a user's craving, budget, and dietary constraints while keeping the recommendation explainable.",
         "approach": [
           "Built intent extraction and deterministic ranking around an AI-generated summary",
@@ -228,7 +228,7 @@
       "stars": 1,
       "image": "/generated/projects/ebpf-mcp-tracer.png",
       "resume": {
-        "include": false,
+        "include": true,
         "objective": "Let AI debugging agents inspect Linux performance without granting unrestricted eBPF execution.",
         "approach": [
           "Implemented a strict probe allowlist, dry-run validation, and execution timeouts around bpftrace",
