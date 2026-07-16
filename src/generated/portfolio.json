@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-16T07:33:21.160Z",
+  "generatedAt": "2026-07-16T08:00:15.804Z",
   "filter": {
     "minimumRepositoryStars": 300,
     "maximumPullRequests": 12
@@ -8,19 +8,31 @@
     {
       "id": "los-tecnicos",
       "title": "Los-Tecnicos",
-      "description": "A Decentralized Energy Grid on Stellar Ecosystem which will turn energy into Tokenized Assets, and Energy into Stable Income. Repo: , a super cool residency project",
+      "description": "A Decentralized Energy Grid on Stellar Ecosystem which will turn energy into Tokenized Assets, and Energy into Stable Income., a super cool residency project",
       "href": "https://los-tecnicos.vercel.app/",
       "liveUrl": "https://los-tecnicos.vercel.app/",
       "repository": "blackdragoon26/Los-Tecnicos",
       "repositoryUrl": "https://github.com/blackdragoon26/Los-Tecnicos",
       "technologies": [
+        "Go",
         "TypeScript",
-        "go",
-        "iot",
-        "stellar"
+        "Rust",
+        "Soroban",
+        "Raspberry Pi",
+        "ESP32"
       ],
+      "screenshot": "auto",
       "stars": 1,
-      "image": "/generated/projects/los-tecnicos.png"
+      "image": "/generated/projects/los-tecnicos.jpg",
+      "resume": {
+        "include": true,
+        "objective": "Build a decentralized energy grid that tokenizes renewable-energy production on the Stellar ecosystem.",
+        "approach": [
+          "Built a Go backend and three Soroban smart contracts",
+          "Integrated a Raspberry Pi and ESP32 hardware mesh with the software platform"
+        ],
+        "impact": "Won Asia-Pacific Web3 bounties and received recognition from the Government of India."
+      }
     },
     {
       "id": "dmie",
@@ -30,45 +42,82 @@
       "liveUrl": "https://www.doesmyideaexist.com/",
       "repository": null,
       "repositoryUrl": null,
-      "technologies": [],
+      "technologies": [
+        "Next.js",
+        "TypeScript",
+        "Python",
+        "FastAPI",
+        "Vector DB",
+        "LLM"
+      ],
+      "screenshot": "auto",
       "stars": null,
-      "image": "/generated/projects/dmie.svg"
+      "image": "/generated/projects/dmie.jpg",
+      "resume": {
+        "include": true,
+        "objective": "Determine whether a startup idea already exists by comparing it against more than 500,000 company records.",
+        "approach": [
+          "Built a scheduled scraper that keeps the startup dataset current",
+          "Combined LLM query understanding with vector search and backend filters"
+        ],
+        "impact": "Raised USD 10,000 and serves more than 100 users worldwide."
+      }
     },
     {
       "id": "do-it",
       "title": "Do-It",
       "description": "A self-hosted binary (for Raspberry Pi, adv. routers, old phones), built in Go, running SSE/HTTP server, allowing simple synced notes/multimedia files across all devices connected to ur local home wifi.",
-      "href": "https://repo-tawny-iota.vercel.app",
-      "liveUrl": "https://repo-tawny-iota.vercel.app",
+      "href": "https://github.com/blackdragoon26/Do-It",
+      "liveUrl": null,
       "repository": "blackdragoon26/Do-It",
       "repositoryUrl": "https://github.com/blackdragoon26/Do-It",
       "technologies": [
         "Go",
-        "golang",
-        "local-first",
-        "multimedia",
-        "notes-app",
-        "sse"
+        "SSE",
+        "HTTP",
+        "Raspberry Pi",
+        "Local-first"
       ],
+      "screenshot": "auto",
       "stars": 1,
-      "image": "/generated/projects/do-it.svg"
+      "image": "/generated/projects/do-it.png",
+      "resume": {
+        "include": false,
+        "objective": "Provide private, synchronized notes and media across devices on a local network.",
+        "approach": [
+          "Packaged a lightweight Go SSE and HTTP server for Raspberry Pi, routers, and repurposed phones"
+        ],
+        "impact": "Delivers self-hosted, account-free synchronization without sending household data to a cloud service."
+      }
     },
     {
       "id": "gsoc-splidt-scaling-stateful-decision-tree-algorithms-in-p4",
       "title": "GSoC- SpliDT: Scaling Stateful Decision Tree Algorithms in P4",
-      "description": "It is a switch-native compiler framework that enables stateful decision tree inference directly in programmable switches, bringing real-time machine learning into the network data plane. IT helps to compile high-performance decision tree models to enable detection and observability of security-significant flow behaviors across diverse traffic workloads on Intel Tofino ASICs. Report: (Codebase Private due to Research nature of the project)",
-      "href": "https://p4lang.github.io/gsoc/blog/",
-      "liveUrl": "https://p4lang.github.io/gsoc/blog/",
+      "description": "It is a switch-native compiler framework that enables stateful decision tree inference directly in programmable switches, bringing real-time machine learning into the network data plane. IT helps to compile high-performance decision tree models to enable detection and observability of security-significant flow behaviors across diverse traffic workloads on Intel Tofino ASICs. (Codebase Private due to Research nature of the project)",
+      "href": "https://summerofcode.withgoogle.com/archive/2025/projects/Qvq4a3yR",
+      "liveUrl": "https://summerofcode.withgoogle.com/archive/2025/projects/Qvq4a3yR",
       "repository": "p4lang/gsoc",
       "repositoryUrl": "https://github.com/p4lang/gsoc",
       "technologies": [
-        "HTML",
-        "gsoc",
-        "p4",
-        "p4lang"
+        "P4",
+        "Python",
+        "P4Runtime",
+        "Docker",
+        "C++",
+        "Intel Tofino"
       ],
+      "screenshot": "auto",
       "stars": 30,
-      "image": "/generated/projects/gsoc-splidt-scaling-stateful-decision-tree-algorithms-in-p4.png"
+      "image": "/generated/projects/gsoc-splidt-scaling-stateful-decision-tree-algorithms-in-p4.jpg",
+      "resume": {
+        "include": true,
+        "objective": "Compile machine-learning decision trees directly into P4 data planes using Partitioned Decision Trees.",
+        "approach": [
+          "Architected a switch-native inference framework around Subtree ID recirculation",
+          "Automated P4Runtime validation across Tofino and Mininet test environments"
+        ],
+        "impact": "Achieved 10 Gbps line-rate throughput and 5x lower latency than control-plane inference."
+      }
     },
     {
       "id": "p4lens",
@@ -79,39 +128,78 @@
       "repository": "openlabnetworks/p4Lens",
       "repositoryUrl": "https://github.com/openlabnetworks/p4Lens",
       "technologies": [
-        "JavaScript"
+        "React",
+        "FastAPI",
+        "Docker",
+        "React Flow",
+        "P4"
       ],
+      "screenshot": "auto",
       "stars": 3,
-      "image": "/generated/projects/p4lens.png"
+      "image": "/generated/projects/p4lens.jpg",
+      "resume": {
+        "include": true,
+        "objective": "Make P4 programs easier to learn and debug through an interactive visualization of their processing pipeline.",
+        "approach": [
+          "Built a parser for P4-14 and P4-16 programs",
+          "Rendered headers, parsers, controls, and deparsers as interactive React Flow topologies"
+        ],
+        "impact": "Renders pipeline diagrams in under 200 ms and reduces control-plane debugging effort by approximately 40 percent."
+      }
     },
     {
       "id": "slix",
       "title": "Slix",
-      "description": "A full-stack movie streaming and review platform, built with React and Go, where admins can add movies and reviews, and Azure OpenAI does sentiment analysis on curator reviews so users can understand movie vibe at a glance. Live:",
+      "description": "A full-stack movie streaming and review platform, built with React and Go, where admins can add movies and reviews, and Azure OpenAI does sentiment analysis on curator reviews so users can understand movie vibe at a glance.",
       "href": "https://magic-stream-movies-beige.vercel.app/",
       "liveUrl": "https://magic-stream-movies-beige.vercel.app/",
       "repository": "blackdragoon26/Slix",
       "repositoryUrl": "https://github.com/blackdragoon26/Slix",
       "technologies": [
-        "JavaScript"
+        "React",
+        "Go",
+        "Azure OpenAI",
+        "REST API"
       ],
+      "screenshot": "auto",
       "stars": 1,
-      "image": "/generated/projects/slix.svg"
+      "image": "/generated/projects/slix.jpg",
+      "resume": {
+        "include": false,
+        "objective": "Combine movie streaming, reviews, and machine-generated sentiment summaries in one full-stack application.",
+        "approach": [
+          "Built the frontend in React and the service layer in Go",
+          "Added Azure OpenAI sentiment analysis for curator reviews"
+        ],
+        "impact": "Gives viewers a concise representation of a movie's tone before watching."
+      }
     },
     {
       "id": "moodish",
       "title": "Moodish",
-      "description": "A mood-based food planning app for Swiggy-style ordering, where user gives craving, budget and diet needs, and it gives ranked meal options with transparent AI summary, recommendation trace and safe cart preview. Live:",
+      "description": "A mood-based food planning app for Swiggy-style ordering, where user gives craving, budget and diet needs, and it gives ranked meal options with transparent AI summary, recommendation trace and safe cart preview.",
       "href": "https://moodish.onrender.com/",
       "liveUrl": "https://moodish.onrender.com/",
       "repository": "blackdragoon26/Moodish",
       "repositoryUrl": "https://github.com/blackdragoon26/Moodish",
       "technologies": [
         "JavaScript",
-        "mcp-server"
+        "Node.js",
+        "OpenAI API",
+        "MCP"
       ],
+      "screenshot": "auto",
       "stars": 1,
-      "image": "/generated/projects/moodish.svg"
+      "image": "/generated/projects/moodish.jpg",
+      "resume": {
+        "include": false,
+        "objective": "Rank meal options from a user's craving, budget, and dietary constraints while keeping the recommendation explainable.",
+        "approach": [
+          "Built intent extraction and deterministic ranking around an AI-generated summary",
+          "Added a recommendation trace and confirmation-gated cart preview"
+        ],
+        "impact": "Produces safer, inspectable food recommendations instead of opaque model output."
+      }
     },
     {
       "id": "ebpf-mcp-tracer",
@@ -123,14 +211,23 @@
       "repositoryUrl": "https://github.com/blackdragoon26/ebpf-mcp-tracer",
       "technologies": [
         "Python",
-        "c",
-        "ebpf",
-        "kernel",
-        "mcp",
-        "mcp-server"
+        "bpftrace",
+        "eBPF",
+        "Linux",
+        "MCP"
       ],
+      "screenshot": "auto",
       "stars": 1,
-      "image": "/generated/projects/ebpf-mcp-tracer.png"
+      "image": "/generated/projects/ebpf-mcp-tracer.png",
+      "resume": {
+        "include": false,
+        "objective": "Let AI debugging agents inspect Linux performance without granting unrestricted eBPF execution.",
+        "approach": [
+          "Implemented a strict probe allowlist, dry-run validation, and execution timeouts around bpftrace",
+          "Exposed the guarded tracing workflow through MCP"
+        ],
+        "impact": "Enables kernel-level diagnostics while reducing command-injection and runaway-probe risk."
+      }
     }
   ],
   "pullRequests": [
@@ -142,18 +239,14 @@
       "repository": "WasmEdge/WasmEdge",
       "repositoryUrl": "https://github.com/WasmEdge/WasmEdge",
       "repositoryDescription": "WasmEdge is a lightweight, high-performance, and extensible WebAssembly runtime for cloud native, edge, and decentralized applications. It powers serverless apps, embedded functions, microservices, smart contracts, and IoT devices.",
+      "repositoryAvatar": "https://avatars.githubusercontent.com/u/83329692?v=4",
       "stars": 10716,
       "mergedAt": "2026-01-15T08:51:19Z",
       "additions": 51,
       "deletions": 7,
       "changedFiles": 1,
-      "languages": [
-        "C++",
-        "artificial-intelligence",
-        "cloud",
-        "cloud-native",
-        "cncf",
-        "container"
+      "technologies": [
+        "C++"
       ]
     },
     {
@@ -164,18 +257,14 @@
       "repository": "WasmEdge/WasmEdge",
       "repositoryUrl": "https://github.com/WasmEdge/WasmEdge",
       "repositoryDescription": "WasmEdge is a lightweight, high-performance, and extensible WebAssembly runtime for cloud native, edge, and decentralized applications. It powers serverless apps, embedded functions, microservices, smart contracts, and IoT devices.",
+      "repositoryAvatar": "https://avatars.githubusercontent.com/u/83329692?v=4",
       "stars": 10716,
       "mergedAt": "2025-12-26T03:51:04Z",
       "additions": 28,
       "deletions": 8,
       "changedFiles": 1,
-      "languages": [
-        "C++",
-        "artificial-intelligence",
-        "cloud",
-        "cloud-native",
-        "cncf",
-        "container"
+      "technologies": [
+        "Docker"
       ]
     },
     {
@@ -186,18 +275,15 @@
       "repository": "WasmEdge/WasmEdge",
       "repositoryUrl": "https://github.com/WasmEdge/WasmEdge",
       "repositoryDescription": "WasmEdge is a lightweight, high-performance, and extensible WebAssembly runtime for cloud native, edge, and decentralized applications. It powers serverless apps, embedded functions, microservices, smart contracts, and IoT devices.",
+      "repositoryAvatar": "https://avatars.githubusercontent.com/u/83329692?v=4",
       "stars": 10716,
       "mergedAt": "2025-12-24T16:09:11Z",
       "additions": 120,
       "deletions": 0,
       "changedFiles": 3,
-      "languages": [
-        "C++",
-        "artificial-intelligence",
-        "cloud",
-        "cloud-native",
-        "cncf",
-        "container"
+      "technologies": [
+        "GitHub Actions",
+        "Docker"
       ]
     },
     {
@@ -208,18 +294,14 @@
       "repository": "WasmEdge/WasmEdge",
       "repositoryUrl": "https://github.com/WasmEdge/WasmEdge",
       "repositoryDescription": "WasmEdge is a lightweight, high-performance, and extensible WebAssembly runtime for cloud native, edge, and decentralized applications. It powers serverless apps, embedded functions, microservices, smart contracts, and IoT devices.",
+      "repositoryAvatar": "https://avatars.githubusercontent.com/u/83329692?v=4",
       "stars": 10716,
       "mergedAt": "2025-12-18T14:53:20Z",
       "additions": 4,
       "deletions": 5,
       "changedFiles": 1,
-      "languages": [
-        "C++",
-        "artificial-intelligence",
-        "cloud",
-        "cloud-native",
-        "cncf",
-        "container"
+      "technologies": [
+        "Markdown"
       ]
     },
     {
@@ -230,13 +312,14 @@
       "repository": "p4lang/tutorials",
       "repositoryUrl": "https://github.com/p4lang/tutorials",
       "repositoryDescription": "P4 language tutorials",
+      "repositoryAvatar": "https://avatars.githubusercontent.com/u/10765181?v=4",
       "stars": 1581,
       "mergedAt": "2025-04-14T22:26:09Z",
       "additions": 22,
       "deletions": 8,
       "changedFiles": 1,
-      "languages": [
-        "Python"
+      "technologies": [
+        "Markdown"
       ]
     },
     {
@@ -247,12 +330,13 @@
       "repository": "facebook/bpfilter",
       "repositoryUrl": "https://github.com/facebook/bpfilter",
       "repositoryDescription": "eBPF-based packet filtering framework",
+      "repositoryAvatar": "https://avatars.githubusercontent.com/u/69631?v=4",
       "stars": 344,
       "mergedAt": "2026-04-24T10:52:56Z",
       "additions": 7,
       "deletions": 4,
       "changedFiles": 4,
-      "languages": [
+      "technologies": [
         "C"
       ]
     }

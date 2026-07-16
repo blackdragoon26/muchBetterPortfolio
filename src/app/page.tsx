@@ -173,7 +173,7 @@ export default function Page() {
               </div>
             </div>
           </BlurFade>
-          <div className="mx-auto grid max-w-[800px] grid-cols-1 gap-3 sm:grid-cols-2">
+          <div className="mx-auto max-w-[800px]">
             {portfolio.pullRequests.map((pullRequest, id) => (
               <BlurFade key={pullRequest.id} delay={BLUR_FADE_DELAY * 14 + id * 0.05}>
                 <ContributionCard {...pullRequest} />
