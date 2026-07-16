@@ -7,9 +7,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 import Link from "next/link";
 import Markdown from "react-markdown";
-import { ProjectLaunchLink } from "@/components/project-launch-link";
 
 interface Props {
   title: string;
@@ -46,13 +46,30 @@ export function ProjectCard({
         "flex h-full flex-col overflow-hidden border bg-card transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-xl"
       }
     >
-      <ProjectLaunchLink
+      <Link
         href={href || "#"}
-        title={title}
-        image={image}
-        video={video}
         className={cn("group block cursor-pointer overflow-hidden", className)}
-      />
+      >
+        {video && (
+          <video
+            src={video}
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="pointer-events-none mx-auto h-40 w-full object-cover object-top"
+          />
+        )}
+        {image && (
+          <Image
+            src={image}
+            alt={title}
+            width={500}
+            height={300}
+            className="h-44 w-full overflow-hidden border-b object-cover object-top transition-transform duration-500 group-hover:scale-[1.02]"
+          />
+        )}
+      </Link>
       <CardHeader className="px-4 pb-2">
         <div className="space-y-1">
           <CardTitle className="mt-1 text-base leading-snug">{title}</CardTitle>
