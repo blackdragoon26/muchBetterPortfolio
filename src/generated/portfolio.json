@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-16T08:36:45.460Z",
+  "generatedAt": "2026-07-16T09:03:47.870Z",
   "filter": {
     "minimumRepositoryStars": 300,
     "maximumPullRequests": 12
@@ -22,6 +22,7 @@
         "ESP32"
       ],
       "screenshot": "auto",
+      "screenshotWaitSeconds": 7,
       "stars": 1,
       "image": "/generated/projects/los-tecnicos.jpg",
       "resume": {
@@ -51,6 +52,7 @@
         "LLM"
       ],
       "screenshot": "auto",
+      "screenshotWaitSeconds": 7,
       "stars": null,
       "image": "/generated/projects/dmie.jpg",
       "resume": {
@@ -79,6 +81,7 @@
         "Local-first"
       ],
       "screenshot": "auto",
+      "screenshotWaitSeconds": 7,
       "stars": 1,
       "image": "/generated/projects/do-it.png",
       "resume": {
@@ -107,6 +110,7 @@
         "Intel Tofino"
       ],
       "screenshot": "auto",
+      "screenshotWaitSeconds": 7,
       "stars": 30,
       "image": "/generated/projects/gsoc-splidt-scaling-stateful-decision-tree-algorithms-in-p4.jpg",
       "resume": {
@@ -135,6 +139,7 @@
         "P4"
       ],
       "screenshot": "auto",
+      "screenshotWaitSeconds": 7,
       "stars": 3,
       "image": "/generated/projects/p4lens.jpg",
       "resume": {
@@ -162,6 +167,7 @@
         "REST API"
       ],
       "screenshot": "auto",
+      "screenshotWaitSeconds": 150,
       "stars": 1,
       "image": "/generated/projects/slix.jpg",
       "resume": {
@@ -189,6 +195,7 @@
         "MCP"
       ],
       "screenshot": "auto",
+      "screenshotWaitSeconds": 180,
       "stars": 1,
       "image": "/generated/projects/moodish.jpg",
       "resume": {
@@ -217,6 +224,7 @@
         "MCP"
       ],
       "screenshot": "auto",
+      "screenshotWaitSeconds": 7,
       "stars": 1,
       "image": "/generated/projects/ebpf-mcp-tracer.png",
       "resume": {
@@ -239,7 +247,7 @@
       "repository": "WasmEdge/WasmEdge",
       "repositoryUrl": "https://github.com/WasmEdge/WasmEdge",
       "repositoryDescription": "WasmEdge is a lightweight, high-performance, and extensible WebAssembly runtime for cloud native, edge, and decentralized applications. It powers serverless apps, embedded functions, microservices, smart contracts, and IoT devices.",
-      "repositoryAvatar": "https://avatars.githubusercontent.com/u/83329692?v=4",
+      "organizationLogo": "/generated/organizations/wasmedge.jpg",
       "stars": 10716,
       "mergedAt": "2026-01-15T08:51:19Z",
       "additions": 51,
@@ -257,7 +265,7 @@
       "repository": "WasmEdge/WasmEdge",
       "repositoryUrl": "https://github.com/WasmEdge/WasmEdge",
       "repositoryDescription": "WasmEdge is a lightweight, high-performance, and extensible WebAssembly runtime for cloud native, edge, and decentralized applications. It powers serverless apps, embedded functions, microservices, smart contracts, and IoT devices.",
-      "repositoryAvatar": "https://avatars.githubusercontent.com/u/83329692?v=4",
+      "organizationLogo": "/generated/organizations/wasmedge.jpg",
       "stars": 10716,
       "mergedAt": "2025-12-26T03:51:04Z",
       "additions": 28,
@@ -275,7 +283,7 @@
       "repository": "WasmEdge/WasmEdge",
       "repositoryUrl": "https://github.com/WasmEdge/WasmEdge",
       "repositoryDescription": "WasmEdge is a lightweight, high-performance, and extensible WebAssembly runtime for cloud native, edge, and decentralized applications. It powers serverless apps, embedded functions, microservices, smart contracts, and IoT devices.",
-      "repositoryAvatar": "https://avatars.githubusercontent.com/u/83329692?v=4",
+      "organizationLogo": "/generated/organizations/wasmedge.jpg",
       "stars": 10716,
       "mergedAt": "2025-12-24T16:09:11Z",
       "additions": 120,
@@ -294,7 +302,7 @@
       "repository": "WasmEdge/WasmEdge",
       "repositoryUrl": "https://github.com/WasmEdge/WasmEdge",
       "repositoryDescription": "WasmEdge is a lightweight, high-performance, and extensible WebAssembly runtime for cloud native, edge, and decentralized applications. It powers serverless apps, embedded functions, microservices, smart contracts, and IoT devices.",
-      "repositoryAvatar": "https://avatars.githubusercontent.com/u/83329692?v=4",
+      "organizationLogo": "/generated/organizations/wasmedge.jpg",
       "stars": 10716,
       "mergedAt": "2025-12-18T14:53:20Z",
       "additions": 4,
@@ -312,7 +320,7 @@
       "repository": "p4lang/tutorials",
       "repositoryUrl": "https://github.com/p4lang/tutorials",
       "repositoryDescription": "P4 language tutorials",
-      "repositoryAvatar": "https://avatars.githubusercontent.com/u/10765181?v=4",
+      "organizationLogo": "/generated/organizations/p4lang.jpg",
       "stars": 1580,
       "mergedAt": "2025-04-14T22:26:09Z",
       "additions": 22,
@@ -330,7 +338,7 @@
       "repository": "facebook/bpfilter",
       "repositoryUrl": "https://github.com/facebook/bpfilter",
       "repositoryDescription": "eBPF-based packet filtering framework",
-      "repositoryAvatar": "https://avatars.githubusercontent.com/u/69631?v=4",
+      "organizationLogo": "/generated/organizations/facebook.jpg",
       "stars": 344,
       "mergedAt": "2026-04-24T10:52:56Z",
       "additions": 7,

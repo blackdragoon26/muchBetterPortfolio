@@ -7,6 +7,11 @@ import { useEffect, useRef, useState } from "react";
 import resume from "@/generated/resume.json";
 
 const RESUME_PATH = "/resume/Sankalp-Jha-Resume.pdf";
+const resumeMetadata = resume as {
+  driveUrl?: string | null;
+  fileName?: string;
+  updatedAt?: string;
+};
 
 export function ResumeActions() {
   const [copied, setCopied] = useState(false);
@@ -17,7 +22,7 @@ export function ResumeActions() {
   }, []);
 
   async function copyResumeLink() {
-    const url = new URL(RESUME_PATH, window.location.origin).toString();
+    const url = resumeMetadata.driveUrl || new URL(RESUME_PATH, window.location.origin).toString();
     let didCopy = false;
     try {
       if (window.navigator.clipboard) {
@@ -45,27 +50,28 @@ export function ResumeActions() {
   }
 
   return (
-    <div className="flex flex-wrap gap-2">
-      <Button asChild size="sm">
-        <Link href={RESUME_PATH} target="_blank">
-          <ExternalLink className="mr-2 size-4" /> View
-        </Link>
-      </Button>
-      <Button asChild size="sm" variant="secondary">
-        <a href={RESUME_PATH} download="Sankalp-Jha-Resume.pdf">
-          <Download className="mr-2 size-4" /> Download
-        </a>
-      </Button>
-      <Button size="sm" variant="outline" onClick={copyResumeLink}>
-        {copied ? <Check className="mr-2 size-4" /> : <Copy className="mr-2 size-4" />}
-        {copied ? "Copied" : "Copy link"}
-      </Button>
-      {resume.driveUrl && (
-        <Button asChild size="sm" variant="outline">
-          <Link href={resume.driveUrl} target="_blank">
-            <ExternalLink className="mr-2 size-4" /> Google Drive
+    <div className="space-y-2">
+      <div className="flex flex-wrap gap-2">
+        <Button asChild size="sm">
+          <Link href={resumeMetadata.driveUrl || RESUME_PATH} target="_blank">
+            <ExternalLink className="mr-2 size-4" /> View
           </Link>
         </Button>
+        <Button asChild size="sm" variant="secondary">
+          <a href={RESUME_PATH} download="Sankalp-Jha-Resume.pdf">
+            <Download className="mr-2 size-4" /> Download
+          </a>
+        </Button>
+        <Button size="sm" variant="outline" onClick={copyResumeLink}>
+          {copied ? <Check className="mr-2 size-4" /> : <Copy className="mr-2 size-4" />}
+          {copied ? "Copied" : "Copy link"}
+        </Button>
+      </div>
+      {(resumeMetadata.fileName || resumeMetadata.updatedAt) && (
+        <p className="text-[11px] text-muted-foreground">
+          {resumeMetadata.fileName || "Sankalp-Jha-Resume.pdf"}
+          {resumeMetadata.updatedAt ? ` · updated ${new Date(resumeMetadata.updatedAt).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" })}` : ""}
+        </p>
       )}
     </div>
   );

@@ -9,6 +9,7 @@ const TOKEN = process.env.GITHUB_TOKEN || process.env.GH_TOKEN || "";
 const API = "https://api.github.com";
 const OUTPUT_PATH = "src/generated/portfolio.json";
 const IMAGE_DIR = "public/generated/projects";
+const ORGANIZATION_IMAGE_DIR = "public/generated/organizations";
 
 const headers = {
   Accept: "application/vnd.github+json",
@@ -39,7 +40,7 @@ function parseMetadata(raw, title) {
   if (!body) throw new Error(`${title}: missing <!-- portfolio-meta ... --> block`);
   const metadata = {};
   for (const line of body.split("\n")) {
-    const match = line.trim().match(/^([a-z][a-z0-9.-]*):\s*(.*)$/i);
+    const match = line.trim().match(/^([a-z][a-z0-9._-]*):\s*(.*)$/i);
     if (match) metadata[match[1].toLowerCase()] = match[2].trim();
   }
   for (const required of ["repo", "live", "stack", "screenshot", "resume"]) {
@@ -95,6 +96,7 @@ function parseWallOfFame(readme) {
       repositoryUrl: repository ? `https://github.com/${repository}` : null,
       technologies: metadata.stack.split(",").map((item) => item.trim()).filter(Boolean),
       screenshot: metadata.screenshot,
+      screenshotWaitSeconds: Number(metadata["screenshot.wait_seconds"] || 7),
       stars: null,
       image: "",
       resume: {
@@ -209,7 +211,21 @@ async function pullRequestFiles(repository, number) {
   return files;
 }
 
-async function discoverPullRequests(repoCache) {
+async function organizationLogo(owner, avatarUrl, cache) {
+  const slug = slugify(owner);
+  if (!cache.has(owner)) {
+    cache.set(owner, (async () => {
+      const target = path.join(ORGANIZATION_IMAGE_DIR, `${slug}.jpg`);
+      const response = await fetch(avatarUrl, { headers: { "User-Agent": headers["User-Agent"] } });
+      if (!response.ok) throw new Error(`Could not download organization logo for ${owner}`);
+      await writeFile(target, Buffer.from(await response.arrayBuffer()));
+      return `/generated/organizations/${slug}.jpg`;
+    })());
+  }
+  return cache.get(owner);
+}
+
+async function discoverPullRequests(repoCache, logoCache) {
   const items = [];
   for (let page = 1; page <= 10; page += 1) {
     const result = await github(`/search/issues?q=${encodeURIComponent(`author:${USER} type:pr is:merged`)}&per_page=100&page=${page}&sort=updated&order=desc`);
@@ -235,7 +251,7 @@ async function discoverPullRequests(repoCache) {
       repository,
       repositoryUrl: repo.html_url,
       repositoryDescription: repo.description || "",
-      repositoryAvatar: repo.owner.avatar_url,
+      organizationLogo: await organizationLogo(repo.owner.login, repo.owner.avatar_url, logoCache),
       stars: repo.stargazers_count,
       mergedAt: details.merged_at,
       additions: details.additions,
@@ -253,10 +269,12 @@ async function discoverPullRequests(repoCache) {
 async function main() {
   await mkdir(path.dirname(OUTPUT_PATH), { recursive: true });
   await mkdir(IMAGE_DIR, { recursive: true });
+  await mkdir(ORGANIZATION_IMAGE_DIR, { recursive: true });
   const readme = await readFile(PROFILE_README_PATH, "utf8");
   const repoCache = new Map();
+  const logoCache = new Map();
   const projects = await enrichProjects(parseWallOfFame(readme), repoCache);
-  const pullRequests = await discoverPullRequests(repoCache);
+  const pullRequests = await discoverPullRequests(repoCache, logoCache);
   const generatedAt = new Date().toISOString();
   await writeFile(OUTPUT_PATH, `${JSON.stringify({
     generatedAt,

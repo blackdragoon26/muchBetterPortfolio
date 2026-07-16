@@ -82,6 +82,7 @@ repo: https://github.com/blackdragoon26/project-name
 live: https://project.example/
 stack: Go, React, PostgreSQL
 screenshot: auto
+screenshot.wait_seconds: 7
 resume: yes
 resume.objective: What problem the project solves.
 resume.approach: First concrete implementation point || Second implementation point
@@ -98,6 +99,9 @@ Rules:
 - `screenshot: auto` captures the visible live page during CI. When there is no
   live deployment, the workflow uses the repository social preview or a local
   generated fallback. An explicit HTTPS image URL is also accepted.
+- `screenshot.wait_seconds` is optional and controls how long CI waits after the
+  page loads before capturing it (maximum 240 seconds). Use a longer value for
+  deployments whose Render backend needs time to wake up.
 - `resume: yes` inserts that project into the existing “Key Projects / Open
   Source Contributions” section. `resume: no` keeps it on the website only.
 - `resume.approach` uses `||` between bullet points.

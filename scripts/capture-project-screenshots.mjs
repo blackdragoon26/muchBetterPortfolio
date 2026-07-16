@@ -21,7 +21,7 @@ try {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 1 });
     try {
       await page.goto(project.liveUrl, { waitUntil: "domcontentloaded", timeout: 30_000 });
-      const settleTime = new URL(project.liveUrl).hostname.endsWith("onrender.com") ? 15_000 : 7_000;
+      const settleTime = Math.max(0, Math.min(Number(project.screenshotWaitSeconds || 7), 240)) * 1_000;
       await page.waitForTimeout(settleTime);
       const target = path.join(IMAGE_DIR, `${project.id}.jpg`);
       await page.screenshot({ path: target, type: "jpeg", quality: 82, fullPage: false });

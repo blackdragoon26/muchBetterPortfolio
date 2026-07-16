@@ -108,7 +108,8 @@ def main() -> None:
         json.dumps({
             "driveUrl": drive_url,
             "fileName": DRIVE_FILE_NAME,
-            "source": "google-drive-oauth"
+            "source": "google-drive-oauth",
+            "updatedAt": datetime.datetime.now(datetime.timezone.utc).isoformat()
         }, indent=2) + "\n",
         encoding="utf-8",
     )
