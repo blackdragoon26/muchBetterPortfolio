@@ -8,6 +8,7 @@ const Card = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
+    data-storm-body=""
     className={cn("rounded-lg bg-card text-card-foreground", className)}
     {...props}
   />

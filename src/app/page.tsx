@@ -8,6 +8,7 @@ import { ProjectCard } from "@/components/project-card";
 import { OtherStuffCard } from "@/components/otherstuff-card";
 import { ResumeCard } from "@/components/resume-card";
 import { ResumeActions } from "@/components/resume-actions";
+import { YapHover } from "@/components/yap-hover";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { DATA } from "@/data/resume";
@@ -23,7 +24,7 @@ export default function Page() {
   const [showOtherStuff, setShowOtherStuff] = useState(false);
 
   return (
-    <main className="flex flex-col min-h-[100dvh] space-y-10">
+    <main id="page-wrap" className="flex flex-col min-h-[100dvh] space-y-10">
       <section id="hero">
         <div className="mx-auto w-full max-w-2xl space-y-8">
           <div className="gap-2 flex justify-between">
@@ -34,14 +35,16 @@ export default function Page() {
                 yOffset={8}
                 text={`Hihi, ${DATA.name.split(" ")[0]} here`}
               />
-              <BlurFadeText
-                className="max-w-[600px] md:text-xl"
-                delay={BLUR_FADE_DELAY}
-                text={DATA.description}
-              />
+              <BlurFade delay={BLUR_FADE_DELAY}>
+                <p className="max-w-[600px] md:text-xl">
+                  {DATA.description.split(/\b(yap)\b/).map((part, i) =>
+                    part === "yap" ? <YapHover key={i} /> : <span key={i}>{part}</span>
+                  )}
+                </p>
+              </BlurFade>
             </div>
             <BlurFade delay={BLUR_FADE_DELAY}>
-              <Avatar className="size-28 border">
+              <Avatar className="size-32 border">
                 <AvatarImage alt={DATA.name} src={DATA.avatarUrl} />
                 <AvatarFallback>{DATA.initials}</AvatarFallback>
               </Avatar>
@@ -207,7 +210,7 @@ export default function Page() {
                   Events
                 </div>
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
-                  as said, I love to yap
+                  as said, I love to Yap
                 </h2>
                 <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
                   Cave-Humans, around the world gather together to share their crazy stories. 

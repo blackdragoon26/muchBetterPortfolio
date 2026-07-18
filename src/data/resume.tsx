@@ -9,7 +9,7 @@ export const DATA = {
   location: "Delhi NCR, IND",
   locationLink: "https://www.google.com/maps/place/National+Capital+Region/@28.3243111,74.3343587,7z/data=!3m1!4b1!4m6!3m5!1s0x390ce19466e19ae1:0x45ceeb565fd5de6c!8m2!3d28.4020007!4d76.8259652!16s%2Fm%2F025s8rd?entry=ttu&g_ep=EgoyMDI1MDkwOC4wIKXMDSoASAFQAw%3D%3D",
   description:
-    "21, tech-savvy who loves to yap",
+    "22, tech-savvy who loves to yap",
   summary:
     "",
   avatarUrl: "/me.png",
@@ -84,8 +84,8 @@ export const DATA = {
       location: "Remote",
       title: "Google Summer of Code 2025 Contributor",
       logoUrl: "/p4-logo.svg",
-      start: "May 2025",
-      end: "Present",
+      start: "May",
+      end: "Nov 2025",
       description:
       "Developed on a Research Project, spliDT ML-Framework, a partition-based approach for implementing decision tree inference directly in real-time networks at the data plane  for better security and performance using P4."
     },
@@ -96,8 +96,8 @@ export const DATA = {
       location: "Hybrid",
       title: "Co-Organizer",
       logoUrl: "/1631369005402.jpeg",
-      start: "September 2024",
-      end: "Present",
+      start: "Sep 2024",
+      end: "Oct 2025",
       description:
         "Co-led the execution of 10+ tech event, engaging 1500+ developers, while managing end-to-end content, logistics, and team coordination of 35+ crew members.",
     },
@@ -109,7 +109,7 @@ export const DATA = {
       title: "Senior Content Writer",
       logoUrl: "/cncg_new_delhi_logo.jpeg",
       start: "May 2024",
-      end: "September 2024",
+      end: "Sep 2024",
       description:
       "Lead the team of 6+ content writers and 4 designers to provide documentation support and overall management in community events."
     },
@@ -121,7 +121,7 @@ export const DATA = {
       degree: "Super-30",
       logoUrl: "/X 400x400.jpg",
       start: "August 2025",
-      end: "Present",
+      end: "March 2026",
     },
     {
       school: "Ajay Kumar Garg Engineering College",
