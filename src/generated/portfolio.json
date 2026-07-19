@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-18T07:12:39.989Z",
+  "generatedAt": "2026-07-19T07:37:07.499Z",
   "filter": {
     "minimumRepositoryStars": 300,
     "maximumPullRequests": 12
@@ -279,7 +279,7 @@
       "repositoryUrl": "https://github.com/WasmEdge/WasmEdge",
       "repositoryDescription": "WasmEdge is a lightweight, high-performance, and extensible WebAssembly runtime for cloud native, edge, and decentralized applications. It powers serverless apps, embedded functions, microservices, smart contracts, and IoT devices.",
       "organizationLogo": "/generated/organizations/wasmedge.jpg",
-      "stars": 10722,
+      "stars": 10726,
       "mergedAt": "2026-01-15T08:51:19Z",
       "additions": 51,
       "deletions": 7,
@@ -297,7 +297,7 @@
       "repositoryUrl": "https://github.com/WasmEdge/WasmEdge",
       "repositoryDescription": "WasmEdge is a lightweight, high-performance, and extensible WebAssembly runtime for cloud native, edge, and decentralized applications. It powers serverless apps, embedded functions, microservices, smart contracts, and IoT devices.",
       "organizationLogo": "/generated/organizations/wasmedge.jpg",
-      "stars": 10722,
+      "stars": 10726,
       "mergedAt": "2025-12-26T03:51:04Z",
       "additions": 28,
       "deletions": 8,
@@ -315,7 +315,7 @@
       "repositoryUrl": "https://github.com/WasmEdge/WasmEdge",
       "repositoryDescription": "WasmEdge is a lightweight, high-performance, and extensible WebAssembly runtime for cloud native, edge, and decentralized applications. It powers serverless apps, embedded functions, microservices, smart contracts, and IoT devices.",
       "organizationLogo": "/generated/organizations/wasmedge.jpg",
-      "stars": 10722,
+      "stars": 10726,
       "mergedAt": "2025-12-24T16:09:11Z",
       "additions": 120,
       "deletions": 0,
@@ -334,7 +334,7 @@
       "repositoryUrl": "https://github.com/WasmEdge/WasmEdge",
       "repositoryDescription": "WasmEdge is a lightweight, high-performance, and extensible WebAssembly runtime for cloud native, edge, and decentralized applications. It powers serverless apps, embedded functions, microservices, smart contracts, and IoT devices.",
       "organizationLogo": "/generated/organizations/wasmedge.jpg",
-      "stars": 10722,
+      "stars": 10726,
       "mergedAt": "2025-12-18T14:53:20Z",
       "additions": 4,
       "deletions": 5,
