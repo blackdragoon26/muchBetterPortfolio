@@ -11,6 +11,10 @@ npm run dev
 
 Open [localhost:3000](http://localhost:3000).
 
+## System Architecture
+<img width="1200" height="2065" alt="image" src="https://github.com/user-attachments/assets/89adc911-c9a4-4675-b7ee-89258adc35d8" />
+
+
 ## Automated content
 
 The daily GitHub Actions workflow:
