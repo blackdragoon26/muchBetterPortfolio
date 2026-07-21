@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-20T08:19:43.389Z",
+  "generatedAt": "2026-07-21T07:43:56.740Z",
   "filter": {
     "minimumRepositoryStars": 300,
     "maximumPullRequests": 12
@@ -226,7 +226,7 @@
       "screenshot": "auto",
       "screenshotWaitSeconds": 7,
       "stars": 1,
-      "image": "/generated/projects/ebpf-mcp-tracer.svg",
+      "image": "/generated/projects/ebpf-mcp-tracer.png",
       "resume": {
         "include": true,
         "objective": "Let AI debugging agents inspect Linux performance without granting unrestricted eBPF execution.",
@@ -279,7 +279,7 @@
       "repositoryUrl": "https://github.com/WasmEdge/WasmEdge",
       "repositoryDescription": "WasmEdge is a lightweight, high-performance, and extensible WebAssembly runtime for cloud native, edge, and decentralized applications. It powers serverless apps, embedded functions, microservices, smart contracts, and IoT devices.",
       "organizationLogo": "/generated/organizations/wasmedge.jpg",
-      "stars": 10728,
+      "stars": 10731,
       "mergedAt": "2026-01-15T08:51:19Z",
       "additions": 51,
       "deletions": 7,
@@ -297,7 +297,7 @@
       "repositoryUrl": "https://github.com/WasmEdge/WasmEdge",
       "repositoryDescription": "WasmEdge is a lightweight, high-performance, and extensible WebAssembly runtime for cloud native, edge, and decentralized applications. It powers serverless apps, embedded functions, microservices, smart contracts, and IoT devices.",
       "organizationLogo": "/generated/organizations/wasmedge.jpg",
-      "stars": 10728,
+      "stars": 10731,
       "mergedAt": "2025-12-26T03:51:04Z",
       "additions": 28,
       "deletions": 8,
@@ -315,7 +315,7 @@
       "repositoryUrl": "https://github.com/WasmEdge/WasmEdge",
       "repositoryDescription": "WasmEdge is a lightweight, high-performance, and extensible WebAssembly runtime for cloud native, edge, and decentralized applications. It powers serverless apps, embedded functions, microservices, smart contracts, and IoT devices.",
       "organizationLogo": "/generated/organizations/wasmedge.jpg",
-      "stars": 10728,
+      "stars": 10731,
       "mergedAt": "2025-12-24T16:09:11Z",
       "additions": 120,
       "deletions": 0,
@@ -334,7 +334,7 @@
       "repositoryUrl": "https://github.com/WasmEdge/WasmEdge",
       "repositoryDescription": "WasmEdge is a lightweight, high-performance, and extensible WebAssembly runtime for cloud native, edge, and decentralized applications. It powers serverless apps, embedded functions, microservices, smart contracts, and IoT devices.",
       "organizationLogo": "/generated/organizations/wasmedge.jpg",
-      "stars": 10728,
+      "stars": 10731,
       "mergedAt": "2025-12-18T14:53:20Z",
       "additions": 4,
       "deletions": 5,
