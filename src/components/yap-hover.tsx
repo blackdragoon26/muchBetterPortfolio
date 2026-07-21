@@ -2,6 +2,7 @@
 
 import { ExternalLink } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
+import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { YAP_LYRICS } from "@/data/yap-lyrics";
@@ -98,6 +99,8 @@ export function YapHover({ audioSrc = "/output.mp3" }: { audioSrc?: string }) {
   const [needsGesture, setNeedsGesture] = useState(false);
   const [lyricState, setLyricState] = useState<LyricState>({ line: -1, word: -1 });
   const [portalHost, setPortalHost] = useState<HTMLElement | null>(null);
+  const [cursorPoint, setCursorPoint] = useState<Point>({ x: 0, y: 0 });
+  const [showCursor, setShowCursor] = useState(false);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -425,18 +428,56 @@ export function YapHover({ audioSrc = "/output.mp3" }: { audioSrc?: string }) {
             aria-hidden="true"
             className={`pointer-events-none fixed inset-0 z-[65] h-screen w-screen transition-opacity duration-100 ${active ? "opacity-100" : "opacity-0"}`}
           />
+          <AnimatePresence>
+            {showCursor && (
+              <motion.div
+                aria-hidden="true"
+                initial={{ opacity: 0, rotate: -8, scale: 0.55 }}
+                animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                exit={{ opacity: 0, rotate: 8, scale: 0.55 }}
+                transition={{ duration: 0.14, ease: "easeOut" }}
+                className="pointer-events-none fixed z-[90] h-[44px] w-[48px] overflow-hidden rounded-[45%] drop-shadow-[0_5px_8px_rgba(0,0,0,0.28)]"
+                style={{ left: cursorPoint.x + 7, top: cursorPoint.y + 7 }}
+              >
+                <Image
+                  unoptimized
+                  src="/yap-cursor.gif"
+                  alt=""
+                  width={48}
+                  height={44}
+                  className="h-full w-full object-cover"
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </>,
         portalHost,
       )}
       <button
         type="button"
-        onPointerEnter={(event) => { if (event.pointerType !== "touch") void start(); }}
-        onPointerLeave={stop}
+        onPointerEnter={(event) => {
+          if (event.pointerType === "touch") return;
+          setCursorPoint({ x: event.clientX, y: event.clientY });
+          setShowCursor(true);
+          void start();
+        }}
+        onPointerMove={(event) => {
+          if (event.pointerType !== "touch") {
+            setCursorPoint({ x: event.clientX, y: event.clientY });
+          }
+        }}
+        onPointerLeave={() => {
+          setShowCursor(false);
+          stop();
+        }}
         onPointerDown={() => { if (!activeRef.current) void start(); }}
         onClick={() => { if (!activeRef.current) void start(); }}
         onFocus={() => void start()}
-        onBlur={stop}
-        className="relative inline-flex items-center rounded-sm font-medium underline decoration-dotted decoration-1 underline-offset-4 outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        onBlur={() => {
+          setShowCursor(false);
+          stop();
+        }}
+        className="relative inline-flex cursor-none items-center rounded-sm px-0.5 font-medium underline decoration-dotted decoration-1 underline-offset-4 outline-none transition-[color,background-color,box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:scale-105 hover:bg-foreground/10 hover:text-foreground hover:shadow-[0_4px_14px_hsl(var(--foreground)/0.14)] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 motion-reduce:hover:translate-y-0 motion-reduce:hover:scale-100"
         aria-label="Preview Yap"
       >
         yap
