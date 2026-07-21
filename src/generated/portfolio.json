@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-21T07:43:56.740Z",
+  "generatedAt": "2026-07-21T15:39:37.174Z",
   "filter": {
     "minimumRepositoryStars": 300,
     "maximumPullRequests": 12
@@ -256,7 +256,7 @@
       ],
       "screenshot": "auto",
       "screenshotWaitSeconds": 7,
-      "stars": 0,
+      "stars": 1,
       "image": "/generated/projects/myprod.jpg",
       "resume": {
         "include": true,
@@ -266,6 +266,36 @@
           "Added guarded node lifecycle controls, application registration, live resource metrics, and idempotent Netlify DNS management"
         ],
         "impact": "Provides one control surface for deploying applications and managing heterogeneous free-tier and temporary compute capacity."
+      }
+    },
+    {
+      "id": "open-claw-lab",
+      "title": "Open Claw Lab",
+      "description": "An Oracle Cloud-hosted, multi-agent career intelligence system that finds high-signal engineering opportunities, validates every lead through deterministic evidence gates and independent review, and delivers a verified Telegram digest without automatically contacting anyone.",
+      "href": "https://github.com/blackdragoon26/open-claw-lab",
+      "liveUrl": null,
+      "repository": "blackdragoon26/open-claw-lab",
+      "repositoryUrl": "https://github.com/blackdragoon26/open-claw-lab",
+      "technologies": [
+        "Node.js",
+        "OpenClaw",
+        "Gemini",
+        "Oracle Cloud",
+        "systemd",
+        "Telegram"
+      ],
+      "screenshot": "auto",
+      "screenshotWaitSeconds": 7,
+      "stars": 1,
+      "image": "/generated/projects/open-claw-lab.png",
+      "resume": {
+        "include": true,
+        "objective": "Discover high-signal engineering opportunities while preventing unsupported or stale leads from reaching the user.",
+        "approach": [
+          "Built a multi-agent discovery and independent-review pipeline around typed lead records",
+          "Added deterministic freshness, eligibility, contact relevance, relocation evidence, and deduplication gates"
+        ],
+        "impact": "Delivers an evidence-backed Telegram digest while rejecting guessed contacts, unsupported geography, stale roles, and duplicate leads."
       }
     }
   ],
@@ -370,7 +400,7 @@
       "repositoryUrl": "https://github.com/facebook/bpfilter",
       "repositoryDescription": "eBPF-based packet filtering framework",
       "organizationLogo": "/generated/organizations/facebook.jpg",
-      "stars": 346,
+      "stars": 347,
       "mergedAt": "2026-04-24T10:52:56Z",
       "additions": 7,
       "deletions": 4,
