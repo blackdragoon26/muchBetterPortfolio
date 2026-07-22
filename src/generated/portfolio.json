@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-22T13:53:21.882Z",
+  "generatedAt": "2026-07-22T14:44:41.631Z",
   "filter": {
     "minimumRepositoryStars": 300,
     "maximumPullRequests": 12
@@ -85,7 +85,7 @@
       "stars": 1,
       "image": "/generated/projects/do-it.jpg",
       "resume": {
-        "include": true,
+        "include": false,
         "objective": "Provide private, synchronized notes and media across devices on a local network.",
         "approach": [
           "Packaged a lightweight Go SSE and HTTP server for Raspberry Pi, routers, and repurposed phones"
@@ -114,7 +114,7 @@
       "stars": 30,
       "image": "/generated/projects/gsoc-splidt-scaling-stateful-decision-tree-algorithms-in-p4.jpg",
       "resume": {
-        "include": true,
+        "include": false,
         "objective": "Compile machine-learning decision trees directly into P4 data planes using Partitioned Decision Trees.",
         "approach": [
           "Architected a switch-native inference framework around Subtree ID recirculation",
@@ -143,7 +143,7 @@
       "stars": 3,
       "image": "/generated/projects/p4lens.jpg",
       "resume": {
-        "include": true,
+        "include": false,
         "objective": "Make P4 programs easier to learn and debug through an interactive visualization of their processing pipeline.",
         "approach": [
           "Built a parser for P4-14 and P4-16 programs",
@@ -199,7 +199,7 @@
       "stars": 1,
       "image": "/generated/projects/moodish.jpg",
       "resume": {
-        "include": true,
+        "include": false,
         "objective": "Rank meal options from a user's craving, budget, and dietary constraints while keeping the recommendation explainable.",
         "approach": [
           "Built intent extraction and deterministic ranking around an AI-generated summary",
@@ -289,7 +289,7 @@
       "stars": 1,
       "image": "/generated/projects/open-claw-lab.png",
       "resume": {
-        "include": true,
+        "include": false,
         "objective": "Discover high-signal engineering opportunities while preventing unsupported or stale leads from reaching the user.",
         "approach": [
           "Built a multi-agent discovery and independent-review pipeline around typed lead records",
