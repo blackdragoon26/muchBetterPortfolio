@@ -37,6 +37,7 @@ next-env.d.ts
 
 # local generated verification artifacts
 /tmp/
+/output/
 /resume/*.pdf
 __pycache__/
 

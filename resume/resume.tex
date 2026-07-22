@@ -1,12 +1,28 @@
 \documentclass[9pt]{extarticle}
-\usepackage[top=0.18in, bottom=0.14in, left=0.15in, right=0.15in, headheight=0pt, headsep=0pt]{geometry}
+\usepackage[top=0.2in, bottom=0.18in, left=0.18in, right=0.18in, headheight=0pt, headsep=0pt]{geometry}
 \setlength{\topskip}{0pt}
 \usepackage[most]{tcolorbox}
 \usepackage{enumitem}
 \usepackage{hyperref}
 \usepackage{xcolor,colortbl}
-\usepackage[T1]{fontenc}
+\usepackage{fontspec}
 \usepackage{multicol}
+
+\setmainfont{lmroman9-regular.otf}[
+  BoldFont=lmroman9-bold.otf,
+  ItalicFont=lmroman9-italic.otf,
+  BoldItalicFont=lmroman10-bolditalic.otf,
+  Ligatures=NoCommon
+]
+\ifdefined\XeTeXgenerateactualtext
+  \XeTeXgenerateactualtext=1
+\fi
+\hypersetup{
+  hidelinks,
+  pdfauthor={Sankalp Jha},
+  pdftitle={Sankalp Jha Resume},
+  pdfsubject={Open Source and Systems Engineering Resume}
+}
 
 \newcommand{\mc}[2]{\multicolumn{#1}{c}{#2}}
 \definecolor{Gray}{gray}{0.87}
@@ -15,12 +31,21 @@
 \setlist[itemize]{leftmargin=12pt}
 
 \newcolumntype{g}{>{\columncolor{Gray}}c}
-\renewcommand{\arraystretch}{1.02}
+\renewcommand{\arraystretch}{1.04}
+\setlength{\tabcolsep}{5pt}
+\setlength{\emergencystretch}{2em}
 
 % Entry header with comfortable breathing room above each entry
 \newcommand{\entryhead}[3]{%
-  \par\vspace{0.5pt}%
-  \noindent\textbf{#1}\ifx&#2&\else{ | \textit{#2}}\fi \hfill(\textit{#3})\par\vspace{0.5pt}%
+  \par\vspace{2.5pt}%
+  \noindent\textbf{\fontsize{10}{11.5}\selectfont #1}%
+  \ifx&#2&\else{ \textbar\ \textit{#2}}\fi
+  \hfill (\textit{#3})\par\vspace{1pt}%
+}
+
+\newcommand{\sectionhead}[1]{%
+  \par\vspace{2.5pt}%
+  \noindent\begin{tcolorbox}\textbf{\large #1}\end{tcolorbox}%
 }
 
 \tcbset{
@@ -30,7 +55,7 @@
     colback=gray!42,
     width=\dimexpr\textwidth\relax,
     enlarge left by=0mm,
-    boxsep=1.2pt,
+    boxsep=1.4pt,
     arc=0pt, outer arc=0pt,
     before skip=1pt,
     after skip=0.5pt,
@@ -38,6 +63,8 @@
 
 \begin{document}
 \vspace*{-\topskip}
+\pagestyle{empty}
+\raggedbottom
 \setlength{\parskip}{0pt}
 \setlength{\parsep}{0pt}
 \setlength{\topsep}{0pt}
@@ -54,7 +81,7 @@ Delhi NCR, India \hfill +91-8800117422
 
 \noindent\rule[0.5ex]{\linewidth}{0.4pt}%
 % ── EDUCATION ───────────────────────────────────────────────────────────────
-{\large\textbf{\begin{tcolorbox}\textsc{Education}\end{tcolorbox}}}%
+\sectionhead{Education}%
 \noindent\begin{tabular}{|p{3.2cm}|p{5.8cm}|p{8.5cm}|p{1.5cm}|}
 \hline
 \centering\textbf{Year} & \centering\textbf{Degree/Certificate} & \centering\textbf{Institute} & \textbf{CPI/$\%$}\\
@@ -68,24 +95,20 @@ Delhi NCR, India \hfill +91-8800117422
 \end{tabular}%
 
 % ── EXPERIENCE ──────────────────────────────────────────────────────────────
-{\large\textbf{\begin{tcolorbox}\textsc{Experience}\end{tcolorbox}}}%
-\entryhead{Contributor}{P4 Language Consortium (GSoC 2025), Stanford, CA}{May 2025 -- Sept 2025}%
-\noindent\begin{tabular}{|m{1.8cm}|m{17.1cm}|}
-\hline
-\centering\textbf{Objective} & To optimize packet inference and automate control-plane validations for the SpliDT framework.\\
-\hline
-\centering\textbf{Approach} & \(\bullet\) Engineered a Jinja2-based testing pipeline automating \textbf{25+} P4Runtime validations on Intel Tofino and Mininet.\newline\(\bullet\) Implemented Partitioned Decision Trees (PDTs) with TCAM-efficient Subtree IDs (SIDs) to resolve ASIC constraints.\\
-\hline
-\centering\textbf{Impact} & Reduced packet inference latency by \textbf{20\%} via optimized recirculation and improved deployment reliability by \textbf{30\%}.\\
-\hline
-\end{tabular}%
+\sectionhead{Experience}%
+\entryhead{Google Summer of Code 2025 Contributor}{P4 Language Consortium, Stanford, CA}{May 2025 -- Sept 2025}%
+\noindent\textbf{Project:} \href{https://splidt-showcase.vercel.app/}{SpliDT: Scaling Stateful Decision Tree Algorithms in P4}
+\hfill \textit{P4, Python, P4Runtime, Docker, C++, Intel Tofino}\par
+\noindent\textbullet\enspace\textbf{Switch-Native Architecture:}\enspace Architected a framework to compile ML decision trees directly into P4 data planes, implementing Partitioned Decision Trees (PDTs) with TCAM-efficient Subtree IDs (SIDs) to resolve hardware ASIC constraints.\par
+\noindent\textbullet\enspace\textbf{Automated Validation:}\enspace Engineered a Jinja2-based testing pipeline automating 25+ P4Runtime validations across Intel Tofino and Mininet environments, improving deployment reliability by 30\%.\par
+\noindent\textbullet\enspace\textbf{Performance Optimization:}\enspace Achieved 10 Gbps line-rate throughput and reduced packet inference latency by 20\% (5x lower than control-plane inference) via optimized SID recirculation.
 
-% ── PROJECTS & OPEN SOURCE ──────────────────────────────────────────────────
-{\large\textbf{\begin{tcolorbox}\textsc{Key Projects / Open Source Contributions}\end{tcolorbox}}}%
-\input{generated/projects-and-contributions.tex}
+% ── GENERATED OPEN SOURCE AND PROJECT SECTIONS ───────────────────────────────
+\input{generated/open-source-contributions.tex}
+\input{generated/projects.tex}
 
 % ── TECHNICAL SKILLS ────────────────────────────────────────────────────────
-{\large\textbf{\begin{tcolorbox}\textsc{Technical Skills}\end{tcolorbox}}}%
+\sectionhead{Technical Skills}%
 \noindent\begin{itemize}[topsep=0pt, itemsep=0pt]
 \item Python, C, C++, JavaScript, TypeScript, Go, P4
 \item \textbf{Libraries/Frameworks:} NodeJS, Numpy, Matplotlib, eBPF, gRPC, Protobufs, Next.js, Scapy, MLIR, LLVM, Sklearn, React, Web Services
@@ -93,7 +116,7 @@ Delhi NCR, India \hfill +91-8800117422
 \item \textbf{Databases:} SQL, MongoDB, GraphQL, Redis, PostgreSQL, MySQL
 \end{itemize}%
 % ── POSITIONS OF LEADERSHIP ─────────────────────────────────────────────────
-{\large\textbf{\begin{tcolorbox}\textsc{Positions of Leadership}\end{tcolorbox}}}%
+\sectionhead{Positions of Leadership}%
 \noindent\begin{itemize}[leftmargin=14pt, topsep=0pt]
   \item \textbf{Technical Writer, Cloud Native Community Group, New Delhi} \hfill (\textit{May 2024 -- Dec 2024})
   \begin{itemize}[leftmargin=10pt, label={--}]
@@ -107,12 +130,12 @@ Delhi NCR, India \hfill +91-8800117422
   \end{itemize}
 \end{itemize}%
 % ── PUBLICATIONS ────────────────────────────────────────────────────────────
-{\large\textbf{\begin{tcolorbox}\textsc{Publications}\end{tcolorbox}}}%
+\sectionhead{Publications}%
 \noindent\begin{itemize}[topsep=0pt, itemsep=0pt]
 \item R. Bharadwaj, \textbf{S. Jha}, V. Malyan, R. Gupta, ``Trusture: A Blockchain-Based Decentralized Framework for Secure, Transparent, and Auditable NGO Transactions,'' \textit{2026 International Conference on Computing, Sciences and Communications (ICCSC)}, Ghaziabad, India, Feb. 2026. \href{https://ieeexplore.ieee.org/abstract/document/11468597/}{IEEE Xplore $\nearrow$} \hfill DOI: 10.1109/ICCSC67078.2026.11468597
 \end{itemize}%
 % ── CERTIFICATIONS & HONORS ─────────────────────────────────────────────────
-{\large\textbf{\begin{tcolorbox}\textsc{Certifications \& Honors}\end{tcolorbox}}}%
+\sectionhead{Certifications \& Honors}%
 \noindent\begin{tabular}{|m{2.6cm}|m{16.3cm}|}
 \hline
 \centering\textbf{Certifications} &
