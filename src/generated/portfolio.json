@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-22T16:06:40.033Z",
+  "generatedAt": "2026-07-22T17:01:33.250Z",
   "filter": {
     "minimumRepositoryStars": 300,
     "maximumPullRequests": 12
@@ -29,8 +29,8 @@
         "include": true,
         "objective": "Build a decentralized energy grid that tokenizes renewable-energy production on the Stellar ecosystem.",
         "approach": [
-          "Built a Go backend and 4 Soroban smart contracts",
-          "Integrated a Raspberry Pi/ESP32 hardware mesh with the platform"
+          "Built a Go backend and three Soroban smart contracts",
+          "Integrated a Raspberry Pi and ESP32 hardware mesh with the software platform"
         ],
         "impact": "Won Asia-Pacific Web3 bounties and received recognition from the Government of India."
       }
@@ -60,7 +60,7 @@
         "objective": "Determine whether a startup idea already exists by comparing it against more than 500,000 company records.",
         "approach": [
           "Built a scheduled scraper that keeps the startup dataset current",
-          "Combined LLM query with vector search and backend filters"
+          "Combined LLM query understanding with vector search and backend filters"
         ],
         "impact": "Raised USD 10,000 and serves more than 100 users worldwide."
       }
