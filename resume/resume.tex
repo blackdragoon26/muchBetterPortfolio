@@ -27,25 +27,25 @@
 \newcommand{\mc}[2]{\multicolumn{#1}{c}{#2}}
 \definecolor{Gray}{gray}{0.87}
 
-\setlist{noitemsep, topsep=2pt, partopsep=0pt, parsep=0pt}
+\setlist{noitemsep, topsep=1.5pt, partopsep=0pt, parsep=0pt}
 \setlist[itemize]{leftmargin=12pt}
 
 \newcolumntype{g}{>{\columncolor{Gray}}c}
-\renewcommand{\arraystretch}{1.04}
+\renewcommand{\arraystretch}{1.02}
 \setlength{\tabcolsep}{5pt}
 \setlength{\emergencystretch}{2em}
 
 % Entry header with comfortable breathing room above each entry
 \newcommand{\entryhead}[3]{%
-  \par\vspace{2.5pt}%
-  \noindent\textbf{\fontsize{10}{11.5}\selectfont #1}%
+  \par\vspace{3.65pt}%
+  \noindent\textbf{\fontsize{9.5}{10.5}\selectfont #1}%
   \ifx&#2&\else{ \textbar\ \textit{#2}}\fi
   \hfill (\textit{#3})\par\vspace{1pt}%
 }
 
 \newcommand{\sectionhead}[1]{%
-  \par\vspace{2.5pt}%
-  \noindent\begin{tcolorbox}\textbf{\large #1}\end{tcolorbox}%
+  \par\vspace{5pt}%
+  \noindent\begin{tcolorbox}\textbf{\fontsize{10}{10.5}\selectfont #1}\end{tcolorbox}%
 }
 
 \tcbset{
@@ -55,14 +55,15 @@
     colback=gray!42,
     width=\dimexpr\textwidth\relax,
     enlarge left by=0mm,
-    boxsep=1.4pt,
+    boxsep=1.2pt,
     arc=0pt, outer arc=0pt,
     before skip=1pt,
-    after skip=0.5pt,
+    after skip=0.25pt,
 }
 
 \begin{document}
 \vspace*{-\topskip}
+\fontsize{9}{10.8}\selectfont
 \pagestyle{empty}
 \raggedbottom
 \setlength{\parskip}{0pt}
@@ -139,7 +140,7 @@ Delhi NCR, India \hfill +91-8800117422
 \hline
 \centering\textbf{Certifications} &
 \(\bullet\) \textbf{Open Science 101} -- NASA \quad
-\(\bullet\) \textbf{Data Science for Engineers} -- NPTEL \quad
+\(\bullet\) \textbf{Data Science for Engineers} -- NPTEL\newline
 \(\bullet\) \textbf{Enhancing Soft Skills \& Personality} -- NPTEL \quad
 \(\bullet\) \textbf{IIRS Satellite Remote Sensing} -- ISRO\\
 \hline
