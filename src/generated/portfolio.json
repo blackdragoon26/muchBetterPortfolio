@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-22T14:44:41.631Z",
+  "generatedAt": "2026-07-22T15:14:34.936Z",
   "filter": {
     "minimumRepositoryStars": 300,
     "maximumPullRequests": 12
@@ -228,7 +228,7 @@
       "stars": 1,
       "image": "/generated/projects/ebpf-mcp-tracer.png",
       "resume": {
-        "include": true,
+        "include": false,
         "objective": "Let AI debugging agents inspect Linux performance without granting unrestricted eBPF execution.",
         "approach": [
           "Implemented a strict probe allowlist, dry-run validation, and execution timeouts around bpftrace",
