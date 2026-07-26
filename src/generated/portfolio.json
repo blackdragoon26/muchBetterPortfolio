@@ -1,10 +1,50 @@
 {
-  "generatedAt": "2026-07-26T21:58:29.058Z",
+  "generatedAt": "2026-07-26T22:50:26.051Z",
   "filter": {
     "minimumRepositoryStars": 300,
     "maximumPullRequests": 12
   },
   "projects": [
+    {
+      "id": "cutable",
+      "title": "Cutable",
+      "description": "A production-oriented agentic software-engineering workspace that turns natural-language prompts and visual references into working React applications. Its Go orchestration backend streams planning, tool execution, code changes, builds, and live previews from isolated E2B sandboxes while preserving each user's projects for continued editing.",
+      "href": "https://cutable.sankalpjha.dev/",
+      "liveUrl": "https://cutable.sankalpjha.dev/",
+      "repository": "blackdragoon26/Cutable",
+      "repositoryUrl": "https://github.com/blackdragoon26/Cutable",
+      "technologies": [
+        "Go",
+        "Next.js",
+        "React",
+        "TypeScript",
+        "PostgreSQL",
+        "Neon",
+        "OpenRouter",
+        "E2B",
+        "WebSockets",
+        "Docker",
+        "GitHub Actions",
+        "Nomad",
+        "Traefik",
+        "WireGuard",
+        "Google OAuth",
+        "JWT"
+      ],
+      "screenshot": "auto",
+      "screenshotWaitSeconds": 7,
+      "stars": 0,
+      "image": "/generated/projects/cutable.jpg",
+      "resume": {
+        "include": true,
+        "objective": "Turn natural-language and visual requirements into editable, previewable React applications.",
+        "approach": [
+          "Built a Go agent-orchestration backend around OpenRouter tool calls and isolated E2B sandboxes",
+          "Streamed planning, code edits, build progress, and previews to a Next.js workspace over WebSockets with persistent project recovery"
+        ],
+        "impact": "Delivers multimodal generation, BYOK provider access, account-scoped project history, and health-gated immutable deployments through a self-hosted Nomad platform."
+      }
+    },
     {
       "id": "los-tecnicos",
       "title": "Los-Tecnicos",
@@ -26,7 +66,7 @@
       "stars": 1,
       "image": "/generated/projects/los-tecnicos.jpg",
       "resume": {
-        "include": true,
+        "include": false,
         "objective": "Build a decentralized energy grid that tokenizes renewable-energy production on the Stellar ecosystem.",
         "approach": [
           "Built a Go backend and 4 Soroban smart contracts",
