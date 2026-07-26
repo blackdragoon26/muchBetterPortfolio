@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-26T22:50:26.051Z",
+  "generatedAt": "2026-07-26T23:04:00.236Z",
   "filter": {
     "minimumRepositoryStars": 300,
     "maximumPullRequests": 12
@@ -16,20 +16,11 @@
       "technologies": [
         "Go",
         "Next.js",
-        "React",
-        "TypeScript",
         "PostgreSQL",
-        "Neon",
         "OpenRouter",
         "E2B",
         "WebSockets",
-        "Docker",
-        "GitHub Actions",
-        "Nomad",
-        "Traefik",
-        "WireGuard",
-        "Google OAuth",
-        "JWT"
+        "Nomad"
       ],
       "screenshot": "auto",
       "screenshotWaitSeconds": 7,
@@ -37,12 +28,12 @@
       "image": "/generated/projects/cutable.jpg",
       "resume": {
         "include": true,
-        "objective": "Turn natural-language and visual requirements into editable, previewable React applications.",
+        "objective": "Generate editable React applications from text and visual requirements.",
         "approach": [
-          "Built a Go agent-orchestration backend around OpenRouter tool calls and isolated E2B sandboxes",
-          "Streamed planning, code edits, build progress, and previews to a Next.js workspace over WebSockets with persistent project recovery"
+          "Orchestrated OpenRouter tools and E2B sandboxes in Go",
+          "Streamed code and live previews to Next.js over WebSockets"
         ],
-        "impact": "Delivers multimodal generation, BYOK provider access, account-scoped project history, and health-gated immutable deployments through a self-hosted Nomad platform."
+        "impact": "Ships multimodal BYOK generation, persistent projects, and health-gated deployments."
       }
     },
     {
