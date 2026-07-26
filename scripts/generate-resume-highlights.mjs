@@ -18,6 +18,18 @@ function href(value) {
   return String(value).replace(/[{}]/g, "");
 }
 
+function latexWithBoldNumbers(value) {
+  const numberPattern = /(?<![A-Za-z0-9])\d[\d,.]*(?:\+|%|x)?(?![A-Za-z0-9])/g;
+  let output = "";
+  let cursor = 0;
+  for (const match of String(value).matchAll(numberPattern)) {
+    output += latex(String(value).slice(cursor, match.index));
+    output += `\\textbf{${latex(match[0])}}`;
+    cursor = match.index + match[0].length;
+  }
+  return output + latex(String(value).slice(cursor));
+}
+
 function contributionRows(pullRequests) {
   const groups = new Map();
   for (const pullRequest of pullRequests.slice(0, 8)) {
@@ -26,7 +38,13 @@ function contributionRows(pullRequests) {
   }
   return [...groups.entries()].map(([repository, pullRequests]) => {
     const changes = pullRequests
-      .map((pullRequest) => `\\href{${href(pullRequest.href)}}{\\#${pullRequest.number}} ${latex(pullRequest.title)}`)
+      .map((pullRequest, index) => {
+        const change = `\\href{${href(pullRequest.href)}}{\\textbf{\\#${pullRequest.number}}} ${latexWithBoldNumbers(pullRequest.title)}`;
+        if (pullRequest.id === "WasmEdge/WasmEdge#4466") {
+          return `${index > 0 ? "\\newline" : ""}\\hspace*{1.5em}${change}`;
+        }
+        return change;
+      })
       .join("; ");
     const punctuation = /[.!?]$/.test(changes) ? "" : ".";
     return `\\textbullet\\enspace \\textbf{${latex(repository)}:}\\enspace ${changes}${punctuation}`;
@@ -38,7 +56,7 @@ function projectEntry(project) {
   const stack = project.technologies.join(", ");
   const approach = project.resume.approach
     .map((item, index) => {
-      const clause = latex(item).replace(/[.!?]+$/, "");
+      const clause = String(item).replace(/[.!?]+$/, "");
       return index === 0 ? clause : `${clause.charAt(0).toLowerCase()}${clause.slice(1)}`;
     })
     .join("; ");
@@ -46,15 +64,28 @@ function projectEntry(project) {
 \\entryhead{${latex(project.title)}}{${latex(stack)}}{\\href{${href(projectHref)}}{Project Link}}%
 \\noindent\\begin{tabular}{|p{\\dimexpr\\linewidth-2\\tabcolsep-2\\arrayrulewidth\\relax}|}
 \\hline
-\\textbf{Objective:}\\enspace ${latex(project.resume.objective)} \\\\[1.5pt]
-\\textbf{Approach:}\\enspace ${approach}. \\\\[1.5pt]
-\\textbf{Impact:}\\enspace ${latex(project.resume.impact)} \\\\
+\\textbf{Objective:}\\enspace ${latexWithBoldNumbers(project.resume.objective)} \\\\[1.5pt]
+\\textbf{Approach:}\\enspace ${latexWithBoldNumbers(approach)}. \\\\[1.5pt]
+\\textbf{Impact:}\\enspace ${latexWithBoldNumbers(project.resume.impact)} \\\\
 \\hline
 \\end{tabular}%
 \\end{minipage}\\par`;
 }
 
-const contributions = contributionRows(data.pullRequests);
+const contributionPullRequests = data.pullRequests
+  .filter((pullRequest) => ![
+    "p4lang/tutorials#681",
+    "WasmEdge/WasmEdge#4452",
+  ].includes(pullRequest.id))
+  .sort((left, right) => {
+    const priority = new Map([
+      ["WasmEdge/WasmEdge#4470", 0],
+      ["WasmEdge/WasmEdge#4466", 1],
+    ]);
+    return (priority.get(left.id) ?? Number.MAX_SAFE_INTEGER)
+      - (priority.get(right.id) ?? Number.MAX_SAFE_INTEGER);
+  });
+const contributions = contributionRows(contributionPullRequests);
 const projects = data.projects.filter((project) => project.resume.include).map(projectEntry);
 const contributionContent = contributions.length > 0
   ? contributions.join("\\\\[2.5pt]\n")

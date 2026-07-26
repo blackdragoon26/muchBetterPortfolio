@@ -8,6 +8,7 @@
 \usepackage{fontspec}
 \usepackage{multicol}
 
+\definecolor{ResumeLink}{RGB}{0,70,140}
 \setmainfont{lmroman9-regular.otf}[
   BoldFont=lmroman9-bold.otf,
   ItalicFont=lmroman9-italic.otf,
@@ -18,7 +19,10 @@
   \XeTeXgenerateactualtext=1
 \fi
 \hypersetup{
-  hidelinks,
+  colorlinks=true,
+  urlcolor=ResumeLink,
+  linkcolor=ResumeLink,
+  citecolor=ResumeLink,
   pdfauthor={Sankalp Jha},
   pdftitle={Sankalp Jha Resume},
   pdfsubject={Open Source and Systems Engineering Resume}
@@ -37,14 +41,14 @@
 
 % Entry header with comfortable breathing room above each entry
 \newcommand{\entryhead}[3]{%
-  \par\vspace{3.65pt}%
+  \par\vspace{4.45pt}%
   \noindent\textbf{\fontsize{9.5}{10.5}\selectfont #1}%
   \ifx&#2&\else{ \textbar\ \textit{#2}}\fi
   \hfill (\textit{#3})\par\vspace{1pt}%
 }
 
 \newcommand{\sectionhead}[1]{%
-  \par\vspace{5pt}%
+  \par\vspace{7.5pt}%
   \noindent\begin{tcolorbox}\textbf{\fontsize{10}{10.5}\selectfont #1}\end{tcolorbox}%
 }
 
@@ -77,8 +81,8 @@
 \textbf{\href{https://sankalpjha.dev}{Portfolio} $|$
 \href{https://www.linkedin.com/in/sankalp-jha-18a95a244/}{LinkedIn} $|$
 \href{https://github.com/blackdragoon26}{GitHub}}\\[1pt]
-Open Source Developer $|$ Software Engineer \hfill sankalp.jha9643@gmail.com\\[1pt]
-Delhi NCR, India \hfill +91-8800117422
+Open Source Developer $|$ Software Engineer \hfill \href{mailto:sankalp.jha9643@gmail.com}{sankalp.jha9643@gmail.com}\\[1pt]
+Delhi NCR, India \hfill \href{tel:+918800117422}{\textbf{+91-8800117422}}
 
 \noindent\rule[0.5ex]{\linewidth}{0.4pt}%
 % ── EDUCATION ───────────────────────────────────────────────────────────────
@@ -87,21 +91,23 @@ Delhi NCR, India \hfill +91-8800117422
 \hline
 \centering\textbf{Year} & \centering\textbf{Degree/Certificate} & \centering\textbf{Institute} & \textbf{CPI/$\%$}\\
 \hline
-\centering Oct 2022 -- Aug 2026 & \centering B.Tech in CS \& IT & \centering Ajay Kumar Garg Engineering College, Delhi NCR & 7.25/10\\
+\centering\fontsize{8.5}{9.5}\selectfont\textbf{Oct 2022 -- Aug 2026} & \centering B.Tech in CS \& IT & \centering Ajay Kumar Garg Engineering College, Delhi NCR & \textbf{7.25/10}\\
 \hline
-\centering 2021 -- 2022 & \centering Senior Secondary (XII) & \centering New Era School, Delhi NCR & 91.2$\%$\\
+\centering\fontsize{8.5}{9.5}\selectfont\textbf{2021 -- 2022} & \centering Senior Secondary (XII) & \centering New Era School, Delhi NCR & \textbf{91.2$\%$}\\
 \hline
-\centering 2017 -- 2020 & \centering High School (X) & \centering SJN International School, Coimbatore & 92.6$\%$\\
+\centering\fontsize{8.5}{9.5}\selectfont\textbf{2017 -- 2020} & \centering High School (X) & \centering SJN International School, Coimbatore & \textbf{92.6$\%$}\\
 \hline
 \end{tabular}%
 
 % ── EXPERIENCE ──────────────────────────────────────────────────────────────
 \sectionhead{Experience}%
-\entryhead{Google Summer of Code 2025 Contributor}{P4 Language Consortium, Stanford, CA}{May 2025 -- Sept 2025}%
-\noindent\textbf{Project:} \href{https://splidt-showcase.vercel.app/}{SpliDT: Scaling Stateful Decision Tree Algorithms in P4}
+\entryhead{Google Summer of Code \textbf{2025} Contributor}{P4 Language Consortium, Stanford, CA}{\textbf{May 2025 -- Sept 2025}}%
+\noindent{\fontsize{9.5}{10.5}\selectfont\textbf{\href{https://splidt-showcase.vercel.app/}{SpliDT Project: Scaling Stateful Decision Tree Algorithms in P4}}}
 \hfill \textit{P4, Python, P4Runtime, Docker, C++, Intel Tofino}\par
-\noindent\textbullet\enspace\textbf{Switch-Native Architecture:}\enspace Architected a framework to compile ML decision trees directly into P4 data planes, implementing Partitioned Decision Trees (PDTs) with TCAM-efficient Subtree IDs (SIDs) to resolve hardware ASIC constraints.\par
-\noindent\textbullet\enspace\textbf{Validation \& Optimization:}\enspace Engineered a Jinja2-based P4Runtime testing pipeline (Tofino/Mininet) improving deployment reliability by 30\%, and optimized SID recirculation to achieve 10 Gbps line-rate throughput with 20\% lower inference latency.\par
+\begin{itemize}[labelindent=10pt, leftmargin=25pt, labelsep=5pt, topsep=0pt, itemsep=0pt]
+  \item \textbf{Switch-Native Architecture:}\enspace Architected a framework to compile ML decision trees directly into P4 data planes, implementing Partitioned Decision Trees (PDTs) with TCAM-efficient Subtree IDs (SIDs) to resolve hardware ASIC constraints.
+  \item \textbf{Validation \& Optimization:}\enspace Engineered a Jinja2-based P4Runtime testing pipeline (Tofino/Mininet) improving deployment reliability by \textbf{30\%}, and optimized SID recirculation to achieve \textbf{10 Gbps} line-rate throughput with \textbf{20\%} lower inference latency.
+\end{itemize}%
 
 % ── GENERATED OPEN SOURCE AND PROJECT SECTIONS ───────────────────────────────
 \input{generated/open-source-contributions.tex}
@@ -118,12 +124,12 @@ Delhi NCR, India \hfill +91-8800117422
 % ── POSITIONS OF LEADERSHIP ─────────────────────────────────────────────────
 \sectionhead{Positions of Leadership}%
 \noindent\begin{itemize}[leftmargin=14pt, topsep=0pt]
-  \item \textbf{Technical Writer, Cloud Native Community Group, New Delhi} \hfill (\textit{May 2024 -- Dec 2024})
+  \item \textbf{Technical Writer, Cloud Native Community Group, New Delhi} \hfill (\textit{\textbf{May 2024 -- Dec 2024}})
   \begin{itemize}[leftmargin=10pt, label={--}]
     \item Led a team of \textbf{6+} content writers and \textbf{4} designers to deliver documentation and event management support.
     \item Partnered with marketing to revamp social media presence across LinkedIn, Instagram, and X, achieving a \textbf{60\%} bump in engagement.
   \end{itemize}
-  \item \textbf{Co-Organizer \& Anchor, Google Developer Groups \& GDSC WOW 2024, Delhi NCR} \hfill (\textit{Nov 2023 -- Nov 2025})
+  \item \textbf{Co-Organizer \& Anchor, Google Developer Groups \& GDSC WOW \textbf{2024}, Delhi NCR} \hfill (\textit{\textbf{Nov 2023 -- Nov 2025}})
   \begin{itemize}[leftmargin=10pt, label={--}]
     \item Co-led \textbf{10+} tech events \& anchored the GDSC WOW flagship event at IIIT Delhi, with the \textbf{31+} crew members.
     \item Engaged a live audience of \textbf{800+} at WOW and \textbf{500+} developers overall, boosting participation by \textbf{30\%} and visibility by \textbf{40\%}.
@@ -132,7 +138,7 @@ Delhi NCR, India \hfill +91-8800117422
 % ── PUBLICATIONS ────────────────────────────────────────────────────────────
 \sectionhead{Publications}%
 \noindent\begin{itemize}[topsep=0pt, itemsep=0pt]
-\item R. Bharadwaj, \textbf{S. Jha}, V. Malyan, R. Gupta, ``Trusture: A Blockchain-Based Decentralized Framework for Secure, Transparent, and Auditable NGO Transactions,'' \textit{2026 International Conference on Computing, Sciences and Communications (ICCSC)}, Ghaziabad, India, Feb. 2026. \href{https://ieeexplore.ieee.org/abstract/document/11468597/}{IEEE Xplore $\nearrow$} \hfill DOI: 10.1109/ICCSC67078.2026.11468597
+\item R. Bharadwaj, \textbf{S. Jha}, V. Malyan, R. Gupta, ``Trusture: A Blockchain-Based Decentralized Framework for Secure, Transparent, and Auditable NGO Transactions,'' \textit{\textbf{2026} International Conference on Computing, Sciences and Communications (ICCSC)}, Ghaziabad, India, Feb. \textbf{2026}. \href{https://ieeexplore.ieee.org/abstract/document/11468597/}{IEEE Xplore $\nearrow$} \hfill \href{https://doi.org/10.1109/ICCSC67078.2026.11468597}{DOI: 10.1109/ICCSC67078.2026.11468597}
 \end{itemize}%
 % ── CERTIFICATIONS & HONORS ─────────────────────────────────────────────────
 \sectionhead{Certifications \& Honors}%
@@ -153,4 +159,3 @@ Delhi NCR, India \hfill +91-8800117422
 \end{tabular}%
 
 \end{document}
- 
