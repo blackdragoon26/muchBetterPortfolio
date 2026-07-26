@@ -16,15 +16,121 @@ import portfolio from "@/generated/portfolio.json";
 import { ExternalLink, Github } from "lucide-react";
 import Link from "next/link";
 import Markdown from "react-markdown";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const BLUR_FADE_DELAY = 0.04;
+
+const PAGE_SECTIONS = [
+  { id: "hero", label: "Introduction" },
+  { id: "about", label: "About" },
+  { id: "work", label: "Work Experience" },
+  { id: "education", label: "Education" },
+  { id: "projects", label: "Projects" },
+  { id: "pull-requests", label: "Open Source" },
+  { id: "resume", label: "Résumé" },
+  { id: "hackathons", label: "Events" },
+  { id: "contact", label: "Contact" },
+] as const;
+
+function HeadingNavigator() {
+  const [activeSection, setActiveSection] = useState<
+    (typeof PAGE_SECTIONS)[number]["id"]
+  >(PAGE_SECTIONS[0].id);
+
+  useEffect(() => {
+    let frame = 0;
+
+    const updateActiveSection = () => {
+      frame = 0;
+      const readingLine = window.innerHeight * 0.35;
+      let currentSection: (typeof PAGE_SECTIONS)[number]["id"] =
+        PAGE_SECTIONS[0].id;
+
+      for (const section of PAGE_SECTIONS) {
+        const element = document.getElementById(section.id);
+        if (element && element.getBoundingClientRect().top <= readingLine) {
+          currentSection = section.id;
+        }
+      }
+
+      setActiveSection(currentSection);
+    };
+
+    const onScroll = () => {
+      if (!frame) {
+        frame = window.requestAnimationFrame(updateActiveSection);
+      }
+    };
+
+    updateActiveSection();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (frame) window.cancelAnimationFrame(frame);
+    };
+  }, []);
+
+  const jumpToSection = (sectionId: string) => {
+    const section = document.getElementById(sectionId);
+    if (!section) return;
+
+    setActiveSection(sectionId as (typeof PAGE_SECTIONS)[number]["id"]);
+    section.scrollIntoView({
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "auto"
+        : "smooth",
+      block: "start",
+    });
+    window.history.replaceState(null, "", `#${sectionId}`);
+  };
+
+  return (
+    <nav
+      aria-label="On this page"
+      className="fixed left-5 top-1/2 z-40 hidden -translate-y-1/2 flex-col gap-1.5 lg:flex"
+    >
+      {PAGE_SECTIONS.map((section) => {
+        const isActive = activeSection === section.id;
+
+        return (
+          <a
+            key={section.id}
+            href={`#${section.id}`}
+            aria-label={`Jump to ${section.label}`}
+            aria-current={isActive ? "location" : undefined}
+            onClick={(event) => {
+              event.preventDefault();
+              jumpToSection(section.id);
+            }}
+            className="group relative flex h-5 w-8 items-center focus:outline-none"
+          >
+            <span
+              aria-hidden="true"
+              className={`block h-0.5 rounded-full transition-all duration-200 ${
+                isActive
+                  ? "w-6 bg-foreground"
+                  : "w-3 bg-muted-foreground/45 group-hover:w-5 group-hover:bg-foreground/80 group-focus-visible:w-5 group-focus-visible:bg-foreground"
+              }`}
+            />
+            <span className="pointer-events-none absolute left-8 whitespace-nowrap rounded-md border bg-popover px-2.5 py-1.5 text-xs font-medium text-popover-foreground opacity-0 shadow-md transition-all duration-150 -translate-x-1 group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:translate-x-0 group-focus-visible:opacity-100">
+              {section.label}
+            </span>
+          </a>
+        );
+      })}
+    </nav>
+  );
+}
 
 export default function Page() {
   const [showOtherStuff, setShowOtherStuff] = useState(false);
 
   return (
     <main id="page-wrap" className="flex flex-col min-h-[100dvh] space-y-10">
+      <HeadingNavigator />
       <section id="hero">
         <div className="mx-auto w-full max-w-2xl space-y-8">
           <div className="gap-2 flex justify-between">
