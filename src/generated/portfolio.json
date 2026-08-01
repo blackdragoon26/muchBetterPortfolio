@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-31T08:11:22.287Z",
+  "generatedAt": "2026-08-01T07:39:15.987Z",
   "filter": {
     "minimumRepositoryStars": 300,
     "maximumPullRequests": 12
@@ -340,7 +340,7 @@
       "repositoryUrl": "https://github.com/WasmEdge/WasmEdge",
       "repositoryDescription": "WasmEdge is a lightweight, high-performance, and extensible WebAssembly runtime for cloud native, edge, and decentralized applications. It powers serverless apps, embedded functions, microservices, smart contracts, and IoT devices.",
       "organizationLogo": "/generated/organizations/wasmedge.jpg",
-      "stars": 10745,
+      "stars": 10747,
       "mergedAt": "2026-01-15T08:51:19Z",
       "additions": 51,
       "deletions": 7,
@@ -358,7 +358,7 @@
       "repositoryUrl": "https://github.com/WasmEdge/WasmEdge",
       "repositoryDescription": "WasmEdge is a lightweight, high-performance, and extensible WebAssembly runtime for cloud native, edge, and decentralized applications. It powers serverless apps, embedded functions, microservices, smart contracts, and IoT devices.",
       "organizationLogo": "/generated/organizations/wasmedge.jpg",
-      "stars": 10745,
+      "stars": 10747,
       "mergedAt": "2025-12-26T03:51:04Z",
       "additions": 28,
       "deletions": 8,
@@ -376,7 +376,7 @@
       "repositoryUrl": "https://github.com/WasmEdge/WasmEdge",
       "repositoryDescription": "WasmEdge is a lightweight, high-performance, and extensible WebAssembly runtime for cloud native, edge, and decentralized applications. It powers serverless apps, embedded functions, microservices, smart contracts, and IoT devices.",
       "organizationLogo": "/generated/organizations/wasmedge.jpg",
-      "stars": 10745,
+      "stars": 10747,
       "mergedAt": "2025-12-24T16:09:11Z",
       "additions": 120,
       "deletions": 0,
@@ -395,13 +395,49 @@
       "repositoryUrl": "https://github.com/WasmEdge/WasmEdge",
       "repositoryDescription": "WasmEdge is a lightweight, high-performance, and extensible WebAssembly runtime for cloud native, edge, and decentralized applications. It powers serverless apps, embedded functions, microservices, smart contracts, and IoT devices.",
       "organizationLogo": "/generated/organizations/wasmedge.jpg",
-      "stars": 10745,
+      "stars": 10747,
       "mergedAt": "2025-12-18T14:53:20Z",
       "additions": 4,
       "deletions": 5,
       "changedFiles": 1,
       "technologies": [
         "Markdown"
+      ]
+    },
+    {
+      "id": "Project-HAMi/HAMi#2204",
+      "title": "fix(metrics): prevent invalid memory ratios for unknown total memory",
+      "number": 2204,
+      "href": "https://github.com/Project-HAMi/HAMi/pull/2204",
+      "repository": "Project-HAMi/HAMi",
+      "repositoryUrl": "https://github.com/Project-HAMi/HAMi",
+      "repositoryDescription": "Heterogeneous GPU Sharing on Kubernetes",
+      "organizationLogo": "/generated/organizations/project-hami.jpg",
+      "stars": 4143,
+      "mergedAt": "2026-07-31T10:46:46Z",
+      "additions": 158,
+      "deletions": 21,
+      "changedFiles": 3,
+      "technologies": [
+        "Go"
+      ]
+    },
+    {
+      "id": "Project-HAMi/HAMi#2221",
+      "title": "fix(workflow): skip non-translatable issue comments",
+      "number": 2221,
+      "href": "https://github.com/Project-HAMi/HAMi/pull/2221",
+      "repository": "Project-HAMi/HAMi",
+      "repositoryUrl": "https://github.com/Project-HAMi/HAMi",
+      "repositoryDescription": "Heterogeneous GPU Sharing on Kubernetes",
+      "organizationLogo": "/generated/organizations/project-hami.jpg",
+      "stars": 4143,
+      "mergedAt": "2026-07-31T10:37:47Z",
+      "additions": 7,
+      "deletions": 0,
+      "changedFiles": 1,
+      "technologies": [
+        "GitHub Actions"
       ]
     },
     {
@@ -413,7 +449,7 @@
       "repositoryUrl": "https://github.com/p4lang/tutorials",
       "repositoryDescription": "P4 language tutorials",
       "organizationLogo": "/generated/organizations/p4lang.jpg",
-      "stars": 1581,
+      "stars": 1582,
       "mergedAt": "2025-04-14T22:26:09Z",
       "additions": 22,
       "deletions": 8,
@@ -431,7 +467,7 @@
       "repositoryUrl": "https://github.com/facebook/bpfilter",
       "repositoryDescription": "eBPF-based packet filtering framework",
       "organizationLogo": "/generated/organizations/facebook.jpg",
-      "stars": 348,
+      "stars": 349,
       "mergedAt": "2026-04-24T10:52:56Z",
       "additions": 7,
       "deletions": 4,
