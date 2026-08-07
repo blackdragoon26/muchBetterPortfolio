@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-02T07:42:02.348Z",
+  "generatedAt": "2026-08-07T18:16:28.791Z",
   "filter": {
     "minimumRepositoryStars": 300,
     "maximumPullRequests": 12
@@ -257,7 +257,7 @@
       "screenshot": "auto",
       "screenshotWaitSeconds": 7,
       "stars": 1,
-      "image": "/generated/projects/ebpf-mcp-tracer.png",
+      "image": "/generated/projects/ebpf-mcp-tracer.svg",
       "resume": {
         "include": false,
         "objective": "Let AI debugging agents inspect Linux performance without granting unrestricted eBPF execution.",
@@ -318,7 +318,7 @@
       "screenshot": "auto",
       "screenshotWaitSeconds": 7,
       "stars": 1,
-      "image": "/generated/projects/open-claw-lab.png",
+      "image": "/generated/projects/open-claw-lab.svg",
       "resume": {
         "include": false,
         "objective": "Discover high-signal engineering opportunities while preventing unsupported or stale leads from reaching the user.",
@@ -340,7 +340,7 @@
       "repositoryUrl": "https://github.com/WasmEdge/WasmEdge",
       "repositoryDescription": "WasmEdge is a lightweight, high-performance, and extensible WebAssembly runtime for cloud native, edge, and decentralized applications. It powers serverless apps, embedded functions, microservices, smart contracts, and IoT devices.",
       "organizationLogo": "/generated/organizations/wasmedge.jpg",
-      "stars": 10748,
+      "stars": 10762,
       "mergedAt": "2026-01-15T08:51:19Z",
       "additions": 51,
       "deletions": 7,
@@ -358,7 +358,7 @@
       "repositoryUrl": "https://github.com/WasmEdge/WasmEdge",
       "repositoryDescription": "WasmEdge is a lightweight, high-performance, and extensible WebAssembly runtime for cloud native, edge, and decentralized applications. It powers serverless apps, embedded functions, microservices, smart contracts, and IoT devices.",
       "organizationLogo": "/generated/organizations/wasmedge.jpg",
-      "stars": 10748,
+      "stars": 10762,
       "mergedAt": "2025-12-26T03:51:04Z",
       "additions": 28,
       "deletions": 8,
@@ -376,7 +376,7 @@
       "repositoryUrl": "https://github.com/WasmEdge/WasmEdge",
       "repositoryDescription": "WasmEdge is a lightweight, high-performance, and extensible WebAssembly runtime for cloud native, edge, and decentralized applications. It powers serverless apps, embedded functions, microservices, smart contracts, and IoT devices.",
       "organizationLogo": "/generated/organizations/wasmedge.jpg",
-      "stars": 10748,
+      "stars": 10762,
       "mergedAt": "2025-12-24T16:09:11Z",
       "additions": 120,
       "deletions": 0,
@@ -395,13 +395,67 @@
       "repositoryUrl": "https://github.com/WasmEdge/WasmEdge",
       "repositoryDescription": "WasmEdge is a lightweight, high-performance, and extensible WebAssembly runtime for cloud native, edge, and decentralized applications. It powers serverless apps, embedded functions, microservices, smart contracts, and IoT devices.",
       "organizationLogo": "/generated/organizations/wasmedge.jpg",
-      "stars": 10748,
+      "stars": 10762,
       "mergedAt": "2025-12-18T14:53:20Z",
       "additions": 4,
       "deletions": 5,
       "changedFiles": 1,
       "technologies": [
         "Markdown"
+      ]
+    },
+    {
+      "id": "Project-HAMi/HAMi#2292",
+      "title": "fix(device): use len(devices) for GenReason in kunlun and awsneuron",
+      "number": 2292,
+      "href": "https://github.com/Project-HAMi/HAMi/pull/2292",
+      "repository": "Project-HAMi/HAMi",
+      "repositoryUrl": "https://github.com/Project-HAMi/HAMi",
+      "repositoryDescription": "Heterogeneous GPU Sharing on Kubernetes",
+      "organizationLogo": "/generated/organizations/project-hami.jpg",
+      "stars": 4257,
+      "mergedAt": "2026-08-04T08:51:52Z",
+      "additions": 57,
+      "deletions": 5,
+      "changedFiles": 5,
+      "technologies": [
+        "Go"
+      ]
+    },
+    {
+      "id": "Project-HAMi/HAMi#2307",
+      "title": "fix(device-plugin): release node lock when bind-phase patch fails",
+      "number": 2307,
+      "href": "https://github.com/Project-HAMi/HAMi/pull/2307",
+      "repository": "Project-HAMi/HAMi",
+      "repositoryUrl": "https://github.com/Project-HAMi/HAMi",
+      "repositoryDescription": "Heterogeneous GPU Sharing on Kubernetes",
+      "organizationLogo": "/generated/organizations/project-hami.jpg",
+      "stars": 4257,
+      "mergedAt": "2026-08-04T03:55:50Z",
+      "additions": 134,
+      "deletions": 41,
+      "changedFiles": 2,
+      "technologies": [
+        "Go"
+      ]
+    },
+    {
+      "id": "Project-HAMi/HAMi#2259",
+      "title": "fix(scheduler): handle ResourceQuota tombstones",
+      "number": 2259,
+      "href": "https://github.com/Project-HAMi/HAMi/pull/2259",
+      "repository": "Project-HAMi/HAMi",
+      "repositoryUrl": "https://github.com/Project-HAMi/HAMi",
+      "repositoryDescription": "Heterogeneous GPU Sharing on Kubernetes",
+      "organizationLogo": "/generated/organizations/project-hami.jpg",
+      "stars": 4257,
+      "mergedAt": "2026-08-02T09:42:49Z",
+      "additions": 123,
+      "deletions": 3,
+      "changedFiles": 2,
+      "technologies": [
+        "Go"
       ]
     },
     {
@@ -413,7 +467,7 @@
       "repositoryUrl": "https://github.com/Project-HAMi/HAMi",
       "repositoryDescription": "Heterogeneous GPU Sharing on Kubernetes",
       "organizationLogo": "/generated/organizations/project-hami.jpg",
-      "stars": 4146,
+      "stars": 4257,
       "mergedAt": "2026-07-31T10:46:46Z",
       "additions": 158,
       "deletions": 21,
@@ -431,7 +485,7 @@
       "repositoryUrl": "https://github.com/Project-HAMi/HAMi",
       "repositoryDescription": "Heterogeneous GPU Sharing on Kubernetes",
       "organizationLogo": "/generated/organizations/project-hami.jpg",
-      "stars": 4146,
+      "stars": 4257,
       "mergedAt": "2026-07-31T10:37:47Z",
       "additions": 7,
       "deletions": 0,
