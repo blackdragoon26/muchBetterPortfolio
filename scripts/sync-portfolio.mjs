@@ -4,7 +4,7 @@ import path from "node:path";
 const USER = process.env.GITHUB_USER || "blackdragoon26";
 const PROFILE_README_PATH = process.env.PROFILE_README_PATH || "../profile/README.md";
 const MIN_REPO_STARS = Number(process.env.MIN_REPO_STARS || 300);
-const MAX_PRS = Number(process.env.MAX_FEATURED_PRS || 12);
+const MAX_PRS = Number(process.env.MAX_FEATURED_PRS || 999);
 const TOKEN = process.env.GITHUB_TOKEN || process.env.GH_TOKEN || "";
 const API = "https://api.github.com";
 const OUTPUT_PATH = "src/generated/portfolio.json";
@@ -261,9 +261,12 @@ async function discoverPullRequests(repoCache, logoCache) {
     });
   }
 
-  return candidates
-    .sort((a, b) => b.stars - a.stars || Date.parse(b.mergedAt) - Date.parse(a.mergedAt))
-    .slice(0, MAX_PRS);
+  // return candidates
+  //   .sort((a, b) => b.stars - a.stars || Date.parse(b.mergedAt) - Date.parse(a.mergedAt))
+  //   .slice(0, MAX_PRS);
+    return candidates
+    .sort((a, b) => Date.parse(b.mergedAt) - Date.parse(a.mergedAt)) // Sorts newest first
+    .slice(0, MAX_PRS); // <-- See note below about this line
 }
 
 async function main() {
