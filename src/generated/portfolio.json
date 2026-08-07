@@ -1,8 +1,7 @@
 {
   "generatedAt": "2026-08-07T18:16:28.791Z",
   "filter": {
-    "minimumRepositoryStars": 300,
-    "maximumPullRequests": 12
+    "minimumRepositoryStars": 300
   },
   "projects": [
     {
