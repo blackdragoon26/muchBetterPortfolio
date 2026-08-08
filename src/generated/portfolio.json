@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-08T05:59:59.673Z",
+  "generatedAt": "2026-08-08T13:25:13.262Z",
   "filter": {
     "minimumRepositoryStars": 300,
     "maximumPullRequests": 999
@@ -328,6 +328,58 @@
         ],
         "impact": "Delivers an evidence-backed Telegram digest while rejecting guessed contacts, unsupported geography, stale roles, and duplicate leads."
       }
+    },
+    {
+      "id": "xnic-v1",
+      "title": "XNIC v1",
+      "description": "An interview-grade Linux networking-driver lab built around a clean-room Intel 82540EM/e1000 PCI Ethernet driver, with BAR0 MMIO, DMA descriptor rings, interrupt-driven NAPI, TX backpressure, ethtool telemetry, fault injection, and serialized timeout/reset recovery. It also includes a software-qualified W5500 SPI driver path and a gated DPDK L2 forwarder, while keeping physical-silicon, ENA, and RDMA validation explicitly out of scope until real hardware evidence exists. · Technical docs",
+      "href": "https://xnic-v1.vercel.app/",
+      "liveUrl": "https://xnic-v1.vercel.app/",
+      "repository": "blackdragoon26/xnic-v1",
+      "repositoryUrl": "https://github.com/blackdragoon26/xnic-v1",
+      "technologies": [
+        "Linux Kernel",
+        "C",
+        "PCI",
+        "BAR0 MMIO",
+        "DMA",
+        "Descriptor Rings",
+        "e1000",
+        "Intel 82540EM",
+        "net_device",
+        "NAPI",
+        "IRQ",
+        "MSI",
+        "ethtool",
+        "QEMU",
+        "HVF",
+        "KFENCE",
+        "sparse",
+        "DPDK",
+        "rte_ethdev",
+        "net_pcap PMD",
+        "tcpdump",
+        "Wireshark",
+        "W5500",
+        "SPI",
+        "Device Tree",
+        "Bash",
+        "GitHub Actions",
+        "Vercel"
+      ],
+      "screenshot": "auto",
+      "screenshotWaitSeconds": 7,
+      "stars": 1,
+      "image": "/generated/projects/xnic-v1.jpg",
+      "resume": {
+        "include": true,
+        "objective": "Build and qualify a defensible clean-room Linux Ethernet driver with observable packet paths, ownership invariants, fault recovery, and a gated user-space DPDK forwarding path.",
+        "approach": [
+          "Implemented PCI probe/remove, BAR0 MMIO, coherent and streaming DMA rings, interrupt-driven NAPI, TX queue backpressure, ethtool counters, and serialized watchdog/reset recovery in C",
+          "Added staged fault injection, KFENCE and sparse qualification, reproducible QEMU/HVF automation, Wireshark-compatible captures, a W5500 SPI driver path, and an rte_ethdev L2 forwarder"
+        ],
+        "impact": "Qualified 10,100 RX and TX ring wraps across 646,400 packets at zero loss, 1,000 interface cycles, 100 driver rebinds, and 100 reset-under-traffic cycles; validated DPDK partial-TX cleanup and signal-safe shutdown with the net_pcap virtual PMD."
+      }
     }
   ],
   "pullRequests": [
@@ -340,7 +392,7 @@
       "repositoryUrl": "https://github.com/Project-HAMi/HAMi",
       "repositoryDescription": "Heterogeneous GPU Sharing on Kubernetes",
       "organizationLogo": "/generated/organizations/project-hami.jpg",
-      "stars": 4261,
+      "stars": 4263,
       "mergedAt": "2026-08-04T08:51:52Z",
       "additions": 57,
       "deletions": 5,
@@ -358,7 +410,7 @@
       "repositoryUrl": "https://github.com/Project-HAMi/HAMi",
       "repositoryDescription": "Heterogeneous GPU Sharing on Kubernetes",
       "organizationLogo": "/generated/organizations/project-hami.jpg",
-      "stars": 4261,
+      "stars": 4263,
       "mergedAt": "2026-08-04T03:55:50Z",
       "additions": 134,
       "deletions": 41,
@@ -376,7 +428,7 @@
       "repositoryUrl": "https://github.com/Project-HAMi/HAMi",
       "repositoryDescription": "Heterogeneous GPU Sharing on Kubernetes",
       "organizationLogo": "/generated/organizations/project-hami.jpg",
-      "stars": 4261,
+      "stars": 4263,
       "mergedAt": "2026-08-02T09:42:49Z",
       "additions": 123,
       "deletions": 3,
@@ -394,7 +446,7 @@
       "repositoryUrl": "https://github.com/Project-HAMi/HAMi",
       "repositoryDescription": "Heterogeneous GPU Sharing on Kubernetes",
       "organizationLogo": "/generated/organizations/project-hami.jpg",
-      "stars": 4261,
+      "stars": 4263,
       "mergedAt": "2026-07-31T10:46:46Z",
       "additions": 158,
       "deletions": 21,
@@ -412,7 +464,7 @@
       "repositoryUrl": "https://github.com/Project-HAMi/HAMi",
       "repositoryDescription": "Heterogeneous GPU Sharing on Kubernetes",
       "organizationLogo": "/generated/organizations/project-hami.jpg",
-      "stars": 4261,
+      "stars": 4263,
       "mergedAt": "2026-07-31T10:37:47Z",
       "additions": 7,
       "deletions": 0,

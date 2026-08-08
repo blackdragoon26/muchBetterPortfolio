@@ -40,3 +40,13 @@
 \hline
 \end{tabular}%
 \end{minipage}\par
+\noindent\begin{minipage}{\linewidth}
+\entryhead{XNIC v1}{Linux Kernel, C, PCI, BAR0 MMIO, DMA, Descriptor Rings, e1000, Intel 82540EM, net\_device, NAPI, IRQ, MSI, ethtool, QEMU, HVF, KFENCE, sparse, DPDK, rte\_ethdev, net\_pcap PMD, tcpdump, Wireshark, W5500, SPI, Device Tree, Bash, GitHub Actions, Vercel}{\href{https://xnic-v1.vercel.app/}{Project Link}}%
+\noindent\begin{tabular}{|p{\dimexpr\linewidth-2\tabcolsep-2\arrayrulewidth\relax}|}
+\hline
+\textbf{Objective:}\enspace Build and qualify a defensible clean-room Linux Ethernet driver with observable packet paths, ownership invariants, fault recovery, and a gated user-space DPDK forwarding path. \\[1.5pt]
+\textbf{Approach:}\enspace Implemented PCI probe/remove, BAR0 MMIO, coherent and streaming DMA rings, interrupt-driven NAPI, TX queue backpressure, ethtool counters, and serialized watchdog/reset recovery in C; added staged fault injection, KFENCE and sparse qualification, reproducible QEMU/HVF automation, Wireshark-compatible captures, a W5500 SPI driver path, and an rte\_ethdev L2 forwarder. \\[1.5pt]
+\textbf{Impact:}\enspace Qualified \textbf{10,100} RX and TX ring wraps across \textbf{646,400} packets at zero loss, \textbf{1,000} interface cycles, \textbf{100} driver rebinds, and \textbf{100} reset-under-traffic cycles; validated DPDK partial-TX cleanup and signal-safe shutdown with the net\_pcap virtual PMD. \\
+\hline
+\end{tabular}%
+\end{minipage}\par
