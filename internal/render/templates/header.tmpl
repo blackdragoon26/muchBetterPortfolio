@@ -1,0 +1,8 @@
+<<- $c := .Content ->>
+\noindent{\LARGE\textbf{<< tex (str $c "name") >>}} \hfill
+\textbf{<< range $index, $link := rows $c "links" >><< if $index >> $|$
+<< end >>\href{<< href (str $link "url") >>}{<< tex (str $link "label") >>}<< end >>}\\[1pt]
+<< tex (str $c "tagline") >> \hfill \href{mailto:<< str $c "email" >>}{<< tex (str $c "email") >>}\\[1pt]
+<< tex (str $c "location") >> \hfill \href{tel:<< str $c "phone" >>}{\textbf{<< tex (str $c "phone") >>}}
+
+\noindent\rule[0.5ex]{\linewidth}{0.4pt}%

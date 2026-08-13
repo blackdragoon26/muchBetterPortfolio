@@ -1,0 +1,25 @@
+id: project:open-claw-lab
+kind: project
+source: readme
+machine:
+  description: An Oracle Cloud-hosted, multi-agent career intelligence system that finds high-signal engineering opportunities, validates every lead through deterministic evidence gates and independent review, and delivers a verified Telegram digest without automatically contacting anyone.
+  liveUrl: ""
+  repository: blackdragoon26/open-claw-lab
+  repositoryUrl: https://github.com/blackdragoon26/open-claw-lab
+  stars: 1
+  technologies:
+    - Node.js
+    - OpenClaw
+    - Gemini
+    - Oracle Cloud
+    - systemd
+    - Telegram
+content:
+  approach:
+    - Built a multi-agent discovery and independent-review pipeline around typed lead records
+    - Added deterministic freshness, eligibility, contact relevance, relocation evidence, and deduplication gates
+  impact: Delivers an evidence-backed Telegram digest while rejecting guessed contacts, unsupported geography, stale roles, and duplicate leads.
+  link: https://github.com/blackdragoon26/open-claw-lab
+  objective: Discover high-signal engineering opportunities while preventing unsupported or stale leads from reaching the user.
+  stack: Node.js, OpenClaw, Gemini, Oracle Cloud, systemd, Telegram
+  title: Open Claw Lab

@@ -1,0 +1,31 @@
+id: header:main
+kind: header
+source: manual
+tags:
+  - core
+content:
+  name: Sankalp Jha
+  # The tagline is the single most preset-sensitive line on the résumé, which is
+  # why it is a variant rather than a per-résumé override.
+  tagline: Open Source Developer | Software Engineer
+  location: Delhi NCR, India
+  email: sankalp.jha9643@gmail.com
+  phone: +91-8800117422
+  links:
+    - label: Portfolio
+      url: https://sankalpjha.dev
+    - label: LinkedIn
+      url: https://www.linkedin.com/in/sankalp-jha-18a95a244/
+    - label: GitHub
+      url: https://github.com/blackdragoon26
+variants:
+  systems:
+    tagline: Software Engineer - C, Networking & Low-Level Systems
+  hardware:
+    tagline: Systems Engineer - Kernel, PCIe/DMA Data Paths & Hardware Bring-Up
+  ai:
+    tagline: AI Engineer - Agentic Systems, LLM Orchestration & Backend
+  backend:
+    tagline: Backend Engineer - Go, Distributed Systems & Cloud Infrastructure
+  crossplatform:
+    tagline: Open Source Developer | Cross-Platform App Developer (Flutter+Swift) | DevOps Engineer

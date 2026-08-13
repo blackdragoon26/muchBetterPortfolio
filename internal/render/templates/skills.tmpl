@@ -1,0 +1,6 @@
+<<- $c := .Content ->>
+\noindent\begin{itemize}[topsep=0pt, itemsep=0pt]
+<<- range rows $c "groups" >>
+\item \textbf{<< tex (str . "label") >>} << tex (str . "items") >>
+<<- end >>
+\end{itemize}%

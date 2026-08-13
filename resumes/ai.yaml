@@ -1,0 +1,59 @@
+# The agentic/LLM framing. Leads with the products that shipped and the numbers
+# attached to them; the kernel work stays only as evidence of depth.
+id: ai
+label: AI Engineer - Agentic Systems & LLM Orchestration
+output: public/resume/Sankalp-Jha-AI.pdf
+maxPages: 1
+
+sections:
+  - heading: ""
+    blocks:
+      - block: header:main
+        variant: ai
+
+  - heading: Education
+    blocks:
+      - block: education:main
+        variant: recent
+
+  - heading: Experience
+    blocks:
+      - block: experience:gsoc-2025
+        variant: tight
+
+  - heading: Open Source Contributions
+    layout: boxed
+    blocks:
+      - block: contribution:project-hami-hami
+        variant: rollup
+      - block: contribution:wasmedge-wasmedge
+        variant: headline
+      - block: contribution:facebook-bpfilter
+
+  - heading: Key Projects
+    blocks:
+      - block: project:cutable
+      - block: project:dmie
+      - block: project:moodish
+      - block: project:myprod
+        variant: tight
+
+  - heading: Technical Skills
+    blocks:
+      - block: skills:main
+        variant: ai
+
+  - heading: Positions of Leadership
+    blocks:
+      - block: leadership:main
+        variant: compact
+
+  - heading: Publications
+    blocks:
+      - block: publication:trusture
+        variant: compact
+
+  - heading: Certifications & Honors
+    blocks:
+      - block: certificates:main
+        variant: oneline

@@ -1,0 +1,31 @@
+id: project:moodish
+kind: project
+source: readme
+tags:
+  - ai
+machine:
+  description: A mood-based food planning app for Swiggy-style ordering, where user gives craving, budget and diet needs, and it gives ranked meal options with transparent AI summary, recommendation trace and safe cart preview.
+  liveUrl: https://moodish.onrender.com/
+  repository: blackdragoon26/Moodish
+  repositoryUrl: https://github.com/blackdragoon26/Moodish
+  stars: 1
+  technologies:
+    - JavaScript
+    - Node.js
+    - OpenAI API
+    - MCP
+content:
+  approach:
+    - Built intent extraction and deterministic ranking around an AI-generated summary
+    - Added a recommendation trace and confirmation-gated cart preview
+  impact: Produces safer, inspectable food recommendations instead of opaque model output.
+  link: https://moodish.onrender.com/
+  objective: Rank meal options from a user's craving, budget, and dietary constraints while keeping the recommendation explainable.
+  stack: JavaScript, Node.js, OpenAI API, MCP
+  title: Moodish
+variants:
+  tight:
+    approach:
+      - Built intent extraction and deterministic ranking with a recommendation trace and confirmation-gated cart preview
+    impact: Produces safer, inspectable recommendations instead of opaque model output.
+    stack: JavaScript, Node.js, OpenAI API, MCP

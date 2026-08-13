@@ -1,0 +1,23 @@
+<<- $c := .Content ->>
+<<- $layout := printf "%s" .Layout ->>
+<<- /* The entries layout promotes a repository to an experience-style heading
+       with its own bullets. The boxed and plain layouts keep the compact
+       "repo: #123 summary; #124 summary" run-on that fits a single row. */ ->>
+<<- if eq $layout "entries" >>
+\entryhead{<< tex (str $c "role") >> - << tex (str $c "label") >><< if has $c "language" >> (<< tex (str $c "language") >>)<< end >>}{}{<< tex (str $c "since") >>}%
+\begin{itemize}[labelindent=10pt, leftmargin=25pt, labelsep=5pt, topsep=0pt, itemsep=0pt]
+<<- if has $c "summaryLine" >>
+  \item << mkn (str $c "summaryLine") >>
+<<- end >>
+<<- range prs $c >>
+  \item << mkn .Summary >> << if .Href >>\href{<< href .Href >>}{(PR \textbf{\#<< .Number >>})}<< end >>
+<<- end >>
+\end{itemize}%
+<<- else >>
+<<- if has $c "summaryLine" ->>
+\textbullet\enspace \textbf{<< tex (str $c "label") >>:}\enspace << mkn (str $c "summaryLine") >>
+<<- else ->>
+\textbullet\enspace \textbf{<< tex (str $c "label") >>:}\enspace <<
+range $index, $pr := prs $c >><< if $index >>; << end >>\href{<< href $pr.Href >>}{\textbf{\#<< $pr.Number >>}} << mkn $pr.Summary >><< end >>.
+<<- end >>
+<<- end >>

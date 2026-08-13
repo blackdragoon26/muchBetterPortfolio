@@ -1,0 +1,60 @@
+# The hardware / accelerator framing: XNIC, DO-IT, Los-Tecnicos and Myprod, each
+# switched to the variant that leads with silicon, buses and bring-up rather than
+# with the product story.
+id: hardware
+label: Hardware & Accelerator Systems - PCIe/DMA, Bring-Up, RTL-adjacent
+output: public/resume/Sankalp-Jha-Hardware.pdf
+maxPages: 1
+
+sections:
+  - heading: ""
+    blocks:
+      - block: header:main
+        variant: hardware
+
+  - heading: Education
+    blocks:
+      - block: education:main
+        variant: recent
+
+  - heading: Experience
+    blocks:
+      - block: experience:gsoc-2025
+        variant: hardware
+
+  - heading: Open Source Contributions
+    layout: boxed
+    blocks:
+      # HAMi is the strongest accelerator credential in the set: GPU device
+      # sharing and isolation on a 4.3k-star CNCF project.
+      - block: contribution:project-hami-hami
+        variant: headline
+      - block: contribution:wasmedge-wasmedge
+        variant: headline
+      - block: contribution:facebook-bpfilter
+
+  - heading: Key Projects
+    blocks:
+      - block: project:xnic-v1
+        variant: tight
+      - block: project:los-tecnicos
+        variant: hardware
+      - block: project:do-it
+        variant: hardware
+      - block: project:myprod
+        variant: hardware
+
+  - heading: Technical Skills
+    blocks:
+      - block: skills:main
+        variant: hardware-rtl
+
+  - heading: Publications
+    blocks:
+      - block: publication:trusture
+        variant: compact
+
+  - heading: Certifications & Honors
+    blocks:
+      - block: certificates:main
+        variant: oneline

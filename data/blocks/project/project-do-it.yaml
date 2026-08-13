@@ -1,0 +1,38 @@
+id: project:do-it
+kind: project
+source: readme
+tags:
+  - backend
+  - embedded
+  - hardware
+machine:
+  description: A self-hosted binary (for Raspberry Pi, adv. routers, old phones), built in Go, running SSE/HTTP server, allowing simple synced notes/multimedia files across all devices connected to ur local home wifi.
+  liveUrl: https://repo-tawny-iota.vercel.app/
+  repository: blackdragoon26/Do-It
+  repositoryUrl: https://github.com/blackdragoon26/Do-It
+  stars: 1
+  technologies:
+    - Go
+    - SSE
+    - HTTP
+    - Raspberry Pi
+    - Local-first
+content:
+  approach:
+    - Packaged a lightweight Go SSE and HTTP server for Raspberry Pi, routers, and repurposed phones
+  impact: Delivers self-hosted, account-free synchronization without sending household data to a cloud service.
+  link: https://repo-tawny-iota.vercel.app/
+  objective: Provide private, synchronized notes and media across devices on a local network.
+  stack: Go, SSE, HTTP, Raspberry Pi, Local-first
+  title: Do-It
+variants:
+  bullets:
+    bullets:
+      - Local-first sync service packaged as a single static Go binary for Raspberry Pi, routers, and repurposed phones; account-free, with no household data leaving the LAN.
+    stack: Go, SSE, HTTP, Raspberry Pi, Local-first
+  hardware:
+    approach:
+      - Packaged a single static Go SSE/HTTP binary small enough to run on a Raspberry Pi, consumer routers, and repurposed Android handsets
+    impact: Delivers account-free synchronization entirely on local hardware, with no household data leaving the LAN.
+    objective: Run a private device-to-device sync service directly on constrained home hardware with no cloud dependency.
+    stack: Go, SSE, HTTP, Raspberry Pi, OpenWrt, Local-first

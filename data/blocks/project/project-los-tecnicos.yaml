@@ -1,0 +1,44 @@
+id: project:los-tecnicos
+kind: project
+source: readme
+tags:
+  - backend
+  - embedded
+  - frontend
+  - hardware
+  - systems
+  - web3
+machine:
+  description: A Decentralized Energy Grid on Stellar Ecosystem which will turn energy into Tokenized Assets, and Energy into Stable Income., a super cool residency project
+  liveUrl: https://los-tecnicos.vercel.app/
+  repository: blackdragoon26/Los-Tecnicos
+  repositoryUrl: https://github.com/blackdragoon26/Los-Tecnicos
+  stars: 1
+  technologies:
+    - Go
+    - TypeScript
+    - Rust
+    - Soroban
+    - Raspberry Pi
+    - ESP32
+content:
+  approach:
+    - Built a Go backend and 4 Soroban smart contracts
+    - Integrated a Raspberry Pi/ESP32 hardware mesh with the platform
+  impact: Won Asia-Pacific Web3 bounties and received recognition from the Government of India.
+  link: https://los-tecnicos.vercel.app/
+  objective: Build a decentralized energy grid that tokenizes renewable-energy production on the Stellar ecosystem.
+  stack: Go, TypeScript, Rust, Soroban, Raspberry Pi, ESP32
+  title: Los-Tecnicos
+variants:
+  bullets:
+    bullets:
+      - Decentralized energy-grid system with a Raspberry Pi/ESP32 hardware mesh; built the Go backend and 4 Soroban smart contracts for SW/HW bring-up; won Asia-Pacific Web3 bounties, recognized by the Government of India.
+    stack: Go, TypeScript, Rust, Soroban, Raspberry Pi, ESP32
+  hardware:
+    approach:
+      - Built a Raspberry Pi/ESP32 sensor mesh and the Go backend that ingests it
+      - Wrote 4 Soroban smart contracts and drove software/hardware bring-up end to end
+    impact: Won Asia-Pacific Web3 bounties and was recognized by the Government of India.
+    objective: Meter and tokenize renewable-energy production from a physical sensor mesh rather than from self-reported data.
+    stack: Go, Rust, Soroban, Raspberry Pi, ESP32, TypeScript

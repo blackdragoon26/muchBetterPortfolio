@@ -1,0 +1,38 @@
+id: education:main
+kind: education
+source: manual
+tags:
+  - core
+content:
+  rows:
+    - year: Oct 2022 -- Aug 2026
+      degree: B.Tech in CS & IT
+      institute: Ajay Kumar Garg Engineering College, Delhi NCR
+      score: 7.25/10
+    - year: 2021 -- 2022
+      degree: Senior Secondary (XII)
+      institute: New Era School, Delhi NCR
+      score: 91.2%
+    - year: 2017 -- 2020
+      degree: High School (X)
+      institute: SJN International School, Coimbatore
+      score: 92.6%
+variants:
+  # Dropping the class X row is the cheapest line to reclaim when a résumé runs
+  # a few millimetres long, and it costs nothing a reader cares about.
+  recent:
+    rows:
+      - year: Oct 2022 -- Aug 2026
+        degree: B.Tech in CS & IT
+        institute: Ajay Kumar Garg Engineering College, Delhi NCR
+        score: 7.25/10
+      - year: 2021 -- 2022
+        degree: Senior Secondary (XII)
+        institute: New Era School, Delhi NCR
+        score: 91.2%
+  degree-only:
+    rows:
+      - year: Oct 2022 -- Aug 2026
+        degree: B.Tech in CS & IT
+        institute: Ajay Kumar Garg Engineering College, Delhi NCR
+        score: 7.25/10

@@ -1,0 +1,42 @@
+id: project:myprod
+kind: project
+source: readme
+tags:
+  - backend
+  - infra
+  - networking
+machine:
+  description: A Go CLI and operator dashboard that turns free-tier and low-cost VPS machines into a personal compute pool for deploying backend services with centralized scheduling, ingress, networking, and guarded node controls.
+  liveUrl: https://myprod-control.vercel.app/
+  repository: blackdragoon26/Myprod
+  repositoryUrl: https://github.com/blackdragoon26/Myprod
+  stars: 1
+  technologies:
+    - Go
+    - Nomad
+    - Traefik
+    - WireGuard
+    - Docker
+    - Netlify DNS
+    - SOPS
+content:
+  approach:
+    - Built a Go CLI and operator dashboard around Nomad scheduling, Traefik ingress, and WireGuard networking
+    - Added guarded node lifecycle controls, application registration, live resource metrics, and idempotent Netlify DNS management
+  impact: Provides one control surface for deploying applications and managing heterogeneous free-tier and temporary compute capacity.
+  link: https://myprod-control.vercel.app/
+  objective: Turn manually provisioned VPS machines into a low-overhead personal compute pool for backend services.
+  stack: Go, Nomad, Traefik, WireGuard, Docker, Netlify DNS, SOPS
+  title: Myprod
+variants:
+  hardware:
+    approach:
+      - Built a Go control plane over Nomad scheduling and WireGuard mesh networking, with guarded node lifecycle operations and live per-node CPU/memory telemetry
+    impact: Runs mixed-architecture nodes (x86_64 and ARM64) under a single scheduler with idempotent DNS and ingress management.
+    objective: Turn a fleet of heterogeneous bare-metal and VPS machines into one schedulable compute pool.
+    stack: Go, Nomad, Traefik, WireGuard, Docker, bare-metal
+  tight:
+    approach:
+      - Built a Go CLI and operator dashboard over Nomad scheduling, Traefik ingress, and WireGuard networking, with guarded node lifecycle controls and live resource metrics
+    impact: Provides one control surface for deploying services across heterogeneous free-tier and temporary compute.
+    stack: Go, Nomad, Traefik, WireGuard, Docker

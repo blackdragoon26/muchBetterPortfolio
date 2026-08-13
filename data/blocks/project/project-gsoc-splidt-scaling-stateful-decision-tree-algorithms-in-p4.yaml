@@ -1,0 +1,30 @@
+id: project:gsoc-splidt-scaling-stateful-decision-tree-algorithms-in-p4
+kind: project
+source: readme
+tags:
+  - hardware
+  - infra
+  - networking
+  - systems
+machine:
+  description: It is a switch-native compiler framework that enables stateful decision tree inference directly in programmable switches, bringing real-time machine learning into the network data plane. IT helps to compile high-performance decision tree models to enable detection and observability of security-significant flow behaviors across diverse traffic workloads on Intel Tofino ASICs. (Codebase Private due to Research nature of the project)
+  liveUrl: https://splidt-showcase.vercel.app/
+  repository: p4lang/gsoc
+  repositoryUrl: https://github.com/p4lang/gsoc
+  stars: 30
+  technologies:
+    - P4
+    - Python
+    - P4Runtime
+    - Docker
+    - C++
+    - Intel Tofino
+content:
+  approach:
+    - Architected a switch-native inference framework around Subtree ID recirculation
+    - Automated P4Runtime validation across Tofino and Mininet test environments
+  impact: Achieved 10 Gbps line-rate throughput and 5x lower latency than control-plane inference.
+  link: https://splidt-showcase.vercel.app/
+  objective: Compile machine-learning decision trees directly into P4 data planes using Partitioned Decision Trees.
+  stack: P4, Python, P4Runtime, Docker, C++, Intel Tofino
+  title: 'GSoC- SpliDT: Scaling Stateful Decision Tree Algorithms in P4'

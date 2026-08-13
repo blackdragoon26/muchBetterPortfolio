@@ -1,0 +1,36 @@
+id: leadership:main
+kind: leadership
+source: manual
+tags:
+  - core
+content:
+  entries:
+    - title: Technical Writer, Cloud Native Community Group, New Delhi
+      dates: May 2024 -- Dec 2024
+      bullets:
+        - Led a team of 6+ content writers and 4 designers to deliver documentation and
+          event management support.
+        - Partnered with marketing to revamp social media presence across LinkedIn, Instagram,
+          and X, achieving a 60% bump in engagement.
+    - title: Co-Organizer & Anchor, Google Developer Groups & GDSC WOW 2024, Delhi NCR
+      dates: Nov 2023 -- Nov 2025
+      bullets:
+        - Co-led 10+ tech events & anchored the GDSC WOW flagship event at IIIT Delhi,
+          with the 31+ crew members.
+        - Engaged a live audience of 800+ at WOW and 500+ developers overall, boosting
+          participation by 30% and visibility by 40%.
+variants:
+  # One line per role instead of two bullets, for résumés where leadership is
+  # supporting context rather than a selling point.
+  compact:
+    entries:
+      - title: Technical Writer, Cloud Native Community Group, New Delhi
+        dates: May 2024 -- Dec 2024
+        bullets:
+          - Led 6+ writers and 4 designers on documentation and event content; social media
+            revamp lifted engagement 60%.
+      - title: Co-Organizer & Anchor, Google Developer Groups & GDSC WOW 2024, Delhi NCR
+        dates: Nov 2023 -- Nov 2025
+        bullets:
+          - Co-led 10+ tech events; anchored GDSC WOW at IIIT Delhi (800+ live audience,
+            31+ crew).

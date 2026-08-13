@@ -1,0 +1,24 @@
+<<- $c := .Content ->>
+<<- /* A row with no label degrades to a plain bullet line, which is how the
+       one-line variant reclaims the last few millimetres of a page. */ ->>
+<<- $labelled := false ->>
+<<- range rows $c "rows" >><< if has . "label" >><< $labelled = true >><< end >><< end ->>
+<<- if $labelled >>
+\noindent\begin{tabular}{|m{2.6cm}|m{16.3cm}|}
+\hline
+<<- range rows $c "rows" >>
+\centering\textbf{<< tex (str . "label") >>} &
+<< range $index, $item := strAt . "items" >><< if $index >> \quad
+<< end >>\(\bullet\) << mkn $item >><< end >>\\
+\hline
+<<- end >>
+\end{tabular}%
+<<- else >>
+\noindent\begin{itemize}[topsep=0pt, itemsep=0pt]
+<<- range rows $c "rows" >>
+<<- range strAt . "items" >>
+\item << mkn . >>
+<<- end >>
+<<- end >>
+\end{itemize}%
+<<- end >>

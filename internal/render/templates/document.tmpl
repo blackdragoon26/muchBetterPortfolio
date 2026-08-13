@@ -1,0 +1,80 @@
+\documentclass[9pt]{extarticle}
+\usepackage[top=0.2in, bottom=0.18in, left=0.18in, right=0.18in, headheight=0pt, headsep=0pt]{geometry}
+\setlength{\topskip}{0pt}
+\usepackage[most]{tcolorbox}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{xcolor,colortbl}
+\usepackage{fontspec}
+\usepackage{multicol}
+
+\definecolor{ResumeLink}{RGB}{0,70,140}
+\setmainfont{lmroman9-regular.otf}[
+  BoldFont=lmroman9-bold.otf,
+  ItalicFont=lmroman9-italic.otf,
+  BoldItalicFont=lmroman10-bolditalic.otf,
+  Ligatures=NoCommon
+]
+\ifdefined\XeTeXgenerateactualtext
+  \XeTeXgenerateactualtext=1
+\fi
+\hypersetup{
+  colorlinks=true,
+  urlcolor=ResumeLink,
+  linkcolor=ResumeLink,
+  citecolor=ResumeLink,
+  pdfauthor={Sankalp Jha},
+  pdftitle={Sankalp Jha Resume},
+  pdfsubject={Open Source and Systems Engineering Resume}
+}
+
+\newcommand{\mc}[2]{\multicolumn{#1}{c}{#2}}
+\definecolor{Gray}{gray}{0.87}
+
+\setlist{noitemsep, topsep=1.5pt, partopsep=0pt, parsep=0pt}
+\setlist[itemize]{leftmargin=12pt}
+
+\newcolumntype{g}{>{\columncolor{Gray}}c}
+\renewcommand{\arraystretch}{1.02}
+\setlength{\tabcolsep}{5pt}
+\setlength{\emergencystretch}{2em}
+
+% Entry header with comfortable breathing room above each entry
+\newcommand{\entryhead}[3]{%
+  \par\vspace{4.45pt}%
+  \noindent\textbf{\fontsize{9.5}{10.5}\selectfont #1}%
+  \ifx&#2&\else{ \textbar\ \textit{#2}}\fi
+  \hfill (\textit{#3})\par\vspace{1pt}%
+}
+
+\newcommand{\sectionhead}[1]{%
+  \par\vspace{7.5pt}%
+  \noindent\begin{tcolorbox}\textbf{\fontsize{10}{10.5}\selectfont #1}\end{tcolorbox}%
+}
+
+\tcbset{
+    frame code={},
+    center title,
+    left=0pt, right=0pt, top=0pt, bottom=0pt,
+    colback=gray!42,
+    width=\dimexpr\textwidth\relax,
+    enlarge left by=0mm,
+    boxsep=1.2pt,
+    arc=0pt, outer arc=0pt,
+    before skip=1pt,
+    after skip=0.25pt,
+}
+
+\begin{document}
+\vspace*{-\topskip}
+\fontsize{9}{10.8}\selectfont
+\pagestyle{empty}
+\raggedbottom
+\setlength{\parskip}{0pt}
+\setlength{\parsep}{0pt}
+\setlength{\topsep}{0pt}
+\setlength{\partopsep}{0pt}
+\setlength{\multicolsep}{4pt}
+
+<< .Body >>
+\end{document}

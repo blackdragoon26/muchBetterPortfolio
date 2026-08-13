@@ -1,0 +1,10 @@
+<<- $c := .Content ->>
+\noindent\begin{tabular}{|p{3.2cm}|p{5.8cm}|p{8.5cm}|p{1.5cm}|}
+\hline
+\centering\textbf{Year} & \centering\textbf{Degree/Certificate} & \centering\textbf{Institute} & \textbf{CPI/$\%$}\\
+\hline
+<< range rows $c "rows" ->>
+\centering\fontsize{8.5}{9.5}\selectfont\textbf{<< tex (str . "year") >>} & \centering << tex (str . "degree") >> & \centering << tex (str . "institute") >> & \textbf{<< tex (str . "score") >>}\\
+\hline
+<< end ->>
+\end{tabular}%

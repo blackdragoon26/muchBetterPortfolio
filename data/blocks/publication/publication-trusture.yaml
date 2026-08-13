@@ -1,0 +1,21 @@
+id: publication:trusture
+kind: publication
+source: manual
+tags:
+  - core
+content:
+  authors: R. Bharadwaj, **S. Jha**, V. Malyan, R. Gupta
+  title: 'Trusture: A Blockchain-Based Decentralized Framework for Secure, Transparent,
+    and Auditable NGO Transactions'
+  venue: 2026 International Conference on Computing, Sciences and Communications (ICCSC)
+  place: Ghaziabad, India
+  date: Feb. 2026
+  xploreUrl: https://ieeexplore.ieee.org/abstract/document/11468597/
+  doi: 10.1109/ICCSC67078.2026.11468597
+  doiUrl: https://doi.org/10.1109/ICCSC67078.2026.11468597
+variants:
+  # Drops the IEEE Xplore link and shortens the venue to a single trailing line.
+  compact:
+    venue: 2026 ICCSC
+    place: Ghaziabad, India
+    xploreUrl: ""

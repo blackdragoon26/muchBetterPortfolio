@@ -1,0 +1,60 @@
+# The Go backend / infrastructure framing. HAMi carries this one: five merged PRs
+# fixing schedulers, device plugins and metrics on a 4.3k-star CNCF project is the
+# most direct evidence of production Go in the whole block library.
+id: backend
+label: Backend Engineer - Go, Distributed Systems & Cloud Infrastructure
+output: public/resume/Sankalp-Jha-Backend.pdf
+maxPages: 1
+
+sections:
+  - heading: ""
+    blocks:
+      - block: header:main
+        variant: backend
+
+  - heading: Education
+    blocks:
+      - block: education:main
+        variant: recent
+
+  - heading: Experience
+    blocks:
+      - block: experience:gsoc-2025
+        variant: tight
+
+  - heading: Open Source Contributions
+    layout: boxed
+    blocks:
+      - block: contribution:project-hami-hami
+      - block: contribution:wasmedge-wasmedge
+        variant: headline
+      - block: contribution:facebook-bpfilter
+
+  - heading: Key Projects
+    blocks:
+      - block: project:myprod
+      - block: project:cutable
+        variant: tight
+      - block: project:dmie
+        variant: tight
+      - block: project:do-it
+
+  - heading: Technical Skills
+    blocks:
+      - block: skills:main
+        variant: backend
+
+  - heading: Positions of Leadership
+    blocks:
+      - block: leadership:main
+        variant: compact
+
+  - heading: Publications
+    blocks:
+      - block: publication:trusture
+        variant: compact
+
+  - heading: Certifications & Honors
+    blocks:
+      - block: certificates:main
+        variant: oneline

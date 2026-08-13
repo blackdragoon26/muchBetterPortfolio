@@ -1,0 +1,491 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Résumé Builder</title>
+<style>
+  :root {
+    --bg: #0b0c0e; --panel: #141619; --line: #24272c; --ink: #e9eaec;
+    --muted: #8b9099; --accent: #4c9aff; --warn: #f0a04b; --bad: #f2635f;
+    --ok: #4bb96f;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 14px/1.5 ui-sans-serif, system-ui, -apple-system, sans-serif;
+  }
+  button, select, input, textarea { font: inherit; color: inherit; }
+
+  #login { max-width: 340px; margin: 18vh auto; padding: 24px;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 10px; }
+  #login h1 { font-size: 17px; margin: 0 0 14px; }
+  #login input { width: 100%; padding: 9px 11px; margin-bottom: 10px;
+    background: #0b0c0e; border: 1px solid var(--line); border-radius: 6px; }
+  #login button { width: 100%; padding: 9px; background: var(--accent);
+    border: 0; border-radius: 6px; color: #04122b; font-weight: 600; cursor: pointer; }
+
+  #app { display: none; grid-template-columns: 300px minmax(0,1fr) minmax(0,1.05fr);
+    gap: 1px; background: var(--line); height: 100vh; }
+  .col { background: var(--bg); overflow-y: auto; padding: 14px; }
+  .col h2 { font-size: 11px; text-transform: uppercase; letter-spacing: .09em;
+    color: var(--muted); margin: 0 0 10px; font-weight: 600; }
+
+  .bar { display: flex; gap: 8px; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
+  .bar select { flex: 1; min-width: 130px; padding: 7px 9px; background: var(--panel);
+    border: 1px solid var(--line); border-radius: 6px; }
+  .btn { padding: 7px 12px; background: var(--panel); border: 1px solid var(--line);
+    border-radius: 6px; cursor: pointer; white-space: nowrap; }
+  .btn:hover { border-color: var(--accent); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #04122b; font-weight: 600; }
+
+  .section { margin-bottom: 16px; }
+  .section > header { display: flex; justify-content: space-between; align-items: center;
+    font-size: 12px; color: var(--muted); padding: 4px 2px; border-bottom: 1px solid var(--line);
+    margin-bottom: 6px; }
+  .drop { min-height: 30px; border-radius: 6px; }
+  .drop.over { outline: 1px dashed var(--accent); outline-offset: 2px; }
+
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 7px;
+    padding: 8px 10px; margin-bottom: 6px; cursor: grab; }
+  .card.dragging { opacity: .4; }
+  .card .row { display: flex; align-items: center; gap: 8px; }
+  .card .id { font-family: ui-monospace, monospace; font-size: 11.5px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+  .card .kind { font-size: 10px; color: var(--muted); text-transform: uppercase; }
+  .card select { background: #0b0c0e; border: 1px solid var(--line);
+    border-radius: 5px; padding: 2px 5px; font-size: 11.5px; max-width: 120px; }
+  .card .x { color: var(--muted); cursor: pointer; padding: 0 3px; }
+  .card .x:hover { color: var(--bad); }
+  .card.overridden { border-left: 2px solid var(--warn); }
+
+  #status { display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+    padding: 9px 11px; background: var(--panel); border: 1px solid var(--line);
+    border-radius: 7px; margin-bottom: 10px; font-size: 12.5px; }
+  .pill { padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .pill.ok { background: rgba(75,185,111,.16); color: var(--ok); }
+  .pill.bad { background: rgba(242,99,95,.16); color: var(--bad); }
+  .pill.busy { background: rgba(139,144,153,.16); color: var(--muted); }
+
+  iframe { width: 100%; height: calc(100vh - 190px); border: 1px solid var(--line);
+    border-radius: 7px; background: #fff; }
+
+  .advice { margin-top: 10px; font-size: 12px; }
+  .advice div { display: flex; gap: 8px; padding: 4px 0; border-bottom: 1px solid var(--line); }
+  .advice .n { color: var(--ok); font-family: ui-monospace, monospace; min-width: 52px; }
+  .advice a { color: var(--accent); cursor: pointer; text-decoration: none; }
+
+  #editor { position: fixed; inset: 0; background: rgba(0,0,0,.62); display: none;
+    align-items: center; justify-content: center; padding: 20px; z-index: 10; }
+  #editor .box { background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+    width: min(720px, 100%); max-height: 86vh; overflow-y: auto; padding: 18px; }
+  #editor h3 { margin: 0 0 4px; font-size: 15px; font-family: ui-monospace, monospace; }
+  #editor .hint { color: var(--muted); font-size: 12px; margin-bottom: 14px; }
+  #editor label { display: block; font-size: 11px; color: var(--muted);
+    text-transform: uppercase; letter-spacing: .07em; margin: 10px 0 4px; }
+  #editor textarea { width: 100%; min-height: 62px; padding: 8px 10px; background: #0b0c0e;
+    border: 1px solid var(--line); border-radius: 6px; resize: vertical; }
+  .scopes { margin: 16px 0 10px; }
+  .scopes label { display: flex; gap: 9px; align-items: flex-start; text-transform: none;
+    letter-spacing: 0; font-size: 13px; color: var(--ink); margin: 8px 0; cursor: pointer; }
+  .scopes small { display: block; color: var(--muted); font-size: 11.5px; }
+  .scopes input[type=text] { margin-top: 6px; padding: 6px 9px; width: 220px;
+    background: #0b0c0e; border: 1px solid var(--line); border-radius: 5px; }
+  .actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14px; }
+  .err { color: var(--bad); font-size: 12.5px; margin-top: 8px; white-space: pre-wrap; }
+</style>
+</head>
+<body>
+
+<div id="login">
+  <h1>Résumé Builder</h1>
+  <input id="token" type="password" placeholder="Access token" autocomplete="current-password">
+  <button onclick="login()">Unlock</button>
+  <div class="err" id="loginErr"></div>
+</div>
+
+<div id="app">
+  <div class="col">
+    <h2>Available blocks</h2>
+    <input id="filter" placeholder="filter…" style="width:100%;padding:7px 9px;margin-bottom:10px;background:var(--panel);border:1px solid var(--line);border-radius:6px">
+    <div id="palette"></div>
+  </div>
+
+  <div class="col">
+    <div class="bar">
+      <select id="resumePicker" onchange="pickResume(this.value)"></select>
+      <button class="btn primary" onclick="saveResume()">Save</button>
+    </div>
+    <div id="layout"></div>
+  </div>
+
+  <div class="col">
+    <div id="status"><span class="pill busy">idle</span></div>
+    <iframe id="preview" title="Résumé preview"></iframe>
+    <div class="advice" id="advice"></div>
+  </div>
+</div>
+
+<div id="editor">
+  <div class="box">
+    <h3 id="edId"></h3>
+    <div class="hint" id="edHint"></div>
+    <div id="edFields"></div>
+    <div class="scopes">
+      <label><input type="radio" name="scope" value="override" checked>
+        <span>Only this résumé
+          <small>Writes an override into this manifest. No other résumé changes.</small></span></label>
+      <label><input type="radio" name="scope" value="variant">
+        <span>Save as a named variant
+          <small>Reusable from any résumé. Pick an existing name to update it, or type a new one.</small>
+          <input type="text" id="edVariant" placeholder="e.g. tight"></span></label>
+      <label><input type="radio" name="scope" value="base">
+        <span>Update the block everywhere
+          <small>Rewrites base content. Every résumé that has not overridden this field picks it up.</small></span></label>
+    </div>
+    <div class="err" id="edErr"></div>
+    <div class="actions">
+      <button class="btn" onclick="closeEditor()">Cancel</button>
+      <button class="btn primary" onclick="applyEdit()">Apply</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let state = { blocks: [], resumes: [], git: {} };
+let current = null;          // the manifest being edited
+let editing = null;          // { blockId, sectionIndex, entryIndex }
+let previewTimer = null;
+let inFlight = false;
+
+const byId = id => state.blocks.find(b => b.id === id);
+const el = (t, c) => { const n = document.createElement(t); if (c) n.className = c; return n; };
+
+async function api(path, options = {}) {
+  const response = await fetch(path, {
+    ...options,
+    headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
+  });
+  const body = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(body.error || response.statusText);
+  return body;
+}
+
+async function login() {
+  const token = document.getElementById('token').value;
+  try {
+    await api('/api/login', { method: 'POST', body: JSON.stringify({ token }) });
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('app').style.display = 'grid';
+    await boot();
+  } catch (err) {
+    document.getElementById('loginErr').textContent = err.message;
+  }
+}
+
+async function boot() {
+  state = await api('/api/state');
+  const picker = document.getElementById('resumePicker');
+  picker.innerHTML = '';
+  state.resumes.forEach(resume => {
+    const option = el('option');
+    option.value = resume.id;
+    option.textContent = resume.label || resume.id;
+    picker.appendChild(option);
+  });
+  pickResume(state.resumes[0]?.id);
+}
+
+function pickResume(id) {
+  current = structuredClone(state.resumes.find(r => r.id === id));
+  document.getElementById('resumePicker').value = id;
+  draw();
+  schedulePreview();
+}
+
+/* ---------- layout column ---------- */
+
+function draw() {
+  const host = document.getElementById('layout');
+  host.innerHTML = '';
+
+  current.sections.forEach((section, sectionIndex) => {
+    const wrap = el('div', 'section');
+    const header = el('header');
+    header.innerHTML = `<span>${section.heading || '(masthead)'}</span>
+      <span>${section.layout || 'plain'}</span>`;
+    wrap.appendChild(header);
+
+    const drop = el('div', 'drop');
+    drop.dataset.section = sectionIndex;
+    drop.ondragover = event => { event.preventDefault(); drop.classList.add('over'); };
+    drop.ondragleave = () => drop.classList.remove('over');
+    drop.ondrop = event => onDrop(event, sectionIndex);
+
+    (section.blocks || []).forEach((entry, entryIndex) => {
+      drop.appendChild(card(entry, sectionIndex, entryIndex));
+    });
+    wrap.appendChild(drop);
+    host.appendChild(wrap);
+  });
+
+  drawPalette();
+}
+
+function card(entry, sectionIndex, entryIndex) {
+  const source = byId(entry.block);
+  const node = el('div', 'card' + (entry.override ? ' overridden' : ''));
+  node.draggable = true;
+  node.ondragstart = event => {
+    event.dataTransfer.setData('text/plain', JSON.stringify({ from: 'layout', sectionIndex, entryIndex }));
+    node.classList.add('dragging');
+  };
+  node.ondragend = () => node.classList.remove('dragging');
+
+  const row = el('div', 'row');
+  const id = el('span', 'id');
+  id.textContent = entry.block;
+  row.appendChild(id);
+
+  if (source && source.variants.length > 1) {
+    const picker = el('select');
+    source.variants.forEach(name => {
+      const option = el('option');
+      option.value = name === 'full' ? '' : name;
+      option.textContent = name;
+      picker.appendChild(option);
+    });
+    picker.value = entry.variant || '';
+    picker.onchange = () => {
+      entry.variant = picker.value || undefined;
+      schedulePreview();
+    };
+    picker.onclick = event => event.stopPropagation();
+    row.appendChild(picker);
+  }
+
+  const edit = el('span', 'x');
+  edit.textContent = '✎';
+  edit.title = 'Edit content';
+  edit.onclick = event => { event.stopPropagation(); openEditor(entry.block, sectionIndex, entryIndex); };
+  row.appendChild(edit);
+
+  const remove = el('span', 'x');
+  remove.textContent = '✕';
+  remove.title = 'Remove from this résumé';
+  remove.onclick = event => {
+    event.stopPropagation();
+    current.sections[sectionIndex].blocks.splice(entryIndex, 1);
+    draw(); schedulePreview();
+  };
+  row.appendChild(remove);
+
+  node.appendChild(row);
+  if (source) {
+    const kind = el('div', 'kind');
+    kind.textContent = source.kind + (entry.override ? ' · overridden here' : '');
+    node.appendChild(kind);
+  }
+  return node;
+}
+
+function drawPalette() {
+  const used = new Set(current.sections.flatMap(s => (s.blocks || []).map(b => b.block)));
+  const filter = document.getElementById('filter').value.toLowerCase();
+  const host = document.getElementById('palette');
+  host.innerHTML = '';
+
+  state.blocks
+    .filter(b => !used.has(b.id))
+    .filter(b => !filter || b.id.includes(filter) || (b.tags || []).some(t => t.includes(filter)))
+    .forEach(source => {
+      const node = el('div', 'card');
+      node.draggable = true;
+      node.ondragstart = event =>
+        event.dataTransfer.setData('text/plain', JSON.stringify({ from: 'palette', id: source.id }));
+      node.innerHTML = `<div class="row"><span class="id">${source.id}</span></div>
+        <div class="kind">${source.kind} · ${(source.tags || []).join(' ')}</div>`;
+      host.appendChild(node);
+    });
+}
+
+function onDrop(event, sectionIndex) {
+  event.preventDefault();
+  document.querySelectorAll('.drop').forEach(d => d.classList.remove('over'));
+  const payload = JSON.parse(event.dataTransfer.getData('text/plain'));
+
+  if (payload.from === 'palette') {
+    current.sections[sectionIndex].blocks.push({ block: payload.id });
+  } else {
+    const [moved] = current.sections[payload.sectionIndex].blocks.splice(payload.entryIndex, 1);
+    current.sections[sectionIndex].blocks.push(moved);
+  }
+  draw();
+  schedulePreview();
+}
+
+document.getElementById('filter').oninput = drawPalette;
+
+/* ---------- preview ---------- */
+
+function schedulePreview() {
+  clearTimeout(previewTimer);
+  setStatus('busy', 'compiling…');
+  // A compile costs a few seconds, so coalesce rapid drags into one run.
+  previewTimer = setTimeout(runPreview, 400);
+}
+
+async function runPreview() {
+  if (inFlight) { schedulePreview(); return; }
+  inFlight = true;
+  try {
+    const result = await api('/api/preview', { method: 'POST', body: JSON.stringify(current) });
+    document.getElementById('preview').src = result.pdf;
+    const over = result.maxPages > 0 && result.pages > result.maxPages;
+    setStatus(over ? 'bad' : 'ok',
+      `${result.pages} page${result.pages === 1 ? '' : 's'}` +
+      (result.maxPages ? ` / budget ${result.maxPages}` : ''),
+      result.overfull.length ? `${result.overfull.length} overfull line(s)` : '');
+    drawAdvice(over || result.overfull.length ? result.savings : []);
+  } catch (err) {
+    setStatus('bad', err.message);
+  } finally {
+    inFlight = false;
+  }
+}
+
+function setStatus(kind, text, extra) {
+  const host = document.getElementById('status');
+  host.innerHTML = `<span class="pill ${kind}">${text}</span>` + (extra ? `<span>${extra}</span>` : '');
+}
+
+function drawAdvice(savings) {
+  const host = document.getElementById('advice');
+  host.innerHTML = '';
+  if (!savings || !savings.length) return;
+  host.appendChild(Object.assign(el('h2'), { textContent: 'Shorter variants available' }));
+  savings.slice(0, 8).forEach(item => {
+    const row = el('div');
+    row.innerHTML = `<span class="n">-${item.chars}</span>
+      <span style="flex:1">${item.block}</span>
+      <a>${item.from} → ${item.to}</a>`;
+    row.querySelector('a').onclick = () => {
+      for (const section of current.sections) {
+        for (const entry of (section.blocks || [])) {
+          if (entry.block === item.block) {
+            entry.variant = item.to === 'full' ? undefined : item.to;
+          }
+        }
+      }
+      draw(); schedulePreview();
+    };
+    host.appendChild(row);
+  });
+}
+
+/* ---------- content editor ---------- */
+
+function openEditor(blockId, sectionIndex, entryIndex) {
+  const source = byId(blockId);
+  if (!source) return;
+  const entry = current.sections[sectionIndex].blocks[entryIndex];
+  editing = { blockId, sectionIndex, entryIndex };
+
+  document.getElementById('edId').textContent = blockId;
+  document.getElementById('edHint').textContent =
+    `variant in use: ${entry.variant || 'full'}`;
+  document.getElementById('edErr').textContent = '';
+  document.getElementById('edVariant').value = entry.variant || '';
+
+  const host = document.getElementById('edFields');
+  host.innerHTML = '';
+  // Only scalar and simple-list fields are editable here; nested structures are
+  // edited in the YAML directly, where the shape is visible.
+  const merged = { ...source.content, ...(entry.override || {}) };
+  Object.keys(merged).sort().forEach(key => {
+    const value = merged[key];
+    const editable = typeof value === 'string' ||
+      (Array.isArray(value) && value.every(v => typeof v === 'string'));
+    if (!editable) return;
+
+    host.appendChild(Object.assign(el('label'), { textContent: key }));
+    const area = el('textarea');
+    area.dataset.key = key;
+    area.dataset.list = Array.isArray(value) ? 'true' : 'false';
+    area.value = Array.isArray(value) ? value.join('\n') : value;
+    if (Array.isArray(value)) area.placeholder = 'one item per line';
+    host.appendChild(area);
+  });
+
+  document.getElementById('editor').style.display = 'flex';
+}
+
+function closeEditor() {
+  document.getElementById('editor').style.display = 'none';
+  editing = null;
+}
+
+async function applyEdit() {
+  const scope = document.querySelector('input[name=scope]:checked').value;
+  const source = byId(editing.blockId);
+  const entry = current.sections[editing.sectionIndex].blocks[editing.entryIndex];
+
+  const fields = {};
+  document.querySelectorAll('#edFields textarea').forEach(area => {
+    const original = source.content[area.dataset.key];
+    const value = area.dataset.list === 'true'
+      ? area.value.split('\n').map(s => s.trim()).filter(Boolean)
+      : area.value;
+    // Only send what actually changed, so a save does not rewrite untouched
+    // fields and bury the real edit in the diff.
+    const unchanged = Array.isArray(original)
+      ? JSON.stringify(original) === JSON.stringify(value)
+      : original === value;
+    const alreadyOverridden = entry.override && area.dataset.key in entry.override;
+    if (!unchanged || alreadyOverridden) fields[area.dataset.key] = value;
+  });
+
+  if (!Object.keys(fields).length) { closeEditor(); return; }
+
+  try {
+    if (scope === 'override') {
+      entry.override = { ...(entry.override || {}), ...fields };
+    } else {
+      const variant = document.getElementById('edVariant').value.trim();
+      await api('/api/block/' + encodeURIComponent(editing.blockId), {
+        method: 'POST',
+        body: JSON.stringify({ scope, variant, fields }),
+      });
+      // The block library changed on disk; reload it so other résumés using
+      // this block reflect the promotion immediately.
+      const picked = current.id;
+      const draft = structuredClone(current);
+      state = await api('/api/state');
+      current = draft;
+      document.getElementById('resumePicker').value = picked;
+      if (scope === 'variant' && variant) entry.variant = variant;
+    }
+    closeEditor();
+    draw();
+    schedulePreview();
+  } catch (err) {
+    document.getElementById('edErr').textContent = err.message;
+  }
+}
+
+async function saveResume() {
+  try {
+    const result = await api('/api/resume/' + encodeURIComponent(current.id), {
+      method: 'POST', body: JSON.stringify(current),
+    });
+    setStatus('ok', result.committed ? 'saved + committed' : 'saved (no change)',
+      result.gitError || '');
+  } catch (err) {
+    setStatus('bad', err.message);
+  }
+}
+
+document.getElementById('token').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+</script>
+</body>
+</html>

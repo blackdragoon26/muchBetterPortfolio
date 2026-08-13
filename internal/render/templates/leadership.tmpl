@@ -1,0 +1,11 @@
+<<- $c := .Content ->>
+\noindent\begin{itemize}[leftmargin=14pt, topsep=0pt]
+<<- range rows $c "entries" >>
+  \item \textbf{<< tex (str . "title") >>} \hfill (\textit{\textbf{<< tex (str . "dates") >>}})
+  \begin{itemize}[leftmargin=10pt, label={--}]
+<<- range strAt . "bullets" >>
+    \item << mkn . >>
+<<- end >>
+  \end{itemize}
+<<- end >>
+\end{itemize}%
