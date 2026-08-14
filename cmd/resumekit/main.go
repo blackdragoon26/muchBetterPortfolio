@@ -4,6 +4,7 @@
 //	resumekit build systems      compile one manifest by id
 //	resumekit list               show the block library
 //	resumekit tex <id>           print the generated LaTeX without compiling
+//	resumekit totp               generate a TOTP secret for the builder login
 package main
 
 import (
@@ -14,11 +15,13 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/blackdragoon26/muchBetterPortfolio/internal/block"
 	"github.com/blackdragoon26/muchBetterPortfolio/internal/compile"
 	"github.com/blackdragoon26/muchBetterPortfolio/internal/manifest"
 	"github.com/blackdragoon26/muchBetterPortfolio/internal/render"
+	"github.com/blackdragoon26/muchBetterPortfolio/internal/totp"
 )
 
 const (
@@ -39,6 +42,8 @@ func main() {
 		err = list()
 	case "tex":
 		err = writeTex(os.Args[2:])
+	case "totp":
+		err = enrolTOTP()
 	default:
 		usage()
 	}
@@ -49,7 +54,7 @@ func main() {
 }
 
 func usage() {
-	fmt.Fprint(os.Stderr, "usage: resumekit build [id] | list | tex <id>\n")
+	fmt.Fprint(os.Stderr, "usage: resumekit build [id] | list | tex <id> | totp\n")
 	os.Exit(2)
 }
 
@@ -213,6 +218,62 @@ func report(store *block.Store, renderer *render.Renderer, target *manifest.Mani
 		fmt.Printf("      -%-5d %-42s %s -> %s\n",
 			candidate.chars, candidate.id, candidate.current, candidate.variant)
 	}
+}
+
+// enrolTOTP mints a secret for the builder login and prints what an
+// authenticator app needs. The secret is only ever displayed here; the server
+// reads it from the operator-installed environment file.
+func enrolTOTP() error {
+	secret, err := totp.NewSecret()
+	if err != nil {
+		return err
+	}
+	code, err := secret.Code(time.Now())
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf(`Add this to /etc/poolctl/apps/resume-builder.env on the target node:
+
+  RESUMEKIT_TOTP_SECRET=%s
+
+Then enrol an authenticator app, either by opening this URI:
+
+  %s
+
+or by choosing "enter a setup key manually" and typing:
+
+  key:       %s
+  type:      time-based
+  digits:    %d
+  interval:  %ds
+
+Your app should be showing %s right now. If it shows something else, the
+secret was mistyped or the device clock is off.
+
+Keep this secret out of the repository and out of chat logs.
+`,
+		secret.Base32,
+		secret.ProvisioningURI("Myprod", "resume-builder"),
+		spaced(secret.Base32),
+		totp.Digits,
+		int(totp.Step.Seconds()),
+		code,
+	)
+	return nil
+}
+
+// spaced groups the key in fours, which is how authenticator apps display it
+// and how it is least painful to retype.
+func spaced(value string) string {
+	var out []byte
+	for index := 0; index < len(value); index++ {
+		if index > 0 && index%4 == 0 {
+			out = append(out, ' ')
+		}
+		out = append(out, value[index])
+	}
+	return string(out)
 }
 
 func writeTex(args []string) error {

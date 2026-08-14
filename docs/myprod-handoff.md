@@ -25,7 +25,7 @@ ephemeral data behavior: the working copy under /data/repo is a shallow clone
   24, and lost on restart.
 required environment variables: RESUMEKIT_REPO_URL, RESUMEKIT_REPO_BRANCH
   (both have working defaults baked into the image)
-required secrets: RESUMEKIT_TOKEN (editor access), GITHUB_TOKEN (push access)
+required secrets: RESUMEKIT_TOTP_SECRET (editor login), GITHUB_TOKEN (push access)
 publicly pullable without authentication: yes, once the GHCR package is marked public
 local container smoke command: see below
 health-check result: {"status":"ok"} with HTTP 200
@@ -81,7 +81,11 @@ Per contract item 5, public traffic is bounded:
   sweeps up unrelated staged changes.
 - `Manifest.Output` is validated to a relative `.pdf` path under
   `public/resume/`, so a manifest cannot direct a write outside the repository.
-- Every route except `/healthz` and `/` requires the access token.
+- Login is a six-digit TOTP code. Five wrong codes lock logins for five
+  minutes, and attempts made while locked restart that window, so guessing
+  cannot simply be waited out. A correct code is single-use: replaying one
+  inside its validity window is refused.
+- Every route except `/healthz` and `/` requires a session or the API token.
 
 ## Secrets
 
@@ -92,15 +96,24 @@ Install on the target node as `/etc/poolctl/apps/resume-builder.env`, owner
 `65532:65532`, mode `0400`:
 
 ```sh
-RESUMEKIT_TOKEN=<a long random string; this is the editor password>
+RESUMEKIT_TOTP_SECRET=<base32 key from `resumekit totp`>
 GITHUB_TOKEN=<a fine-grained PAT with contents:write on muchBetterPortfolio only>
 ```
+
+Generate the first with `resumekit totp`, which prints the key, an `otpauth://`
+URI, and the code your app should currently be showing so enrolment can be
+checked before it is relied on.
+
+`RESUMEKIT_TOKEN` is now optional and grants API access to scripts only. Leave
+it unset and the one-time code becomes the sole way in.
 
 Register the app with `secret_env: true`. The entrypoint also accepts the file at
 `/run/secrets/resume-builder.env`.
 
 Without `GITHUB_TOKEN` the service still runs: edits commit inside the container
 and are lost on restart. That is a safe way to try it before issuing a token.
+Without `RESUMEKIT_TOTP_SECRET` it refuses to start, rather than exposing an
+editor that can rewrite the résumé and push to the repository.
 
 ## Suggested registration values
 

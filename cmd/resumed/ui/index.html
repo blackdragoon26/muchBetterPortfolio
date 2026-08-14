@@ -99,7 +99,11 @@
 
 <div id="login">
   <h1>Résumé Builder</h1>
-  <input id="token" type="password" placeholder="Access token" autocomplete="current-password">
+  <p style="color:var(--muted);font-size:12.5px;margin:0 0 12px">
+    Enter the 6-digit code from your authenticator app.</p>
+  <input id="token" inputmode="numeric" pattern="[0-9]*" maxlength="7"
+         placeholder="000000" autocomplete="one-time-code"
+         style="text-align:center;letter-spacing:.35em;font-size:20px;font-family:ui-monospace,monospace">
   <button onclick="login()">Unlock</button>
   <div class="err" id="loginErr"></div>
 </div>
@@ -172,14 +176,20 @@ async function api(path, options = {}) {
 }
 
 async function login() {
-  const token = document.getElementById('token').value;
+  const code = document.getElementById('token').value.replace(/\s/g, '');
+  const err = document.getElementById('loginErr');
+  err.textContent = '';
   try {
-    await api('/api/login', { method: 'POST', body: JSON.stringify({ token }) });
+    await api('/api/login', { method: 'POST', body: JSON.stringify({ code }) });
     document.getElementById('login').style.display = 'none';
     document.getElementById('app').style.display = 'grid';
     await boot();
-  } catch (err) {
-    document.getElementById('loginErr').textContent = err.message;
+  } catch (failure) {
+    err.textContent = failure.message;
+    // A rejected code is never worth resubmitting; clear it so the next
+    // attempt is a fresh one from the app.
+    document.getElementById('token').value = '';
+    document.getElementById('token').focus();
   }
 }
 
@@ -514,6 +524,10 @@ async function saveResume() {
 }
 
 document.getElementById('token').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+document.getElementById('token').addEventListener('input', e => {
+  if (e.target.value.replace(/\s/g, '').length === 6) login();
+});
+document.getElementById('token').focus();
 </script>
 </body>
 </html>
