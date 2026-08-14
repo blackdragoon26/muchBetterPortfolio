@@ -63,16 +63,66 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Record the digest for the Myprod handoff
+      # Hands the freshly built digest to Myprod, which updates the registration
+      # and rolls the allocation in one call. The token is scoped to this app
+      # alone, and the agent only accepts a digest in the repository the app is
+      # already registered against, so a leaked CI credential cannot point the
+      # deployment at an arbitrary image.
+      - name: Deploy to Myprod
+        id: deploy
+        if: vars.MYPROD_AGENT_URL != ''
+        env:
+          AGENT_URL: ${{ vars.MYPROD_AGENT_URL }}
+          DEPLOY_TOKEN: ${{ secrets.MYPROD_DEPLOY_TOKEN }}
+          IMAGE: ghcr.io/blackdragoon26/resume-builder@${{ steps.push.outputs.digest }}
+        run: |
+          set -euo pipefail
+          if [ -z "${DEPLOY_TOKEN}" ]; then
+            echo "MYPROD_DEPLOY_TOKEN is not set; skipping deploy." >&2
+            exit 1
+          fi
+
+          echo "Deploying ${IMAGE}"
+          status=$(curl -sS -o /tmp/deploy.json -w '%{http_code}' \
+            -X POST "${AGENT_URL%/}/__poolctl/api/apps/resume-builder/image" \
+            -H "Authorization: Bearer ${DEPLOY_TOKEN}" \
+            -H "Content-Type: application/json" \
+            --data "$(printf '{"image":"%s"}' "${IMAGE}")")
+
+          cat /tmp/deploy.json
+          if [ "${status}" != "200" ]; then
+            echo "::error::Myprod deploy failed with HTTP ${status}"
+            exit 1
+          fi
+
+      # A 200 from the agent means the job was submitted, not that the container
+      # came up. Poll the public endpoint so a crash-looping release fails the
+      # workflow instead of being reported as a successful deploy.
+      - name: Verify the deployed service is healthy
+        if: steps.deploy.outcome == 'success'
+        env:
+          HEALTH_URL: ${{ vars.MYPROD_HEALTH_URL || 'https://resume.sankalpjha.dev/healthz' }}
+        run: |
+          set -uo pipefail
+          for attempt in $(seq 1 30); do
+            if curl -fsS --max-time 10 "${HEALTH_URL}" > /tmp/health.json 2>/dev/null; then
+              echo "healthy after ${attempt} attempt(s): $(cat /tmp/health.json)"
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "::error::${HEALTH_URL} did not become healthy within 5 minutes"
+          exit 1
+
+      - name: Record the release
+        if: always()
         run: |
           {
-            echo "### Myprod handoff values"
+            echo "### resume-builder"
             echo
             echo '```txt'
-            echo "image: ghcr.io/blackdragoon26/resume-builder:${{ github.sha }}"
-            echo "image digest: ${{ steps.push.outputs.digest }}"
-            echo "source commit: ${{ github.sha }}"
+            echo "image:  ghcr.io/blackdragoon26/resume-builder@${{ steps.push.outputs.digest }}"
+            echo "commit: ${{ github.sha }}"
+            echo "deploy: ${{ steps.deploy.outcome || 'skipped' }}"
             echo '```'
-            echo
-            echo "The package must be made public once before an anonymous pull will work."
           } >> "$GITHUB_STEP_SUMMARY"

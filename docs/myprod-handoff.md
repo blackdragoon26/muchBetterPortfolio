@@ -115,6 +115,45 @@ and are lost on restart. That is a safe way to try it before issuing a token.
 Without `RESUMEKIT_TOTP_SECRET` it refuses to start, rather than exposing an
 editor that can rewrite the résumé and push to the repository.
 
+## Continuous deployment
+
+Pushing to `main` builds the image and rolls it out without a manual step. The
+publish workflow calls the agent's scoped image endpoint, which updates the
+registration and redeploys in one request:
+
+```txt
+POST https://api.sankalpjha.dev/__poolctl/api/apps/resume-builder/image
+Authorization: Bearer <scoped deploy token>
+{"image": "ghcr.io/blackdragoon26/resume-builder@sha256:..."}
+```
+
+Two properties make this safe to hand to CI. The token is scoped to this app
+alone, so it cannot touch any other deployment, and the agent rejects any image
+that is not an immutable `sha256` digest in the repository the app is already
+registered against — a leaked token cannot repoint the service at an arbitrary
+image.
+
+A 200 only means the job was submitted, so the workflow then polls `/healthz`
+for five minutes. A release that crash-loops fails the workflow rather than
+being reported as a successful deploy.
+
+To enable it:
+
+1. Generate a token of at least 32 characters: `openssl rand -hex 24`.
+2. Add it to the agent's environment on the Oracle node, then restart the agent:
+
+   ```sh
+   POOLCTL_APP_DEPLOY_TOKENS_JSON='{"resume-builder":"<token>"}'
+   ```
+
+   The variable is a JSON object, so merge rather than replace it if other apps
+   already have scoped tokens.
+3. In this repository: add secret `MYPROD_DEPLOY_TOKEN` with the same value, and
+   variable `MYPROD_AGENT_URL` set to `https://api.sankalpjha.dev`.
+
+The deploy step is skipped when `MYPROD_AGENT_URL` is unset, so the workflow
+still builds and publishes before any of this is configured.
+
 ## Suggested registration values
 
 ```txt
