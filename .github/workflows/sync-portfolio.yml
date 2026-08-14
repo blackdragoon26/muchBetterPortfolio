@@ -74,10 +74,16 @@ jobs:
       - name: Import portfolio data into the block store
         run: go run ./cmd/importer
 
+      # The musl build is statically linked, so it depends on nothing the runner
+      # image happens to provide. The gnu build links against the host's
+      # harfbuzz and freetype and fails here with "xparse.sty not found", while
+      # the same version and document compile cleanly under musl. This also
+      # matches the binary the published container uses, so CI and production
+      # typeset with one toolchain rather than two.
       - name: Install tectonic
         run: |
           curl -fsSL -o tectonic.tar.gz \
-            "https://github.com/tectonic-typesetting/tectonic/releases/download/tectonic%40${TECTONIC_VERSION}/tectonic-${TECTONIC_VERSION}-x86_64-unknown-linux-gnu.tar.gz"
+            "https://github.com/tectonic-typesetting/tectonic/releases/download/tectonic%40${TECTONIC_VERSION}/tectonic-${TECTONIC_VERSION}-x86_64-unknown-linux-musl.tar.gz"
           tar -xzf tectonic.tar.gz
           sudo install -m 0755 tectonic /usr/local/bin/tectonic
           tectonic --version
@@ -95,6 +101,24 @@ jobs:
 
       - name: Build every résumé
         run: go run ./cmd/resumekit build
+
+      # resumekit exits non-zero on a compile failure or a blown page budget, so
+      # reaching here means every PDF was produced. Confirm they are on disk and
+      # non-trivial anyway: a silently empty PDF committed to the site would be
+      # worse than a failed build.
+      - name: Check the built PDFs
+        run: |
+          set -euo pipefail
+          missing=0
+          for pdf in public/resume/*.pdf; do
+            size=$(stat -c%s "$pdf")
+            printf '%-46s %8s bytes\n' "$pdf" "$size"
+            if [ "$size" -lt 10000 ]; then
+              echo "::error::$pdf is only $size bytes"
+              missing=1
+            fi
+          done
+          exit "$missing"
 
       - name: Commit generated content
         run: |
