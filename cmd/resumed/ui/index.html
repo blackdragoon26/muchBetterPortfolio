@@ -207,7 +207,10 @@
   <div class="col glass">
     <div class="bar">
       <select id="resumePicker" onchange="pickResume(this.value)"></select>
+      <button class="btn" onclick="refreshRepo()" id="refreshBtn"
+              title="Pull blocks committed since this server started">↻</button>
       <button class="btn" onclick="newResume()" title="New résumé">+</button>
+      <button class="btn" onclick="deleteResume()" title="Delete this résumé">🗑</button>
       <button class="btn primary" onclick="saveResume()">Save</button>
     </div>
     <div class="scroll"><div id="layout"></div></div>
@@ -591,6 +594,42 @@ function saveBlob(blob, filename) {
   const link = el('a');
   link.href = url; link.download = filename; link.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+/* keeping up with the repository */
+
+// Blocks are read from disk and cloned once at startup, so anything CI
+// committed since is invisible until this runs.
+async function refreshRepo() {
+  const button = document.getElementById('refreshBtn');
+  button.textContent = '…';
+  try {
+    const result = await api('/api/refresh', { method: 'POST' });
+    const picked = current?.id;
+    state = await api('/api/state');
+    fillPicker(picked);
+    pickResume(state.resumes.some(r => r.id === picked) ? picked : state.resumes[0]?.id);
+    setStatus('ok', result.status, `${result.blocks} blocks`);
+  } catch (err) {
+    setStatus('bad', err.message);
+  } finally {
+    button.textContent = '↻';
+  }
+}
+
+async function deleteResume() {
+  if (!current) return;
+  const id = current.id;
+  if (!confirm(`Delete "${current.label || id}"?\n\nThe manifest and its built PDF are removed and the deletion is committed. Blocks are untouched.`)) return;
+  try {
+    await api('/api/resume/' + encodeURIComponent(id), { method: 'DELETE' });
+    state = await api('/api/state');
+    fillPicker();
+    pickResume(state.resumes[0]?.id);
+    setStatus('ok', `deleted ${id}`);
+  } catch (err) {
+    setStatus('bad', err.message);
+  }
 }
 
 /* custom résumés */

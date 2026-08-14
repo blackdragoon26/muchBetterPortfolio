@@ -85,6 +85,78 @@ func (g *Git) Commit(ctx context.Context, message string, paths ...string) (bool
 	return true, nil
 }
 
+// Pull fast-forwards the working copy to origin.
+//
+// The block store is only ever read from disk, and the process clones once at
+// startup, so a running builder cannot see blocks that CI committed afterwards.
+// This is how it catches up without a redeploy.
+//
+// --ff-only is deliberate. A reset would silently discard commits made here that
+// failed to push — exactly the state a save reports when the token is wrong —
+// so refusing to move and saying why is the honest outcome.
+func (g *Git) Pull(ctx context.Context) (string, error) {
+	branch, err := g.Branch(ctx)
+	if err != nil {
+		return "", err
+	}
+	if _, err := g.run(ctx, "fetch", "origin", branch); err != nil {
+		return "", err
+	}
+
+	before, err := g.run(ctx, "rev-parse", "HEAD")
+	if err != nil {
+		return "", err
+	}
+	if _, err := g.run(ctx, "merge", "--ff-only", "origin/"+branch); err != nil {
+		return "", fmt.Errorf("cannot fast-forward to origin/%s; this copy has commits that were never pushed: %w", branch, err)
+	}
+	after, err := g.run(ctx, "rev-parse", "HEAD")
+	if err != nil {
+		return "", err
+	}
+
+	if strings.TrimSpace(before) == strings.TrimSpace(after) {
+		return "already up to date", nil
+	}
+	return "updated to " + strings.TrimSpace(after)[:12], nil
+}
+
+// Remove deletes paths from the working tree and commits the deletion.
+func (g *Git) Remove(ctx context.Context, message string, paths ...string) (bool, error) {
+	if len(paths) == 0 {
+		return false, nil
+	}
+	// --ignore-unmatch keeps this idempotent: removing something already gone is
+	// not a failure worth surfacing to whoever clicked delete.
+	args := append([]string{"rm", "-f", "--ignore-unmatch", "--"}, paths...)
+	if _, err := g.run(ctx, args...); err != nil {
+		return false, err
+	}
+
+	pathspec := append([]string{"--"}, paths...)
+	diffArgs := append([]string{"diff", "--cached", "--quiet"}, pathspec...)
+	if _, err := g.run(ctx, diffArgs...); err == nil {
+		return false, nil
+	}
+
+	author := fmt.Sprintf("%s <%s>", g.AuthorName, g.AuthorEmail)
+	commitArgs := append([]string{"commit", "--author", author, "-m", message}, pathspec...)
+	if _, err := g.run(ctx, commitArgs...); err != nil {
+		return false, err
+	}
+	if !g.Push {
+		return true, nil
+	}
+	branch, err := g.Branch(ctx)
+	if err != nil {
+		return true, err
+	}
+	if _, err := g.run(ctx, "push", "origin", branch); err != nil {
+		return true, fmt.Errorf("committed locally but push failed: %w", err)
+	}
+	return true, nil
+}
+
 func (g *Git) run(ctx context.Context, args ...string) (string, error) {
 	ctx, cancel := context.WithTimeout(ctx, 60*time.Second)
 	defer cancel()

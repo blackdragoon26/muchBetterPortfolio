@@ -171,6 +171,8 @@ func (s *server) routes() http.Handler {
 	mux.Handle("POST /api/preview", s.authed(s.handlePreview))
 	mux.Handle("POST /api/tex", s.authed(s.handleTex))
 	mux.Handle("POST /api/resume/{id}", s.authed(s.handleSaveResume))
+	mux.Handle("DELETE /api/resume/{id}", s.authed(s.handleDeleteResume))
+	mux.Handle("POST /api/refresh", s.authed(s.handleRefresh))
 	mux.Handle("POST /api/block/{id}", s.authed(s.handleSaveBlock))
 
 	mux.HandleFunc("GET /favicon.ico", func(w http.ResponseWriter, r *http.Request) {
@@ -543,6 +545,64 @@ func (s *server) handleSaveResume(w http.ResponseWriter, r *http.Request) {
 	committed, err := s.git.Commit(r.Context(),
 		fmt.Sprintf("resume(%s): update layout from builder", id), path)
 	response := map[string]any{"status": "saved", "committed": committed}
+	if err != nil {
+		response["gitError"] = err.Error()
+	}
+	writeJSON(w, http.StatusOK, response)
+}
+
+// handleRefresh fast-forwards the working copy to origin.
+//
+// The block store is read from disk and cloned once at startup, so blocks that
+// CI committed after this container started are invisible to it. This is how a
+// running builder picks them up without a redeploy.
+func (s *server) handleRefresh(w http.ResponseWriter, r *http.Request) {
+	s.writeMu.Lock()
+	defer s.writeMu.Unlock()
+
+	output, err := s.git.Pull(r.Context())
+	if err != nil {
+		writeJSON(w, http.StatusConflict, map[string]string{"error": err.Error()})
+		return
+	}
+	store, err := block.Load(s.blocksRoot)
+	if err != nil {
+		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]any{"status": output, "blocks": store.Len()})
+}
+
+// handleDeleteResume removes a manifest and the PDF it produced.
+func (s *server) handleDeleteResume(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+	if !safeID(id) {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "invalid résumé id"})
+		return
+	}
+
+	s.writeMu.Lock()
+	defer s.writeMu.Unlock()
+
+	path := filepath.Join(s.resumesRoot, id+".yaml")
+	target, err := manifest.Load(path)
+	if err != nil {
+		writeJSON(w, http.StatusNotFound, map[string]string{"error": "no such résumé"})
+		return
+	}
+
+	// The built PDF goes with the manifest. Leaving it behind would keep serving
+	// a résumé that can no longer be rebuilt or edited.
+	paths := []string{path}
+	if target.Output != "" {
+		built := filepath.Join(s.repoRoot, filepath.FromSlash(target.Output))
+		if _, err := os.Stat(built); err == nil {
+			paths = append(paths, built)
+		}
+	}
+
+	committed, err := s.git.Remove(r.Context(), fmt.Sprintf("resume(%s): delete", id), paths...)
+	response := map[string]any{"status": "deleted", "committed": committed}
 	if err != nil {
 		response["gitError"] = err.Error()
 	}
