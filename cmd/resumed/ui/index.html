@@ -2,135 +2,235 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
 <title>Résumé Builder</title>
+<link rel="icon" href="/favicon.ico">
 <style>
+  /* Pure black base with translucent panels layered over it. A blur needs
+     something behind it to be worth having, so two dim colour washes sit on the
+     backdrop; over flat black the glass would be indistinguishable from a
+     plain grey fill. */
   :root {
-    --bg: #0b0c0e; --panel: #141619; --line: #24272c; --ink: #e9eaec;
-    --muted: #8b9099; --accent: #4c9aff; --warn: #f0a04b; --bad: #f2635f;
-    --ok: #4bb96f;
+    --base: #000;
+    --glass: rgba(255,255,255,.045);
+    --glass-strong: rgba(255,255,255,.075);
+    --hairline: rgba(255,255,255,.09);
+    --hairline-soft: rgba(255,255,255,.055);
+    --ink: #f5f5f7;
+    --muted: #86868b;
+    --accent: #0a84ff;
+    --ok: #30d158;
+    --warn: #ff9f0a;
+    --bad: #ff453a;
+    --radius: 14px;
+    --blur: saturate(180%) blur(24px);
   }
   * { box-sizing: border-box; }
+  html, body { height: 100%; }
   body {
-    margin: 0; background: var(--bg); color: var(--ink);
-    font: 14px/1.5 ui-sans-serif, system-ui, -apple-system, sans-serif;
+    margin: 0; background: var(--base); color: var(--ink);
+    font: 13.5px/1.55 -apple-system, BlinkMacSystemFont, "SF Pro Text", ui-sans-serif, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+  body::before {
+    content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+    background:
+      radial-gradient(60vw 60vh at 12% 0%, rgba(10,132,255,.10), transparent 60%),
+      radial-gradient(50vw 50vh at 88% 100%, rgba(94,92,230,.09), transparent 60%);
   }
   button, select, input, textarea { font: inherit; color: inherit; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-thumb { background: rgba(255,255,255,.13); border-radius: 4px; }
 
-  #login { max-width: 340px; margin: 18vh auto; padding: 24px;
-    background: var(--panel); border: 1px solid var(--line); border-radius: 10px; }
-  #login h1 { font-size: 17px; margin: 0 0 14px; }
-  #login input { width: 100%; padding: 9px 11px; margin-bottom: 10px;
-    background: #0b0c0e; border: 1px solid var(--line); border-radius: 6px; }
-  #login button { width: 100%; padding: 9px; background: var(--accent);
-    border: 0; border-radius: 6px; color: #04122b; font-weight: 600; cursor: pointer; }
+  .glass {
+    background: var(--glass);
+    -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius);
+  }
 
-  #app { display: none; grid-template-columns: 300px minmax(0,1fr) minmax(0,1.05fr);
-    gap: 1px; background: var(--line); height: 100vh; }
-  .col { background: var(--bg); overflow-y: auto; padding: 14px; }
-  .col h2 { font-size: 11px; text-transform: uppercase; letter-spacing: .09em;
-    color: var(--muted); margin: 0 0 10px; font-weight: 600; }
+  /* login */
+  #login { max-width: 330px; margin: 16vh auto; padding: 26px 24px 22px; text-align: center; }
+  #login h1 { font-size: 19px; margin: 0 0 6px; letter-spacing: -.02em; }
+  #login p { color: var(--muted); font-size: 12.5px; margin: 0 0 18px; }
+  #code {
+    width: 100%; padding: 13px; margin-bottom: 12px; text-align: center;
+    background: rgba(0,0,0,.5); border: 1px solid var(--hairline);
+    border-radius: 11px; font-size: 22px; letter-spacing: .4em; text-indent: .4em;
+    font-family: ui-monospace, "SF Mono", monospace;
+  }
+  #code:focus { outline: none; border-color: var(--accent); }
+  #login button {
+    width: 100%; padding: 11px; background: var(--accent); border: 0;
+    border-radius: 11px; color: #fff; font-weight: 590; cursor: pointer;
+  }
 
-  .bar { display: flex; gap: 8px; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
-  .bar select { flex: 1; min-width: 130px; padding: 7px 9px; background: var(--panel);
-    border: 1px solid var(--line); border-radius: 6px; }
-  .btn { padding: 7px 12px; background: var(--panel); border: 1px solid var(--line);
-    border-radius: 6px; cursor: pointer; white-space: nowrap; }
-  .btn:hover { border-color: var(--accent); }
-  .btn.primary { background: var(--accent); border-color: var(--accent); color: #04122b; font-weight: 600; }
+  /* shell */
+  #app { display: none; grid-template-columns: 290px minmax(0,1fr) minmax(0,1.1fr);
+         gap: 12px; padding: 12px; height: 100vh; }
+  .col { min-height: 0; display: flex; flex-direction: column; padding: 13px; }
+  .col > .scroll { overflow-y: auto; flex: 1; margin: 0 -4px; padding: 0 4px; }
+  h2 { font-size: 10.5px; text-transform: uppercase; letter-spacing: .075em;
+       color: var(--muted); margin: 0 0 10px; font-weight: 590; }
 
-  .section { margin-bottom: 16px; }
-  .section > header { display: flex; justify-content: space-between; align-items: center;
-    font-size: 12px; color: var(--muted); padding: 4px 2px; border-bottom: 1px solid var(--line);
-    margin-bottom: 6px; }
-  .drop { min-height: 30px; border-radius: 6px; }
-  .drop.over { outline: 1px dashed var(--accent); outline-offset: 2px; }
+  .btn {
+    padding: 7px 12px; background: var(--glass-strong); border: 1px solid var(--hairline);
+    border-radius: 9px; cursor: pointer; white-space: nowrap; font-size: 12.5px;
+    transition: background .15s, border-color .15s;
+  }
+  .btn:hover { background: rgba(255,255,255,.12); }
+  .btn.primary { background: var(--accent); border-color: transparent; color: #fff; font-weight: 590; }
+  .btn.primary:hover { background: #339cff; }
+  .btn:disabled { opacity: .4; cursor: default; }
 
-  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 7px;
-    padding: 8px 10px; margin-bottom: 6px; cursor: grab; }
-  .card.dragging { opacity: .4; }
-  .card .row { display: flex; align-items: center; gap: 8px; }
-  .card .id { font-family: ui-monospace, monospace; font-size: 11.5px;
+  .bar { display: flex; gap: 7px; align-items: center; margin-bottom: 11px; }
+  .bar select, #filter {
+    min-width: 0; padding: 8px 10px; background: var(--glass-strong);
+    border: 1px solid var(--hairline); border-radius: 9px; appearance: none;
+  }
+  .bar select { flex: 1; }
+  /* The filter is a direct child of the flex column, so it must be pinned to
+     its own height or it stretches to fill the whole panel. */
+  #filter { flex: 0 0 auto; width: 100%; margin-bottom: 10px; }
+
+  .section { margin-bottom: 15px; }
+  .section > header { display: flex; justify-content: space-between; font-size: 11px;
+    color: var(--muted); padding: 3px 2px 5px; border-bottom: 1px solid var(--hairline-soft);
+    margin-bottom: 7px; }
+
+  .drop { min-height: 34px; border-radius: 10px; transition: background .15s; }
+  .drop.over { background: rgba(10,132,255,.10); box-shadow: inset 0 0 0 1px rgba(10,132,255,.45); }
+
+  .card {
+    background: var(--glass); border: 1px solid var(--hairline-soft);
+    border-radius: 10px; padding: 8px 10px; margin-bottom: 6px; cursor: grab;
+    transition: border-color .15s, background .15s;
+  }
+  .card:hover { border-color: var(--hairline); background: var(--glass-strong); }
+  .card.dragging { opacity: .35; }
+  .card .row { display: flex; align-items: center; gap: 7px; }
+  .card .id { font-family: ui-monospace, "SF Mono", monospace; font-size: 11px;
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
-  .card .kind { font-size: 10px; color: var(--muted); text-transform: uppercase; }
-  .card select { background: #0b0c0e; border: 1px solid var(--line);
-    border-radius: 5px; padding: 2px 5px; font-size: 11.5px; max-width: 120px; }
-  .card .x { color: var(--muted); cursor: pointer; padding: 0 3px; }
-  .card .x:hover { color: var(--bad); }
-  .card.overridden { border-left: 2px solid var(--warn); }
+  .card .kind { font-size: 9.5px; color: var(--muted); text-transform: uppercase;
+    letter-spacing: .05em; margin-top: 2px; }
+  .card select { background: rgba(0,0,0,.45); border: 1px solid var(--hairline-soft);
+    border-radius: 7px; padding: 2px 6px; font-size: 11px; max-width: 118px; }
+  .icon { color: var(--muted); cursor: pointer; padding: 0 3px; font-size: 12px; }
+  .icon:hover { color: var(--ink); }
+  .icon.danger:hover { color: var(--bad); }
+  .card.overridden { box-shadow: inset 2px 0 0 var(--warn); }
 
-  #status { display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
-    padding: 9px 11px; background: var(--panel); border: 1px solid var(--line);
-    border-radius: 7px; margin-bottom: 10px; font-size: 12.5px; }
-  .pill { padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
-  .pill.ok { background: rgba(75,185,111,.16); color: var(--ok); }
-  .pill.bad { background: rgba(242,99,95,.16); color: var(--bad); }
-  .pill.busy { background: rgba(139,144,153,.16); color: var(--muted); }
+  /* preview */
+  #status { display: flex; gap: 9px; align-items: center; flex-wrap: wrap;
+    padding: 8px 11px; margin-bottom: 10px; font-size: 12px; }
+  .pill { padding: 2.5px 9px; border-radius: 20px; font-size: 11px; font-weight: 590; }
+  .pill.ok   { background: rgba(48,209,88,.15);  color: var(--ok); }
+  .pill.bad  { background: rgba(255,69,58,.15);  color: var(--bad); }
+  .pill.busy { background: rgba(255,255,255,.10); color: var(--muted); }
 
-  iframe { width: 100%; height: calc(100vh - 190px); border: 1px solid var(--line);
-    border-radius: 7px; background: #fff; }
+  .viewer { position: relative; flex: 1; min-height: 0; border-radius: 12px; overflow: hidden;
+            border: 1px solid var(--hairline); background: #fff; }
+  iframe { width: 100%; height: 100%; border: 0; display: block; }
 
-  .advice { margin-top: 10px; font-size: 12px; }
-  .advice div { display: flex; gap: 8px; padding: 4px 0; border-bottom: 1px solid var(--line); }
-  .advice .n { color: var(--ok); font-family: ui-monospace, monospace; min-width: 52px; }
-  .advice a { color: var(--accent); cursor: pointer; text-decoration: none; }
+  /* Sits above a stale PDF, so switching résumés never silently shows the
+     previous one while the next compiles. */
+  #loading {
+    position: absolute; inset: 0; display: none; place-items: center;
+    background: rgba(0,0,0,.55);
+    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  }
+  #loading.on { display: grid; }
+  .spinner { width: 26px; height: 26px; border: 2.5px solid rgba(255,255,255,.18);
+    border-top-color: #fff; border-radius: 50%; animation: spin .7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  #loadingText { color: #fff; font-size: 12px; margin-top: 11px; text-align: center; }
 
-  #editor { position: fixed; inset: 0; background: rgba(0,0,0,.62); display: none;
-    align-items: center; justify-content: center; padding: 20px; z-index: 10; }
-  #editor .box { background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
-    width: min(720px, 100%); max-height: 86vh; overflow-y: auto; padding: 18px; }
-  #editor h3 { margin: 0 0 4px; font-size: 15px; font-family: ui-monospace, monospace; }
-  #editor .hint { color: var(--muted); font-size: 12px; margin-bottom: 14px; }
-  #editor label { display: block; font-size: 11px; color: var(--muted);
-    text-transform: uppercase; letter-spacing: .07em; margin: 10px 0 4px; }
-  #editor textarea { width: 100%; min-height: 62px; padding: 8px 10px; background: #0b0c0e;
-    border: 1px solid var(--line); border-radius: 6px; resize: vertical; }
-  .scopes { margin: 16px 0 10px; }
+  .advice { margin-top: 10px; font-size: 12px; max-height: 172px; overflow-y: auto; }
+  .advice .line { display: flex; gap: 9px; padding: 5px 2px; border-bottom: 1px solid var(--hairline-soft); }
+  .advice .n { color: var(--ok); font-family: ui-monospace, monospace; min-width: 50px; }
+  .advice a { color: var(--accent); cursor: pointer; }
+
+  /* sheets */
+  .sheet { position: fixed; inset: 0; background: rgba(0,0,0,.6);
+    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+    display: none; align-items: center; justify-content: center; padding: 20px; z-index: 20; }
+  .sheet.on { display: flex; }
+  .sheet .box { width: min(720px,100%); max-height: 86vh; overflow-y: auto; padding: 20px;
+    background: rgba(28,28,30,.72); -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur);
+    border: 1px solid var(--hairline); border-radius: 16px; }
+  .sheet h3 { margin: 0 0 4px; font-size: 15px; font-family: ui-monospace, monospace; }
+  .sheet .hint { color: var(--muted); font-size: 12px; margin-bottom: 14px; }
+  .sheet label { display: block; font-size: 10.5px; color: var(--muted);
+    text-transform: uppercase; letter-spacing: .06em; margin: 12px 0 4px; }
+  .sheet textarea, .sheet input[type=text] {
+    width: 100%; padding: 9px 11px; background: rgba(0,0,0,.5);
+    border: 1px solid var(--hairline); border-radius: 9px; resize: vertical; }
+  .sheet textarea { min-height: 62px; }
   .scopes label { display: flex; gap: 9px; align-items: flex-start; text-transform: none;
-    letter-spacing: 0; font-size: 13px; color: var(--ink); margin: 8px 0; cursor: pointer; }
+    letter-spacing: 0; font-size: 13px; color: var(--ink); margin: 10px 0; cursor: pointer; }
   .scopes small { display: block; color: var(--muted); font-size: 11.5px; }
-  .scopes input[type=text] { margin-top: 6px; padding: 6px 9px; width: 220px;
-    background: #0b0c0e; border: 1px solid var(--line); border-radius: 5px; }
-  .actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14px; }
+  .actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
   .err { color: var(--bad); font-size: 12.5px; margin-top: 8px; white-space: pre-wrap; }
+  pre.tex { background: rgba(0,0,0,.55); border: 1px solid var(--hairline);
+    border-radius: 10px; padding: 12px; max-height: 44vh; overflow: auto;
+    font-family: ui-monospace, "SF Mono", monospace; font-size: 11px; white-space: pre; }
+  .engine { font-size: 11.5px; color: var(--muted); margin: 9px 0 0;
+    font-family: ui-monospace, monospace; word-break: break-word; }
+
+  @media (max-width: 900px) {
+    #app { grid-template-columns: 1fr; height: auto; overflow-y: auto; }
+    body { overflow: auto; }
+    .viewer { height: 74vh; }
+  }
 </style>
 </head>
 <body>
 
-<div id="login">
+<div id="login" class="glass">
   <h1>Résumé Builder</h1>
-  <p style="color:var(--muted);font-size:12.5px;margin:0 0 12px">
-    Enter the 6-digit code from your authenticator app.</p>
-  <input id="token" inputmode="numeric" pattern="[0-9]*" maxlength="7"
-         placeholder="000000" autocomplete="one-time-code"
-         style="text-align:center;letter-spacing:.35em;font-size:20px;font-family:ui-monospace,monospace">
+  <p>Enter the 6-digit code from your authenticator.</p>
+  <input id="code" inputmode="numeric" pattern="[0-9]*" maxlength="7"
+         placeholder="000000" autocomplete="one-time-code">
   <button onclick="login()">Unlock</button>
   <div class="err" id="loginErr"></div>
 </div>
 
 <div id="app">
-  <div class="col">
+  <div class="col glass">
     <h2>Available blocks</h2>
-    <input id="filter" placeholder="filter…" style="width:100%;padding:7px 9px;margin-bottom:10px;background:var(--panel);border:1px solid var(--line);border-radius:6px">
-    <div id="palette"></div>
+    <input id="filter" placeholder="Filter blocks…">
+    <div class="scroll"><div id="palette"></div></div>
   </div>
 
-  <div class="col">
+  <div class="col glass">
     <div class="bar">
       <select id="resumePicker" onchange="pickResume(this.value)"></select>
+      <button class="btn" onclick="newResume()" title="New résumé">+</button>
       <button class="btn primary" onclick="saveResume()">Save</button>
     </div>
-    <div id="layout"></div>
+    <div class="scroll"><div id="layout"></div></div>
   </div>
 
-  <div class="col">
-    <div id="status"><span class="pill busy">idle</span></div>
-    <iframe id="preview" title="Résumé preview"></iframe>
+  <div class="col glass">
+    <div id="status" class="glass"><span class="pill busy">idle</span></div>
+    <div class="viewer">
+      <iframe id="preview" title="Résumé preview"></iframe>
+      <div id="loading"><div style="text-align:center">
+        <div class="spinner" style="margin:0 auto"></div>
+        <div id="loadingText">Compiling…</div>
+      </div></div>
+    </div>
+    <div class="bar" style="margin:10px 0 0">
+      <button class="btn" onclick="showTex()">LaTeX source</button>
+      <button class="btn" onclick="downloadPdf()">Download PDF</button>
+    </div>
     <div class="advice" id="advice"></div>
   </div>
 </div>
 
-<div id="editor">
+<div id="editor" class="sheet">
   <div class="box">
     <h3 id="edId"></h3>
     <div class="hint" id="edHint"></div>
@@ -141,29 +241,65 @@
           <small>Writes an override into this manifest. No other résumé changes.</small></span></label>
       <label><input type="radio" name="scope" value="variant">
         <span>Save as a named variant
-          <small>Reusable from any résumé. Pick an existing name to update it, or type a new one.</small>
-          <input type="text" id="edVariant" placeholder="e.g. tight"></span></label>
+          <small>Reusable from any résumé. An existing name updates it, a new name creates it.</small>
+          <input type="text" id="edVariant" placeholder="e.g. tight" style="width:220px;margin-top:6px"></span></label>
       <label><input type="radio" name="scope" value="base">
         <span>Update the block everywhere
           <small>Rewrites base content. Every résumé that has not overridden this field picks it up.</small></span></label>
     </div>
     <div class="err" id="edErr"></div>
     <div class="actions">
-      <button class="btn" onclick="closeEditor()">Cancel</button>
+      <button class="btn" onclick="closeSheet('editor')">Cancel</button>
       <button class="btn primary" onclick="applyEdit()">Apply</button>
     </div>
   </div>
 </div>
 
+<div id="texSheet" class="sheet">
+  <div class="box">
+    <h3>LaTeX source</h3>
+    <div class="hint">The generated document for the résumé currently open.</div>
+    <pre class="tex" id="texBody">…</pre>
+    <p class="engine" id="texEngine"></p>
+    <div class="actions">
+      <button class="btn" onclick="closeSheet('texSheet')">Close</button>
+      <button class="btn" onclick="copyTex()" id="copyTexBtn">Copy</button>
+      <button class="btn primary" onclick="downloadTex()">Download .tex</button>
+    </div>
+  </div>
+</div>
+
+<div id="newSheet" class="sheet">
+  <div class="box">
+    <h3>New résumé</h3>
+    <div class="hint">Starts as a copy of the résumé currently open, so it compiles from the first preview and can be trimmed down.</div>
+    <label>Identifier</label>
+    <input type="text" id="newId" placeholder="e.g. embedded" autocomplete="off">
+    <label>Label</label>
+    <input type="text" id="newLabel" placeholder="e.g. Embedded Systems Engineer">
+    <label>Page budget</label>
+    <input type="text" id="newPages" value="1">
+    <div class="err" id="newErr"></div>
+    <div class="actions">
+      <button class="btn" onclick="closeSheet('newSheet')">Cancel</button>
+      <button class="btn primary" onclick="createResume()">Create</button>
+    </div>
+  </div>
+</div>
+
 <script>
-let state = { blocks: [], resumes: [], git: {} };
-let current = null;          // the manifest being edited
-let editing = null;          // { blockId, sectionIndex, entryIndex }
+let state = { blocks: [], resumes: [], git: {}, engine: '' };
+let current = null;
+let editing = null;
 let previewTimer = null;
 let inFlight = false;
+let lastTex = null;
+let lastPdfUrl = null;
 
 const byId = id => state.blocks.find(b => b.id === id);
 const el = (t, c) => { const n = document.createElement(t); if (c) n.className = c; return n; };
+const sheet = (id, on) => document.getElementById(id).classList.toggle('on', on);
+const closeSheet = id => sheet(id, false);
 
 async function api(path, options = {}) {
   const response = await fetch(path, {
@@ -176,7 +312,7 @@ async function api(path, options = {}) {
 }
 
 async function login() {
-  const code = document.getElementById('token').value.replace(/\s/g, '');
+  const code = document.getElementById('code').value.replace(/\s/g, '');
   const err = document.getElementById('loginErr');
   err.textContent = '';
   try {
@@ -186,15 +322,12 @@ async function login() {
     await boot();
   } catch (failure) {
     err.textContent = failure.message;
-    // A rejected code is never worth resubmitting; clear it so the next
-    // attempt is a fresh one from the app.
-    document.getElementById('token').value = '';
-    document.getElementById('token').focus();
+    document.getElementById('code').value = '';
+    document.getElementById('code').focus();
   }
 }
 
-async function boot() {
-  state = await api('/api/state');
+function fillPicker(selected) {
   const picker = document.getElementById('resumePicker');
   picker.innerHTML = '';
   state.resumes.forEach(resume => {
@@ -203,6 +336,13 @@ async function boot() {
     option.textContent = resume.label || resume.id;
     picker.appendChild(option);
   });
+  if (selected) picker.value = selected;
+}
+
+async function boot() {
+  setLoading(true, 'Loading blocks…');
+  state = await api('/api/state');
+  fillPicker();
   pickResume(state.resumes[0]?.id);
 }
 
@@ -210,43 +350,41 @@ function pickResume(id) {
   const found = state.resumes.find(r => r.id === id);
   if (!found) {
     current = null;
+    setLoading(false);
     document.getElementById('layout').innerHTML =
-      '<p style="color:var(--muted)">No résumés found in resumes/. Add a manifest and reload.</p>';
+      '<p style="color:var(--muted)">No résumés found. Create one with +.</p>';
     setStatus('bad', 'no résumé selected');
     return;
   }
   current = structuredClone(found);
   document.getElementById('resumePicker').value = id;
+  // Switching is the slowest visible action, so name what is being built rather
+  // than leaving the previous résumé on screen with no explanation.
+  setLoading(true, `Compiling ${current.label || current.id}…`);
   draw();
   schedulePreview();
 }
 
-/* ---------- layout column ---------- */
+/* layout column */
 
 function draw() {
   const host = document.getElementById('layout');
   host.innerHTML = '';
-
   current.sections.forEach((section, sectionIndex) => {
     const wrap = el('div', 'section');
     const header = el('header');
-    header.innerHTML = `<span>${section.heading || '(masthead)'}</span>
-      <span>${section.layout || 'plain'}</span>`;
+    header.innerHTML = `<span>${section.heading || '(masthead)'}</span><span>${section.layout || 'plain'}</span>`;
     wrap.appendChild(header);
 
     const drop = el('div', 'drop');
-    drop.dataset.section = sectionIndex;
     drop.ondragover = event => { event.preventDefault(); drop.classList.add('over'); };
     drop.ondragleave = () => drop.classList.remove('over');
     drop.ondrop = event => onDrop(event, sectionIndex);
-
-    (section.blocks || []).forEach((entry, entryIndex) => {
-      drop.appendChild(card(entry, sectionIndex, entryIndex));
-    });
+    (section.blocks || []).forEach((entry, entryIndex) =>
+      drop.appendChild(card(entry, sectionIndex, entryIndex)));
     wrap.appendChild(drop);
     host.appendChild(wrap);
   });
-
   drawPalette();
 }
 
@@ -274,23 +412,18 @@ function card(entry, sectionIndex, entryIndex) {
       picker.appendChild(option);
     });
     picker.value = entry.variant || '';
-    picker.onchange = () => {
-      entry.variant = picker.value || undefined;
-      schedulePreview();
-    };
+    picker.onchange = () => { entry.variant = picker.value || undefined; schedulePreview(); };
     picker.onclick = event => event.stopPropagation();
     row.appendChild(picker);
   }
 
-  const edit = el('span', 'x');
-  edit.textContent = '✎';
-  edit.title = 'Edit content';
+  const edit = el('span', 'icon');
+  edit.textContent = '✎'; edit.title = 'Edit content';
   edit.onclick = event => { event.stopPropagation(); openEditor(entry.block, sectionIndex, entryIndex); };
   row.appendChild(edit);
 
-  const remove = el('span', 'x');
-  remove.textContent = '✕';
-  remove.title = 'Remove from this résumé';
+  const remove = el('span', 'icon danger');
+  remove.textContent = '✕'; remove.title = 'Remove from this résumé';
   remove.onclick = event => {
     event.stopPropagation();
     current.sections[sectionIndex].blocks.splice(entryIndex, 1);
@@ -312,7 +445,6 @@ function drawPalette() {
   const filter = document.getElementById('filter').value.toLowerCase();
   const host = document.getElementById('palette');
   host.innerHTML = '';
-
   state.blocks
     .filter(b => !used.has(b.id))
     .filter(b => !filter || b.id.includes(filter) || (b.tags || []).some(t => t.includes(filter)))
@@ -331,25 +463,28 @@ function onDrop(event, sectionIndex) {
   event.preventDefault();
   document.querySelectorAll('.drop').forEach(d => d.classList.remove('over'));
   const payload = JSON.parse(event.dataTransfer.getData('text/plain'));
-
   if (payload.from === 'palette') {
     current.sections[sectionIndex].blocks.push({ block: payload.id });
   } else {
     const [moved] = current.sections[payload.sectionIndex].blocks.splice(payload.entryIndex, 1);
     current.sections[sectionIndex].blocks.push(moved);
   }
-  draw();
-  schedulePreview();
+  draw(); schedulePreview();
 }
 
 document.getElementById('filter').oninput = drawPalette;
 
-/* ---------- preview ---------- */
+/* preview */
+
+function setLoading(on, text) {
+  document.getElementById('loading').classList.toggle('on', on);
+  if (text) document.getElementById('loadingText').textContent = text;
+}
 
 function schedulePreview() {
   clearTimeout(previewTimer);
   setStatus('busy', 'compiling…');
-  // A compile costs a few seconds, so coalesce rapid drags into one run.
+  setLoading(true);
   previewTimer = setTimeout(runPreview, 400);
 }
 
@@ -358,6 +493,7 @@ async function runPreview() {
   inFlight = true;
   try {
     const result = await api('/api/preview', { method: 'POST', body: JSON.stringify(current) });
+    lastPdfUrl = result.pdf;
     document.getElementById('preview').src = result.pdf;
     if (!result.pagesKnown) {
       setStatus('bad', 'page count unavailable',
@@ -376,12 +512,13 @@ async function runPreview() {
     setStatus('bad', err.message);
   } finally {
     inFlight = false;
+    setLoading(false);
   }
 }
 
 function setStatus(kind, text, extra) {
-  const host = document.getElementById('status');
-  host.innerHTML = `<span class="pill ${kind}">${text}</span>` + (extra ? `<span>${extra}</span>` : '');
+  document.getElementById('status').innerHTML =
+    `<span class="pill ${kind}">${text}</span>` + (extra ? `<span>${extra}</span>` : '');
 }
 
 function drawAdvice(savings) {
@@ -390,25 +527,119 @@ function drawAdvice(savings) {
   if (!savings || !savings.length) return;
   host.appendChild(Object.assign(el('h2'), { textContent: 'Shorter variants available' }));
   savings.slice(0, 8).forEach(item => {
-    const row = el('div');
+    const row = el('div', 'line');
     row.innerHTML = `<span class="n">-${item.chars}</span>
-      <span style="flex:1">${item.block}</span>
-      <a>${item.from} → ${item.to}</a>`;
+      <span style="flex:1">${item.block}</span><a>${item.from} → ${item.to}</a>`;
     row.querySelector('a').onclick = () => {
-      for (const section of current.sections) {
-        for (const entry of (section.blocks || [])) {
-          if (entry.block === item.block) {
-            entry.variant = item.to === 'full' ? undefined : item.to;
-          }
-        }
-      }
+      for (const section of current.sections)
+        for (const entry of (section.blocks || []))
+          if (entry.block === item.block) entry.variant = item.to === 'full' ? undefined : item.to;
       draw(); schedulePreview();
     };
     host.appendChild(row);
   });
 }
 
-/* ---------- content editor ---------- */
+/* LaTeX source */
+
+async function showTex() {
+  if (!current) return;
+  sheet('texSheet', true);
+  document.getElementById('texBody').textContent = 'Rendering…';
+  document.getElementById('texEngine').textContent = '';
+  try {
+    lastTex = await api('/api/tex', { method: 'POST', body: JSON.stringify(current) });
+    document.getElementById('texBody').textContent = lastTex.tex;
+    document.getElementById('texEngine').textContent = 'Engine: ' + lastTex.engine;
+  } catch (err) {
+    document.getElementById('texBody').textContent = err.message;
+  }
+}
+
+async function copyTex() {
+  if (!lastTex) return;
+  const button = document.getElementById('copyTexBtn');
+  try {
+    await navigator.clipboard.writeText(lastTex.tex);
+    button.textContent = 'Copied';
+  } catch {
+    // The clipboard API is refused outside a secure context or without focus,
+    // so fall back to selecting the text for a manual copy.
+    const range = document.createRange();
+    range.selectNodeContents(document.getElementById('texBody'));
+    getSelection().removeAllRanges(); getSelection().addRange(range);
+    button.textContent = 'Selected — press ⌘C';
+  }
+  setTimeout(() => { button.textContent = 'Copy'; }, 1800);
+}
+
+function downloadTex() {
+  if (!lastTex) return;
+  saveBlob(new Blob([lastTex.tex], { type: 'application/x-tex' }), lastTex.filename);
+}
+
+function downloadPdf() {
+  if (!lastPdfUrl) return;
+  const link = el('a');
+  link.href = lastPdfUrl;
+  link.download = (current?.id || 'resume') + '.pdf';
+  link.click();
+}
+
+function saveBlob(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const link = el('a');
+  link.href = url; link.download = filename; link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+/* custom résumés */
+
+function newResume() {
+  if (!current) return;
+  document.getElementById('newId').value = '';
+  document.getElementById('newLabel').value = '';
+  document.getElementById('newPages').value = String(current.maxPages || 1);
+  document.getElementById('newErr').textContent = '';
+  sheet('newSheet', true);
+}
+
+async function createResume() {
+  const id = document.getElementById('newId').value.trim().toLowerCase();
+  const label = document.getElementById('newLabel').value.trim();
+  const pages = parseInt(document.getElementById('newPages').value, 10);
+  const err = document.getElementById('newErr');
+  err.textContent = '';
+
+  if (!/^[a-z0-9_-]{1,64}$/.test(id)) {
+    err.textContent = 'Identifier may use lowercase letters, numbers, dash and underscore.';
+    return;
+  }
+  if (state.resumes.some(r => r.id === id)) {
+    err.textContent = `A résumé called "${id}" already exists.`;
+    return;
+  }
+
+  // Copying the open résumé means a new preset compiles on its first preview
+  // instead of starting from an empty document that cannot be rendered.
+  const draft = structuredClone(current);
+  draft.id = id;
+  draft.label = label || id;
+  draft.maxPages = Number.isFinite(pages) && pages > 0 ? pages : 1;
+  draft.output = `public/resume/${id}.pdf`;
+
+  try {
+    await api('/api/resume/' + encodeURIComponent(id), { method: 'POST', body: JSON.stringify(draft) });
+    closeSheet('newSheet');
+    state = await api('/api/state');
+    fillPicker(id);
+    pickResume(id);
+  } catch (failure) {
+    err.textContent = failure.message;
+  }
+}
+
+/* content editor */
 
 function openEditor(blockId, sectionIndex, entryIndex) {
   const source = byId(blockId);
@@ -417,25 +648,21 @@ function openEditor(blockId, sectionIndex, entryIndex) {
   editing = { blockId, sectionIndex, entryIndex };
 
   document.getElementById('edId').textContent = blockId;
-  document.getElementById('edHint').textContent =
-    `variant in use: ${entry.variant || 'full'}`;
+  document.getElementById('edHint').textContent = `variant in use: ${entry.variant || 'full'}`;
   document.getElementById('edErr').textContent = '';
   document.getElementById('edVariant').value = entry.variant || '';
 
   const host = document.getElementById('edFields');
   host.innerHTML = '';
-  // Only scalar and simple-list fields are editable here; nested structures are
-  // edited in the YAML directly, where the shape is visible.
   const activeVariant = entry.variant && entry.variant !== 'full'
-    ? ((source.variantData || {})[entry.variant] || {})
-    : {};
+    ? ((source.variantData || {})[entry.variant] || {}) : {};
   const merged = { ...source.content, ...activeVariant, ...(entry.override || {}) };
+
   Object.keys(merged).sort().forEach(key => {
     const value = merged[key];
     const editable = typeof value === 'string' ||
       (Array.isArray(value) && value.every(v => typeof v === 'string'));
     if (!editable) return;
-
     host.appendChild(Object.assign(el('label'), { textContent: key }));
     const area = el('textarea');
     area.dataset.key = key;
@@ -444,23 +671,15 @@ function openEditor(blockId, sectionIndex, entryIndex) {
     if (Array.isArray(value)) area.placeholder = 'one item per line';
     host.appendChild(area);
   });
-
-  document.getElementById('editor').style.display = 'flex';
-}
-
-function closeEditor() {
-  document.getElementById('editor').style.display = 'none';
-  editing = null;
+  sheet('editor', true);
 }
 
 async function applyEdit() {
   const scope = document.querySelector('input[name=scope]:checked').value;
   const source = byId(editing.blockId);
   const entry = current.sections[editing.sectionIndex].blocks[editing.entryIndex];
-
   const activeVariant = entry.variant && entry.variant !== 'full'
-    ? ((source.variantData || {})[entry.variant] || {})
-    : {};
+    ? ((source.variantData || {})[entry.variant] || {}) : {};
   const resolved = { ...source.content, ...activeVariant };
 
   const fields = {};
@@ -469,16 +688,12 @@ async function applyEdit() {
     const value = area.dataset.list === 'true'
       ? area.value.split('\n').map(s => s.trim()).filter(Boolean)
       : area.value;
-    // Only send what actually changed, so a save does not rewrite untouched
-    // fields and bury the real edit in the diff.
     const unchanged = Array.isArray(original)
-      ? JSON.stringify(original) === JSON.stringify(value)
-      : original === value;
+      ? JSON.stringify(original) === JSON.stringify(value) : original === value;
     const alreadyOverridden = entry.override && area.dataset.key in entry.override;
     if (!unchanged || alreadyOverridden) fields[area.dataset.key] = value;
   });
-
-  if (!Object.keys(fields).length) { closeEditor(); return; }
+  if (!Object.keys(fields).length) { closeSheet('editor'); return; }
 
   try {
     if (scope === 'override') {
@@ -486,25 +701,21 @@ async function applyEdit() {
     } else {
       const variant = document.getElementById('edVariant').value.trim();
       await api('/api/block/' + encodeURIComponent(editing.blockId), {
-        method: 'POST',
-        body: JSON.stringify({ scope, variant, fields }),
+        method: 'POST', body: JSON.stringify({ scope, variant, fields }),
       });
-      // The block library changed on disk; reload it so other résumés using
-      // this block reflect the promotion immediately.
       const picked = current.id;
       const draft = structuredClone(current);
       state = await api('/api/state');
       current = draft;
-      document.getElementById('resumePicker').value = picked;
+      fillPicker(picked);
       if (scope === 'variant' && variant) {
-        // current was replaced by the clone above, so `entry` now points into a
-        // discarded object. Reach the live entry through its indices.
+        // current was replaced by the clone above, so reach the live entry
+        // through its indices rather than the stale reference.
         current.sections[editing.sectionIndex].blocks[editing.entryIndex].variant = variant;
       }
     }
-    closeEditor();
-    draw();
-    schedulePreview();
+    closeSheet('editor');
+    draw(); schedulePreview();
   } catch (err) {
     document.getElementById('edErr').textContent = err.message;
   }
@@ -516,18 +727,21 @@ async function saveResume() {
     const result = await api('/api/resume/' + encodeURIComponent(current.id), {
       method: 'POST', body: JSON.stringify(current),
     });
-    setStatus('ok', result.committed ? 'saved + committed' : 'saved (no change)',
-      result.gitError || '');
+    setStatus('ok', result.committed ? 'saved + committed' : 'saved (no change)', result.gitError || '');
   } catch (err) {
     setStatus('bad', err.message);
   }
 }
 
-document.getElementById('token').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
-document.getElementById('token').addEventListener('input', e => {
+const codeInput = document.getElementById('code');
+codeInput.addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+codeInput.addEventListener('input', e => {
   if (e.target.value.replace(/\s/g, '').length === 6) login();
 });
-document.getElementById('token').focus();
+codeInput.focus();
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') document.querySelectorAll('.sheet.on').forEach(s => s.classList.remove('on'));
+});
 </script>
 </body>
 </html>

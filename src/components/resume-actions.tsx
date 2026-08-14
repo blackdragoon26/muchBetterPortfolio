@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Check, Copy, Download, ExternalLink } from "lucide-react";
+import { Check, Copy, Download, ExternalLink, PencilRuler } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import resume from "@/generated/resume.json";
@@ -9,6 +9,7 @@ import resume from "@/generated/resume.json";
 
 // Always point to the static Next.js public folder path
 const RESUME_PATH = "/resume/Sankalp-Jha-Resume.pdf";
+const BUILDER_URL = "https://resume.sankalpjha.dev/";
 const resumeMetadata = resume as {
   fileName?: string;
   updatedAt?: string;
@@ -58,6 +59,14 @@ export function ResumeActions() {
         <Button size="sm" variant="outline" onClick={copyResumeLink}>
           {copied ? <Check className="mr-2 size-4" /> : <Copy className="mr-2 size-4" />}
           {copied ? "Copied" : "Copy link"}
+        </Button>
+
+        {/* The builder is authenticated, so this link only reaches a login
+            screen for anyone but me. */}
+        <Button asChild size="sm" variant="ghost">
+          <Link href={BUILDER_URL} target="_blank" rel="noopener noreferrer">
+            <PencilRuler className="mr-2 size-4" /> Builder
+          </Link>
         </Button>
       </div>
 

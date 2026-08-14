@@ -57,6 +57,22 @@ func New(dir string) *Compiler {
 	return &Compiler{Binary: "tectonic", WorkDir: dir}
 }
 
+// Engine reports the typesetting engine in use. Exported LaTeX is only
+// reproducible if the reader knows what compiled it: the preamble needs a
+// Unicode engine for fontspec, so plain pdflatex will not build this document.
+func (c *Compiler) Engine() string {
+	binary := c.Binary
+	if binary == "" {
+		binary = "tectonic"
+	}
+	out, err := exec.Command(binary, "--version").Output()
+	version := strings.TrimSpace(string(out))
+	if err != nil || version == "" {
+		version = "tectonic (version unknown)"
+	}
+	return version + " — XeTeX backend, compiled with: tectonic -X compile resume.tex"
+}
+
 var (
 	pagesPattern    = regexp.MustCompile(`\((\d+) pages?,`)
 	overfullPattern = regexp.MustCompile(`Overfull \\[hv]box \(([\d.]+)pt too wide\)`)
