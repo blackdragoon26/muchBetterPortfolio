@@ -27,6 +27,7 @@ const (
 	KindLeadership   Kind = "leadership"
 	KindPublication  Kind = "publication"
 	KindCertificates Kind = "certificates"
+	KindSpacer       Kind = "spacer"
 )
 
 // AllKinds lists every valid kind, used for validation and for the builder UI's
@@ -34,6 +35,7 @@ const (
 var AllKinds = []Kind{
 	KindHeader, KindEducation, KindExperience, KindContribution,
 	KindProject, KindSkills, KindLeadership, KindPublication, KindCertificates,
+	KindSpacer,
 }
 
 func (k Kind) Valid() bool {

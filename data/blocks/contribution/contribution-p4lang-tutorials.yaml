@@ -1,21 +1,27 @@
-id: contribution:p4lang-tutorials
-kind: contribution
-source: github
-tags:
-  - opensource
-machine:
-  pullRequests:
-    - additions: 22
-      changedFiles: 1
-      deletions: 8
-      href: https://github.com/p4lang/tutorials/pull/681
-      mergedAt: "2025-04-14T22:26:09Z"
-      number: 681
-      title: 'Update README.md in reference to #680'
-  repository: p4lang/tutorials
-  stars: 1582
 content:
   entries:
-    - number: 681
-      summary: ""
+  - number: 681
+    summary: ''
   label: p4lang/tutorials
+id: 'contribution:p4lang-tutorials'
+kind: contribution
+machine:
+  pullRequests:
+  - additions: 22
+    changedFiles: 1
+    deletions: 8
+    href: 'https://github.com/p4lang/tutorials/pull/681'
+    mergedAt: '2025-04-14T22:26:09Z'
+    number: 681
+    title: 'Update README.md in reference to #680'
+  repository: p4lang/tutorials
+  stars: 1583
+source: github
+tags:
+- opensource
+variants:
+  lines:
+    entries:
+    - number: 681
+      summary: 'Update README.md in reference to #680'
+    layout: lines

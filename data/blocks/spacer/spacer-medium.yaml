@@ -1,0 +1,7 @@
+id: spacer:medium
+kind: spacer
+source: manual
+tags:
+  - layout
+content:
+  height: 8pt

@@ -151,7 +151,12 @@ func (m *Manifest) Validate() error {
 			if entry.Block == "" {
 				return fmt.Errorf("manifest %s: section %q has an entry with no block id", m.ID, section.Heading)
 			}
-			// A block appearing twice on one résumé is always a mistake, and it
+			// Spacers exist to be repeated — one between every pair of sections
+			// is normal — so they are the single exception to the rule below.
+			if strings.HasPrefix(entry.Block, "spacer:") {
+				continue
+			}
+			// Any other block appearing twice on one résumé is a mistake, and it
 			// is easy to introduce when reordering sections by hand.
 			if where, duplicate := seen[entry.Block]; duplicate {
 				return fmt.Errorf("manifest %s: block %s appears twice (in %q and %q)",

@@ -1,68 +1,80 @@
-id: contribution:wasmedge-wasmedge
-kind: contribution
-source: github
-tags:
-  - infra
-  - systems
-  - opensource
-machine:
-  pullRequests:
-    - additions: 51
-      changedFiles: 1
-      deletions: 7
-      href: https://github.com/WasmEdge/WasmEdge/pull/4470
-      mergedAt: "2026-01-15T08:51:19Z"
-      number: 4470
-      title: 'fix(wasi): resolve 100% CPU usage on macOS due to clock mismatch'
-    - additions: 28
-      changedFiles: 1
-      deletions: 8
-      href: https://github.com/WasmEdge/WasmEdge/pull/4440
-      mergedAt: "2025-12-26T03:51:04Z"
-      number: 4440
-      title: Upgrade Alpine base to 3.23 and restore static LLD support
-    - additions: 120
-      changedFiles: 3
-      deletions: 0
-      href: https://github.com/WasmEdge/WasmEdge/pull/4466
-      mergedAt: "2025-12-24T16:09:11Z"
-      number: 4466
-      title: 'feat(docker): add standalone alpine-base image build pipeline'
-    - additions: 4
-      changedFiles: 1
-      deletions: 5
-      href: https://github.com/WasmEdge/WasmEdge/pull/4452
-      mergedAt: "2025-12-18T14:53:20Z"
-      number: 4452
-      title: 'docs(README): fix broken introduction and blog links'
-  repository: WasmEdge/WasmEdge
-  stars: 10771
 content:
   entries:
-    - number: 4470
-      summary: 'fix(wasi): resolve 100% CPU usage on macOS due to clock mismatch'
-    - number: 4466
-      summary: 'feat(docker): add standalone alpine-base image build pipeline'
-    - number: 4440
-      summary: Upgrade Alpine base to 3.23 and restore static LLD support
-    - number: 4452
-      summary: 'docs(README): fix broken introduction and blog links'
+  - number: 4470
+    summary: 'fix(wasi): resolve 100% CPU usage on macOS due to clock mismatch'
+  - number: 4466
+    summary: 'feat(docker): add standalone alpine-base image build pipeline'
+  - number: 4440
+    summary: Upgrade Alpine base to 3.23 and restore static LLD support
+  - number: 4452
+    summary: 'docs(README): fix broken introduction and blog links'
   label: WasmEdge/WasmEdge
   language: C/C++
   role: Open Source Contributor
   since: 2024 -- Present
+id: 'contribution:wasmedge-wasmedge'
+kind: contribution
+machine:
+  pullRequests:
+  - additions: 51
+    changedFiles: 1
+    deletions: 7
+    href: 'https://github.com/WasmEdge/WasmEdge/pull/4470'
+    mergedAt: '2026-01-15T08:51:19Z'
+    number: 4470
+    title: 'fix(wasi): resolve 100% CPU usage on macOS due to clock mismatch'
+  - additions: 28
+    changedFiles: 1
+    deletions: 8
+    href: 'https://github.com/WasmEdge/WasmEdge/pull/4440'
+    mergedAt: '2025-12-26T03:51:04Z'
+    number: 4440
+    title: Upgrade Alpine base to 3.23 and restore static LLD support
+  - additions: 120
+    changedFiles: 3
+    deletions: 0
+    href: 'https://github.com/WasmEdge/WasmEdge/pull/4466'
+    mergedAt: '2025-12-24T16:09:11Z'
+    number: 4466
+    title: 'feat(docker): add standalone alpine-base image build pipeline'
+  - additions: 4
+    changedFiles: 1
+    deletions: 5
+    href: 'https://github.com/WasmEdge/WasmEdge/pull/4452'
+    mergedAt: '2025-12-18T14:53:20Z'
+    number: 4452
+    title: 'docs(README): fix broken introduction and blog links'
+  repository: WasmEdge/WasmEdge
+  stars: 10771
+source: github
+tags:
+- infra
+- systems
+- opensource
 variants:
   headline:
     entries:
-      - number: 4470
-        summary: 'fix(wasi): resolve 100% CPU usage on macOS due to clock mismatch'
-      - number: 4466
-        summary: 'feat(docker): add standalone alpine-base image build pipeline'
+    - number: 4470
+      summary: 'fix(wasi): resolve 100% CPU usage on macOS due to clock mismatch'
+    - number: 4466
+      summary: 'feat(docker): add standalone alpine-base image build pipeline'
+  lines:
+    entries:
+    - number: 4470
+      summary: 'fix(wasi): resolve 100% CPU usage on macOS due to clock mismatch'
+    - number: 4440
+      summary: Upgrade Alpine base to 3.23 and restore static LLD support
+    - number: 4466
+      summary: 'feat(docker): add standalone alpine-base image build pipeline'
+    - number: 4452
+      summary: 'docs(README): fix broken introduction and blog links'
+    layout: lines
   narrative:
     entries:
-      - number: 4470
-        summary: Diagnosed and fixed a WASI clock bug in the C++ runtime causing 100% CPU usage on macOS using gdb and perf; merged to main runtime.
-      - number: 4466
-        summary: Built a standalone Alpine-base Docker image build pipeline for the runtime.
-      - number: 4440
-        summary: Upgraded the base Alpine image to 3.23 and restored static LLD linker support.
+    - number: 4470
+      summary: Diagnosed and fixed a WASI clock bug in the C++ runtime causing 100% CPU usage on macOS
+        using gdb and perf; merged to main runtime.
+    - number: 4466
+      summary: Built a standalone Alpine-base Docker image build pipeline for the runtime.
+    - number: 4440
+      summary: Upgraded the base Alpine image to 3.23 and restored static LLD linker support.

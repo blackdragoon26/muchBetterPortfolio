@@ -1,83 +1,103 @@
-id: contribution:project-hami-hami
-kind: contribution
-source: github
-tags:
-  - backend
-  - opensource
-machine:
-  pullRequests:
-    - additions: 57
-      changedFiles: 5
-      deletions: 5
-      href: https://github.com/Project-HAMi/HAMi/pull/2292
-      mergedAt: "2026-08-04T08:51:52Z"
-      number: 2292
-      title: 'fix(device): use len(devices) for GenReason in kunlun and awsneuron'
-    - additions: 134
-      changedFiles: 2
-      deletions: 41
-      href: https://github.com/Project-HAMi/HAMi/pull/2307
-      mergedAt: "2026-08-04T03:55:50Z"
-      number: 2307
-      title: 'fix(device-plugin): release node lock when bind-phase patch fails'
-    - additions: 123
-      changedFiles: 2
-      deletions: 3
-      href: https://github.com/Project-HAMi/HAMi/pull/2259
-      mergedAt: "2026-08-02T09:42:49Z"
-      number: 2259
-      title: 'fix(scheduler): handle ResourceQuota tombstones'
-    - additions: 158
-      changedFiles: 3
-      deletions: 21
-      href: https://github.com/Project-HAMi/HAMi/pull/2204
-      mergedAt: "2026-07-31T10:46:46Z"
-      number: 2204
-      title: 'fix(metrics): prevent invalid memory ratios for unknown total memory'
-    - additions: 7
-      changedFiles: 1
-      deletions: 0
-      href: https://github.com/Project-HAMi/HAMi/pull/2221
-      mergedAt: "2026-07-31T10:37:47Z"
-      number: 2221
-      title: 'fix(workflow): skip non-translatable issue comments'
-  repository: Project-HAMi/HAMi
-  stars: 4346
 content:
   entries:
-    - number: 2292
-      summary: Corrected hardware allocation logic for Kunlun and AWS Neuron AI accelerators to prevent invalid state generation
-    - number: 2307
-      summary: Eliminated node-level deadlocks by strictly enforcing lock releases during failed device-binding operations
-    - number: 2204
-      summary: Prevented metrics panics by guarding hardware memory ratio calculations against unknown total memory states
-    - number: 2259
-      summary: Stabilized cluster scheduling by adding safe state handling for deleted ResourceQuota tombstones
+  - number: 2292
+    summary: Corrected hardware allocation logic for Kunlun and AWS Neuron AI accelerators to prevent
+      invalid state generation
+  - number: 2307
+    summary: Eliminated node-level deadlocks by strictly enforcing lock releases during failed device-binding
+      operations
+  - number: 2204
+    summary: Prevented metrics panics by guarding hardware memory ratio calculations against unknown total
+      memory states
+  - number: 2259
+    summary: Stabilized cluster scheduling by adding safe state handling for deleted ResourceQuota tombstones
   label: Project-HAMi/HAMi
   language: CNCF Kubernetes GPU Device-Sharing
   role: Open Source Contributor
   since: 2024 -- Present
+id: 'contribution:project-hami-hami'
+kind: contribution
+machine:
+  pullRequests:
+  - additions: 57
+    changedFiles: 5
+    deletions: 5
+    href: 'https://github.com/Project-HAMi/HAMi/pull/2292'
+    mergedAt: '2026-08-04T08:51:52Z'
+    number: 2292
+    title: 'fix(device): use len(devices) for GenReason in kunlun and awsneuron'
+  - additions: 134
+    changedFiles: 2
+    deletions: 41
+    href: 'https://github.com/Project-HAMi/HAMi/pull/2307'
+    mergedAt: '2026-08-04T03:55:50Z'
+    number: 2307
+    title: 'fix(device-plugin): release node lock when bind-phase patch fails'
+  - additions: 123
+    changedFiles: 2
+    deletions: 3
+    href: 'https://github.com/Project-HAMi/HAMi/pull/2259'
+    mergedAt: '2026-08-02T09:42:49Z'
+    number: 2259
+    title: 'fix(scheduler): handle ResourceQuota tombstones'
+  - additions: 158
+    changedFiles: 3
+    deletions: 21
+    href: 'https://github.com/Project-HAMi/HAMi/pull/2204'
+    mergedAt: '2026-07-31T10:46:46Z'
+    number: 2204
+    title: 'fix(metrics): prevent invalid memory ratios for unknown total memory'
+  - additions: 7
+    changedFiles: 1
+    deletions: 0
+    href: 'https://github.com/Project-HAMi/HAMi/pull/2221'
+    mergedAt: '2026-07-31T10:37:47Z'
+    number: 2221
+    title: 'fix(workflow): skip non-translatable issue comments'
+  repository: Project-HAMi/HAMi
+  stars: 4342
+source: github
+tags:
+- backend
+- opensource
 variants:
   headline:
     entries:
-      - number: 2292
-        summary: 'fix(device): use len(devices) for GenReason in kunlun and awsneuron'
-      - number: 2307
-        summary: 'fix(device-plugin): release node lock when bind-phase patch fails'
-      - number: 2259
-        summary: 'fix(scheduler): handle ResourceQuota tombstones'
+    - number: 2292
+      summary: 'fix(device): use len(devices) for GenReason in kunlun and awsneuron'
+    - number: 2307
+      summary: 'fix(device-plugin): release node lock when bind-phase patch fails'
+    - number: 2259
+      summary: 'fix(scheduler): handle ResourceQuota tombstones'
+  lines:
+    entries:
+    - number: 2292
+      summary: Corrected hardware allocation logic for Kunlun and AWS Neuron AI accelerators to prevent
+        invalid state generation
+    - number: 2307
+      summary: Eliminated node-level deadlocks by strictly enforcing lock releases during failed device-binding
+        operations
+    - number: 2259
+      summary: Stabilized cluster scheduling by adding safe state handling for deleted ResourceQuota tombstones
+    - number: 2204
+      summary: Prevented metrics panics by guarding hardware memory ratio calculations against unknown
+        total memory states
+    - number: 2221
+      summary: 'fix(workflow): skip non-translatable issue comments'
+    layout: lines
   raw:
     entries:
-      - number: 2292
-        summary: 'fix(device): use len(devices) for GenReason in kunlun and awsneuron'
-      - number: 2307
-        summary: 'fix(device-plugin): release node lock when bind-phase patch fails'
-      - number: 2259
-        summary: 'fix(scheduler): handle ResourceQuota tombstones'
-      - number: 2204
-        summary: 'fix(metrics): prevent invalid memory ratios for unknown total memory'
-      - number: 2221
-        summary: 'fix(workflow): skip non-translatable issue comments'
+    - number: 2292
+      summary: 'fix(device): use len(devices) for GenReason in kunlun and awsneuron'
+    - number: 2307
+      summary: 'fix(device-plugin): release node lock when bind-phase patch fails'
+    - number: 2259
+      summary: 'fix(scheduler): handle ResourceQuota tombstones'
+    - number: 2204
+      summary: 'fix(metrics): prevent invalid memory ratios for unknown total memory'
+    - number: 2221
+      summary: 'fix(workflow): skip non-translatable issue comments'
   rollup:
     entries: []
-    summaryLine: Fixed scheduler and device-plugin bugs in HAMi, a CNCF project for GPU/device resource sharing and isolation across Kubernetes clusters - 5 PRs merged.
+    summaryLine: Fixed scheduler and device-plugin bugs in HAMi, a CNCF project for GPU/device resource
+      sharing and isolation across Kubernetes clusters - 5 PRs merged.

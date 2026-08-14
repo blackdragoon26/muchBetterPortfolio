@@ -1,0 +1,5 @@
+<<- $c := .Content ->>
+<<- /* Vertical space as a block. \vspace* rather than \vspace so the gap is not
+       silently discarded when it lands at a page break, which is exactly where
+       a deliberate spacer matters most. */ ->>
+\vspace*{<< tex (str $c "height") >>}

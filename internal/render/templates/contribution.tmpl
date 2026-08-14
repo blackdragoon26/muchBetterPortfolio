@@ -1,8 +1,11 @@
 <<- $c := .Content ->>
 <<- $layout := printf "%s" .Layout ->>
 <<- /* The entries layout promotes a repository to an experience-style heading
-       with its own bullets. The boxed and plain layouts keep the compact
-       "repo: #123 summary; #124 summary" run-on that fits a single row. */ ->>
+       with its own bullets. Otherwise the block draws as one row, either with
+       every pull request run together on the label's line, or — when content
+       sets "lines" — with the label alone and each request indented beneath it.
+       The run-together form fits more into a page; the stacked form is far
+       easier to scan when a repository has more than two or three. */ ->>
 <<- if eq $layout "entries" >>
 \entryhead{<< tex (str $c "role") >> - << tex (str $c "label") >><< if has $c "language" >> (<< tex (str $c "language") >>)<< end >>}{}{<< tex (str $c "since") >>}%
 \begin{itemize}[labelindent=10pt, leftmargin=25pt, labelsep=5pt, topsep=0pt, itemsep=0pt]
@@ -13,7 +16,10 @@
   \item << mkn .Summary >> << if .Href >>\href{<< href .Href >>}{(PR \textbf{\#<< .Number >>})}<< end >>
 <<- end >>
 \end{itemize}%
-<<- else >>
+<<- else if eq (str $c "layout") "lines" ->>
+\textbullet\enspace \textbf{<< tex (str $c "label") >>:}<< if has $c "summaryLine" >>\enspace << mkn (str $c "summaryLine") >><< end >>
+<<- range prs $c >>\newline\hspace*{1.6em}<< if $pr := . >><< end >><< if .Href >>\href{<< href .Href >>}{\textbf{\#<< .Number >>}}<< else >>\textbf{\#<< .Number >>}<< end >> << mkn .Summary >><< end >>
+<<- else ->>
 <<- if has $c "summaryLine" ->>
 \textbullet\enspace \textbf{<< tex (str $c "label") >>:}\enspace << mkn (str $c "summaryLine") >>
 <<- else ->>
