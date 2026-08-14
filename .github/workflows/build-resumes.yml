@@ -1,0 +1,94 @@
+# Rebuilds the résumé PDFs and nothing else.
+#
+# This is the path that runs when a block, a manifest or the renderer changes,
+# which is most of the time. It needs Go and tectonic — no Node, no Playwright,
+# no GitHub API calls — and finishes in about a minute.
+#
+# It deliberately does not refresh portfolio data. src/generated/portfolio.json
+# is committed, so the importer reads the last synced copy; refreshing it is the
+# nightly job's business. That separation is the whole point: capturing live
+# screenshots took 393 of the 501 seconds every résumé build used to wait for.
+name: Build résumés
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/build-resumes.yml
+      - data/blocks/**
+      - resumes/**
+      - internal/**
+      - cmd/**
+      - go.mod
+      - go.sum
+      - src/generated/portfolio.json
+  workflow_dispatch:
+
+# Shared with the nightly sync so the two can never commit at the same time.
+concurrency:
+  group: portfolio-content-sync
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      TECTONIC_VERSION: "0.17.0"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.25"
+          cache-dependency-path: go.sum
+
+      # Statically linked: the gnu build inherits the runner's harfbuzz and
+      # freetype and fails with "xparse.sty not found", while musl compiles the
+      # same document cleanly and matches the binary the container ships.
+      - name: Install tectonic
+        run: |
+          curl -fsSL -o tectonic.tar.gz \
+            "https://github.com/tectonic-typesetting/tectonic/releases/download/tectonic%40${TECTONIC_VERSION}/tectonic-${TECTONIC_VERSION}-x86_64-unknown-linux-musl.tar.gz"
+          tar -xzf tectonic.tar.gz
+          sudo install -m 0755 tectonic /usr/local/bin/tectonic
+          tectonic --version
+
+      - name: Cache tectonic support files
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/Tectonic
+          key: tectonic-${{ env.TECTONIC_VERSION }}-${{ hashFiles('internal/render/templates/document.tmpl') }}
+          restore-keys: |
+            tectonic-${{ env.TECTONIC_VERSION }}-
+
+      - name: Refresh machine-owned block fields
+        run: go run ./cmd/importer
+
+      - name: Build every résumé
+        run: go run ./cmd/resumekit build
+
+      - name: Check the built PDFs
+        run: |
+          set -euo pipefail
+          failed=0
+          for pdf in public/resume/*.pdf; do
+            size=$(stat -c%s "$pdf")
+            printf '%-46s %8s bytes\n' "$pdf" "$size"
+            if [ "$size" -lt 10000 ]; then
+              echo "::error::$pdf is only $size bytes"
+              failed=1
+            fi
+          done
+          exit "$failed"
+
+      - name: Commit the rebuilt résumés
+        run: |
+          git config user.name "portfolio-sync[bot]"
+          git config user.email "portfolio-sync[bot]@users.noreply.github.com"
+          git add public/resume data/blocks
+          git diff --cached --quiet && exit 0
+          git commit -m "chore: rebuild résumés"
+          git push

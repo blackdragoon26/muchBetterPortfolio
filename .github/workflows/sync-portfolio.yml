@@ -1,17 +1,13 @@
+# Refreshes portfolio data from GitHub and recaptures live project screenshots,
+# then rebuilds the résumés so the two stay consistent.
+#
+# Capturing screenshots takes around six and a half minutes — 78% of this job —
+# so it is not on the push path. Editing a block or a manifest runs
+# build-resumes.yml instead, which skips all of this and finishes in about a
+# minute. This one runs nightly, when the profile README changes, or on demand.
 name: Sync portfolio and resumes
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - .github/workflows/sync-portfolio.yml
-      - scripts/**
-      - cmd/**
-      - internal/**
-      - data/blocks/**
-      - resumes/**
-      - go.mod
-      - go.sum
   repository_dispatch:
     types: [profile-readme-updated]
   schedule:
@@ -66,6 +62,8 @@ jobs:
       - name: Install screenshot browser
         run: npx playwright install --with-deps chromium
 
+      # The slow step — roughly 6.5 minutes — and the reason this workflow is
+      # not on the push path.
       - name: Capture live project screenshots
         run: node scripts/capture-project-screenshots.mjs
 
