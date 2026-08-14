@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       MIN_REPO_STARS: ${{ vars.PORTFOLIO_MIN_REPO_STARS || '300' }}
-      TECTONIC_VERSION: "0.15.0"
+      TECTONIC_VERSION: "0.17.0"
     steps:
       - name: Check out portfolio
         uses: actions/checkout@v4
