@@ -63,6 +63,11 @@ func Latex(value string) string {
 // percent-encoding makes % common in real URLs, both are escaped here.
 // Backslashes and braces are dropped outright: neither is valid in a URL, and
 // either could start a control sequence or close the argument group.
+//
+// Underscores are deliberately left alone. They look like they should need the
+// same treatment, but hyperref resolves them correctly in every nesting this
+// renderer produces — inside \entryhead, inside \textbf, and in mailto: targets
+// — and escaping them is unnecessary. TestHrefPreservesUnderscore locks that in.
 func Href(value string) string {
 	var cleaned strings.Builder
 	cleaned.Grow(len(value))

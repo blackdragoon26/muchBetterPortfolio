@@ -151,3 +151,25 @@ func TestJoinClausesLowercasesFirstRune(t *testing.T) {
 		t.Errorf("joinClauses() = %q, want %q", got, want)
 	}
 }
+
+// Underscores in URLs are left unescaped on purpose. The concern is reasonable
+// on its face: TeX tokenises a macro argument before hyperref sees it, so a
+// subscript character could in principle survive into horizontal mode. It does
+// not happen here. Compiling the real preamble with a raw underscore inside
+// \entryhead, inside \textbf, and in a mailto: target produces no error and the
+// exact URL in every case, so escaping would add noise for no benefit.
+//
+// This test exists to catch a well-meaning "fix" that starts emitting \_ and
+// changes the link text that readers see.
+func TestHrefPreservesUnderscore(t *testing.T) {
+	cases := []string{
+		"https://github.com/a_b/c_d",
+		"mailto:first_last@example.com",
+		"https://example.com/x_y",
+	}
+	for _, input := range cases {
+		if got := Href(input); got != input {
+			t.Errorf("Href(%q) = %q, want it unchanged", input, got)
+		}
+	}
+}
