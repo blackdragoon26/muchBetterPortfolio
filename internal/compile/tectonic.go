@@ -125,7 +125,7 @@ func (c *Compiler) Run(ctx context.Context, source string) (*Result, error) {
 	}
 
 	if runErr != nil {
-		return nil, fmt.Errorf("tectonic: %w\n%s", runErr, tail(logText, 40))
+		return nil, fmt.Errorf("tectonic: %w\n%s", runErr, diagnose(logText))
 	}
 
 	pdf, err := os.ReadFile(filepath.Join(runDir, "resume.pdf"))
@@ -188,6 +188,49 @@ func truncate(value string, limit int) string {
 		return value
 	}
 	return value[:limit] + "..."
+}
+
+// diagnose pulls the actual complaint out of a TeX log.
+//
+// A failing run leaves tens of thousands of lines of package chatter, and the
+// error is rarely near the end — the engine keeps loading packages after it.
+// Printing a blind tail therefore shows the last thing that loaded rather than
+// the thing that broke, which is worse than useless when reading CI output.
+func diagnose(logText string) string {
+	lines := strings.Split(logText, "\n")
+	var found []string
+
+	for index, line := range lines {
+		trimmed := strings.TrimSpace(line)
+		isTeXError := strings.HasPrefix(trimmed, "!")
+		isToolError := strings.HasPrefix(trimmed, "error:") ||
+			strings.Contains(trimmed, "not found") ||
+			strings.Contains(trimmed, "Emergency stop")
+		if !isTeXError && !isToolError {
+			continue
+		}
+
+		found = append(found, trimmed)
+		// TeX reports the offending source line a few lines below the message,
+		// as "l.<number> <text>". That is the part that says where to look.
+		for offset := 1; offset <= 4 && index+offset < len(lines); offset++ {
+			next := strings.TrimSpace(lines[index+offset])
+			if strings.HasPrefix(next, "l.") {
+				found = append(found, "  "+next)
+				break
+			}
+		}
+		if len(found) >= 12 {
+			break
+		}
+	}
+
+	if len(found) == 0 {
+		// Nothing matched, so fall back to the tail rather than reporting
+		// silence.
+		return tail(logText, 30)
+	}
+	return strings.Join(found, "\n")
 }
 
 func tail(value string, lines int) string {
