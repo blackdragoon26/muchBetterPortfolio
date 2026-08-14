@@ -1,0 +1,59 @@
+# The low-level systems framing. Contributions are promoted out of a boxed table
+# and into experience-style entries, because for this audience the upstream work
+# on WasmEdge, bpfilter and HAMi is the experience.
+id: systems
+label: Software Engineer - C, Networking & Low-Level Systems
+output: public/resume/Sankalp-Jha-Systems.pdf
+maxPages: 1
+
+sections:
+  - heading: ""
+    blocks:
+      - block: header:main
+        variant: systems
+
+  - heading: Education
+    blocks:
+      - block: education:main
+        variant: recent
+
+  - heading: Experience
+    layout: entries
+    blocks:
+      - block: experience:gsoc-2025
+        variant: hardware
+      - block: contribution:wasmedge-wasmedge
+        variant: narrative
+      - block: contribution:facebook-bpfilter
+      - block: contribution:project-hami-hami
+        variant: rollup
+
+  - heading: Projects
+    layout: entries
+    blocks:
+      - block: project:xnic-v1
+        variant: bullets-tight
+      - block: project:ebpf-mcp-tracer
+        variant: bullets
+      - block: project:los-tecnicos
+        variant: bullets
+
+  - heading: Technical Skills
+    blocks:
+      - block: skills:main
+        variant: systems-c
+
+  - heading: Publications
+    blocks:
+      - block: publication:trusture
+        variant: compact
+
+  - heading: Leadership
+    blocks:
+      - block: leadership:main
+        variant: compact
+
+  - heading: Achievements & Certifications
+    blocks:
+      - block: certificates:main
+        variant: oneline

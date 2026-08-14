@@ -1,0 +1,27 @@
+id: project:slix
+kind: project
+source: readme
+tags:
+  - ai
+  - backend
+  - frontend
+machine:
+  description: A full-stack movie streaming and review platform, built with React and Go, where admins can add movies and reviews, and Azure OpenAI does sentiment analysis on curator reviews so users can understand movie vibe at a glance.
+  liveUrl: https://magic-stream-movies-beige.vercel.app/
+  repository: blackdragoon26/Slix
+  repositoryUrl: https://github.com/blackdragoon26/Slix
+  stars: 1
+  technologies:
+    - React
+    - Go
+    - Azure OpenAI
+    - REST API
+content:
+  approach:
+    - Built the frontend in React and the service layer in Go
+    - Added Azure OpenAI sentiment analysis for curator reviews
+  impact: Gives viewers a concise representation of a movie's tone before watching.
+  link: https://magic-stream-movies-beige.vercel.app/
+  objective: Combine movie streaming, reviews, and machine-generated sentiment summaries in one full-stack application.
+  stack: React, Go, Azure OpenAI, REST API
+  title: Slix

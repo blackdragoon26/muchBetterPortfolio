@@ -1,0 +1,28 @@
+id: certificates:main
+kind: certificates
+source: manual
+tags:
+  - core
+content:
+  rows:
+    - label: Certifications
+      items:
+        - '**Open Science 101** -- NASA'
+        - '**Data Science for Engineers** -- NPTEL'
+        - '**Enhancing Soft Skills & Personality** -- NPTEL'
+        - '**IIRS Satellite Remote Sensing** -- ISRO'
+    - label: Honors & Awards
+      items:
+        - '**2x** AKTU State Men Singles TT Gold (2023, 2024)'
+        - International Robotics Olympiad Bronze, Thailand (2019)
+        - Merit Certification at Carnic Model United Nation (2021)
+        - NCC Cadet, National Cadet Corps (2019)
+variants:
+  # A single run-on line, which is what the last row of a one-page résumé usually
+  # has room for.
+  oneline:
+    rows:
+      - label: ""
+        items:
+          - 2x AKTU State TT Gold (2023, 2024); Robotics Olympiad Bronze, Thailand (2019);
+            NASA, NPTEL & ISRO certifications

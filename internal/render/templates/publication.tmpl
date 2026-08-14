@@ -1,0 +1,6 @@
+<<- $c := .Content ->>
+\noindent\begin{itemize}[topsep=0pt, itemsep=0pt]
+\item << mk (str $c "authors") >>, ``<< tex (str $c "title") >>,'' \textit{<< mkn (str $c "venue") >>}, << tex (str $c "place") >>, << mkn (str $c "date") >>.
+<<- if has $c "xploreUrl" >> \href{<< href (str $c "xploreUrl") >>}{IEEE Xplore $\nearrow$}<< end >>
+<<- if and (has $c "doi") (has $c "doiUrl") >> \hfill \href{<< href (str $c "doiUrl") >>}{DOI: << tex (str $c "doi") >>}<< end >>
+\end{itemize}%

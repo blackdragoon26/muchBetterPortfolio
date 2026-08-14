@@ -1,0 +1,48 @@
+id: experience:gsoc-2025
+kind: experience
+source: manual
+tags:
+  - core
+  - networking
+  - hardware
+  - systems
+content:
+  role: Google Summer of Code 2025 Contributor
+  organization: P4 Language Consortium, Stanford, CA
+  dates: May 2025 -- Sept 2025
+  project: 'SpliDT Project: Scaling Stateful Decision Tree Algorithms in P4'
+  projectUrl: https://splidt-showcase.vercel.app/
+  stack: P4, Python, P4Runtime, Docker, C++, Intel Tofino
+  bullets:
+    - label: 'Switch-Native Architecture:'
+      text: Architected a framework to compile ML decision trees directly into P4 data
+        planes, implementing Partitioned Decision Trees (PDTs) with TCAM-efficient Subtree
+        IDs (SIDs) to resolve hardware ASIC constraints.
+    - label: 'Validation & Optimization:'
+      text: Engineered a Jinja2-based P4Runtime testing pipeline (Tofino/Mininet) improving
+        deployment reliability by 30%, and optimized SID recirculation to achieve 10 Gbps
+        line-rate throughput with 20% lower inference latency.
+variants:
+  # The hardware framing foregrounds the ASIC and silicon work; same facts, aimed
+  # at a reader who cares about Tofino rather than about ML.
+  hardware:
+    stack: P4, C++, Python, P4Runtime, Docker, Intel Tofino
+    bullets:
+      - label: ""
+        text: Architected a switch-native framework compiling ML decision trees directly
+          into P4 data planes using Partitioned Decision Trees (PDTs) with TCAM-efficient
+          Subtree IDs, working around hardware ASIC constraints on Intel Tofino silicon.
+      - label: ""
+        text: Built a C++/P4Runtime data-path testing pipeline spanning Tofino hardware
+          and Mininet software targets, improving deployment reliability by 30%.
+      - label: ""
+        text: Optimized low-level SID recirculation logic to hit 10 Gbps line-rate throughput
+          with up to 5x lower inference latency than control-plane inference.
+  tight:
+    bullets:
+      - label: 'Switch-Native Architecture:'
+        text: Compiled ML decision trees directly into P4 data planes with TCAM-efficient
+          Subtree IDs to resolve hardware ASIC constraints.
+      - label: 'Validation & Optimization:'
+        text: Built a P4Runtime testing pipeline (Tofino/Mininet) improving reliability
+          by 30%; hit 10 Gbps line rate with 20% lower inference latency.

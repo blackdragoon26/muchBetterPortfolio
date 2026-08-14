@@ -1,0 +1,11 @@
+<<- $c := .Content ->>
+\entryhead{<< mk (str $c "role") >>}{<< tex (str $c "organization") >>}{\textbf{<< tex (str $c "dates") >>}}%
+<<- if has $c "project" >>
+\noindent{\fontsize{9.5}{10.5}\selectfont\textbf{<< if has $c "projectUrl" >>\href{<< href (str $c "projectUrl") >>}{<< tex (str $c "project") >>}<< else >><< tex (str $c "project") >><< end >>}}
+\hfill \textit{<< tex (str $c "stack") >>}\par
+<<- end >>
+\begin{itemize}[labelindent=10pt, leftmargin=25pt, labelsep=5pt, topsep=0pt, itemsep=0pt]
+<<- range rows $c "bullets" >>
+  \item << if has . "label" >>\textbf{<< tex (str . "label") >>}\enspace << end >><< mkn (str . "text") >>
+<<- end >>
+\end{itemize}%

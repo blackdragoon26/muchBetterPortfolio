@@ -1,0 +1,37 @@
+id: project:cutable
+kind: project
+source: readme
+tags:
+  - ai
+  - backend
+  - frontend
+  - infra
+machine:
+  description: A production-oriented agentic software-engineering workspace that turns natural-language prompts and visual references into working React applications. Its Go orchestration backend streams planning, tool execution, code changes, builds, and live previews from isolated E2B sandboxes while preserving each user's projects for continued editing.
+  liveUrl: https://cutable.sankalpjha.dev/
+  repository: blackdragoon26/Cutable
+  repositoryUrl: https://github.com/blackdragoon26/Cutable
+  stars: 0
+  technologies:
+    - Go
+    - Next.js
+    - PostgreSQL
+    - OpenRouter
+    - E2B
+    - WebSockets
+    - Nomad
+content:
+  approach:
+    - Orchestrated OpenRouter tools and E2B sandboxes in Go
+    - Streamed code and live previews to Next.js over WebSockets
+  impact: Ships multimodal BYOK generation, persistent projects, and health-gated deployments.
+  link: https://cutable.sankalpjha.dev/
+  objective: Generate editable React applications from text and visual requirements.
+  stack: Go, Next.js, PostgreSQL, OpenRouter, E2B, WebSockets, Nomad
+  title: Cutable
+variants:
+  tight:
+    approach:
+      - Orchestrated OpenRouter tools and E2B sandboxes in Go; streamed previews over WebSockets
+    impact: Ships multimodal BYOK generation and health-gated deployments.
+    stack: Go, Next.js, PostgreSQL, OpenRouter, E2B

@@ -1,0 +1,131 @@
+# Myprod Handoff — resume-builder
+
+Prepared against the contract in
+[Myprod docs/application-onboarding.md](https://github.com/blackdragoon26/Myprod/blob/main/docs/application-onboarding.md).
+
+Nothing in Myprod, Oracle, Nomad, WireGuard, Traefik or any cloud firewall was
+changed while preparing this. Registration and deployment remain operator
+actions.
+
+## Handoff manifest
+
+```txt
+name: resume-builder
+source commit: <filled in by the publish workflow>
+image: ghcr.io/blackdragoon26/resume-builder:<commit-sha>
+image digest: <recorded in the workflow run summary>
+architecture: linux/arm64 (linux/amd64 also published)
+container port: 8080
+health path: /healthz
+recommended CPU MHz: 1000
+recommended memory MB: 512
+ephemeral data behavior: the working copy under /data/repo is a shallow clone
+  discarded on restart; every saved edit is committed and pushed to GitHub, so no
+  application data lives on the node. Preview PDFs are held in memory, capped at
+  24, and lost on restart.
+required environment variables: RESUMEKIT_REPO_URL, RESUMEKIT_REPO_BRANCH
+  (both have working defaults baked into the image)
+required secrets: RESUMEKIT_TOKEN (editor access), GITHUB_TOKEN (push access)
+publicly pullable without authentication: yes, once the GHCR package is marked public
+local container smoke command: see below
+health-check result: {"status":"ok"} with HTTP 200
+project test command and result: go test ./... — ok (block, render)
+known limitations: see below
+```
+
+## Verified locally
+
+Built for `linux/arm64` and run as a non-root container on an Apple Silicon host,
+which is the same architecture as the Oracle control plane.
+
+```sh
+docker buildx build --platform linux/arm64 -t resumed:test --load .
+docker run -d --name resumedtest -p 8100:8080 \
+  -e RESUMEKIT_TOKEN=<token> \
+  -e RESUMEKIT_REPO_REFRESH=false \
+  -v "$PWD:/data/repo" resumed:test
+curl -s http://127.0.0.1:8100/healthz
+```
+
+Observed:
+
+| Check | Result |
+| --- | --- |
+| `uname -m` in container | `aarch64` |
+| Process user | `uid=65532(nonroot) gid=65532(nonroot)` |
+| `/healthz` | `{"status":"ok"}`, HTTP 200, no auth, no mutation |
+| Docker HEALTHCHECK | `healthy` |
+| First compile in a cold container | 6.2 s |
+| Subsequent compile | 1.56 s |
+| tectonic downloads at runtime | 0 — the support-file cache is baked into the image |
+| Image size | 443 MB (45 MB of that is the LaTeX cache) |
+| Unauthenticated `/api/state` | HTTP 401 |
+| Wrong login token | HTTP 401 |
+| Request body over 1 MB | HTTP 400 |
+| Path traversal on `/api/resume/{id}` | HTTP 400 |
+
+## Bounds
+
+Per contract item 5, public traffic is bounded:
+
+- Request bodies are capped at 1 MB.
+- Exactly one LaTeX compile runs at a time. A second concurrent request is
+  refused with HTTP 429 rather than queued, so load cannot accumulate.
+- Each compile runs in its own scratch directory, so concurrent requests can
+  never read each other's artifacts.
+- Each compile is cancelled after 60 s.
+- Generated PDFs are held in memory only, capped at 24, roughly 50 KB each.
+- All repository writes are serialised behind one mutex, so overlapping saves
+  cannot collide on `index.lock` or commit a partial set of files.
+- Commits are scoped to the paths the request touched, so an editor save never
+  sweeps up unrelated staged changes.
+- `Manifest.Output` is validated to a relative `.pdf` path under
+  `public/resume/`, so a manifest cannot direct a write outside the repository.
+- Every route except `/healthz` and `/` requires the access token.
+
+## Secrets
+
+The service needs two values and reads them from the operator-installed runtime
+environment file, so neither passes through the dashboard or the agent store.
+
+Install on the target node as `/etc/poolctl/apps/resume-builder.env`, owner
+`65532:65532`, mode `0400`:
+
+```sh
+RESUMEKIT_TOKEN=<a long random string; this is the editor password>
+GITHUB_TOKEN=<a fine-grained PAT with contents:write on muchBetterPortfolio only>
+```
+
+Register the app with `secret_env: true`. The entrypoint also accepts the file at
+`/run/secrets/resume-builder.env`.
+
+Without `GITHUB_TOKEN` the service still runs: edits commit inside the container
+and are lost on restart. That is a safe way to try it before issuing a token.
+
+## Suggested registration values
+
+```txt
+name:           resume-builder
+image:          ghcr.io/blackdragoon26/resume-builder:<commit-sha>
+domain:         resume.sankalpjha.dev
+target node:    oracle-main
+container port: 8080
+health path:    /healthz
+CPU:            1000 MHz
+memory:         512 MB
+DNS:            managed (A record -> 140.245.5.201)
+secret_env:     true
+```
+
+## Known limitations
+
+- **Single writer.** Two people editing at once will produce conflicting commits;
+  the second push fails and the error surfaces in the UI. This is a personal
+  tool, so it is not worth solving yet.
+- **No persistent volume.** Deliberate — the git remote is the durable store.
+- **Push failures are reported, not retried.** A save that commits but cannot
+  push says so explicitly rather than pretending to have succeeded.
+- **The editor edits scalar and string-list fields.** Nested structures such as
+  education rows and skill groups are edited in YAML, where the shape is visible.
+- **`resume.sankalpjha.dev` will serve an authenticated editor**, not public
+  content. The published résumé PDFs remain static files on the portfolio site.

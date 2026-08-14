@@ -1,0 +1,72 @@
+id: project:xnic-v1
+kind: project
+source: readme
+tags:
+  - embedded
+  - hardware
+  - kernel
+  - networking
+  - systems
+machine:
+  description: An interview-grade Linux networking-driver lab built around a clean-room Intel 82540EM/e1000 PCI Ethernet driver, with BAR0 MMIO, DMA descriptor rings, interrupt-driven NAPI, TX backpressure, ethtool telemetry, fault injection, and serialized timeout/reset recovery. It also includes a software-qualified W5500 SPI driver path and a gated DPDK L2 forwarder, while keeping physical-silicon, ENA, and RDMA validation explicitly out of scope until real hardware evidence exists. · Technical docs
+  liveUrl: https://xnic-v1.vercel.app/
+  repository: blackdragoon26/xnic-v1
+  repositoryUrl: https://github.com/blackdragoon26/xnic-v1
+  stars: 1
+  technologies:
+    - Linux Kernel
+    - C
+    - PCI
+    - BAR0 MMIO
+    - DMA
+    - Descriptor Rings
+    - e1000
+    - Intel 82540EM
+    - net_device
+    - NAPI
+    - IRQ
+    - MSI
+    - ethtool
+    - QEMU
+    - HVF
+    - KFENCE
+    - sparse
+    - DPDK
+    - rte_ethdev
+    - net_pcap PMD
+    - tcpdump
+    - Wireshark
+    - W5500
+    - SPI
+    - Device Tree
+    - Bash
+    - GitHub Actions
+    - Vercel
+content:
+  approach:
+    - Implemented PCI probe/remove, BAR0 MMIO, coherent and streaming DMA rings, interrupt-driven NAPI, TX queue backpressure, ethtool counters, and serialized watchdog/reset recovery in C
+    - Added staged fault injection, KFENCE and sparse qualification, reproducible QEMU/HVF automation, Wireshark-compatible captures, a W5500 SPI driver path, and an rte_ethdev L2 forwarder
+  impact: Qualified 10,100 RX and TX ring wraps across 646,400 packets at zero loss, 1,000 interface cycles, 100 driver rebinds, and 100 reset-under-traffic cycles; validated DPDK partial-TX cleanup and signal-safe shutdown with the net_pcap virtual PMD.
+  link: https://xnic-v1.vercel.app/
+  objective: Build and qualify a defensible clean-room Linux Ethernet driver with observable packet paths, ownership invariants, fault recovery, and a gated user-space DPDK forwarding path.
+  stack: Linux Kernel, C, PCI, BAR0 MMIO, DMA, Descriptor Rings, e1000, Intel 82540EM, net_device, NAPI, IRQ, MSI, ethtool, QEMU, HVF, KFENCE, sparse, DPDK, rte_ethdev, net_pcap PMD, tcpdump, Wireshark, W5500, SPI, Device Tree, Bash, GitHub Actions, Vercel
+  title: XNIC v1
+variants:
+  bullets:
+    bullets:
+      - 'Built a clean-room Intel 82540EM/e1000-compatible PCI Ethernet driver in C: PCI probe/remove, BAR0 MMIO, coherent and streaming DMA descriptor rings, interrupt-driven NAPI receive processing, TX queue backpressure, ethtool telemetry, and serialized watchdog/reset recovery.'
+      - 'Qualified the driver under KFENCE and sparse static analysis with staged fault injection: 10,100 RX/TX ring wraparounds across 646,400 packets at zero loss, 1,000 interface up/down cycles, 100 module rebinds, and 100 reset-under-traffic cycles, all on reproducible QEMU/HVF automation.'
+      - Extended the driver with a software-qualified W5500 SPI driver path and a gated DPDK L2 forwarder; validated partial-TX cleanup and signal-safe shutdown against the net_pcap virtual PMD, debugging packet-path failures with tcpdump/Wireshark captures.
+    stack: C, Linux Kernel, PCI, DMA, NAPI, QEMU, DPDK (rte_ethdev)
+  bullets-tight:
+    bullets:
+      - 'Built a clean-room Intel 82540EM/e1000-compatible PCI Ethernet driver in C: PCI probe/remove, BAR0 MMIO, coherent and streaming DMA rings, interrupt-driven NAPI, TX backpressure, ethtool telemetry, and watchdog/reset recovery.'
+      - 'Qualified it under KFENCE and sparse with staged fault injection: 646,400 packets at zero loss, 1,000 interface cycles, 100 rebinds, and 100 reset-under-traffic cycles on reproducible QEMU/HVF automation.'
+      - Added a W5500 SPI driver path and a gated DPDK L2 forwarder; validated partial-TX cleanup and signal-safe shutdown against the net_pcap virtual PMD.
+    stack: C, Linux Kernel, PCI, DMA, NAPI, QEMU, DPDK
+  tight:
+    approach:
+      - Implemented a C driver featuring PCI MMIO, DMA rings, interrupt-driven NAPI, QEMU automation, and fault injection
+    impact: Maintained zero packet loss across 646,400 packets, proving stability through 1,000 interface cycles and reset-under-traffic tests.
+    objective: Developed a clean-room Linux Ethernet driver with robust fault recovery and a user-space DPDK forwarding path.
+    stack: C, Linux Kernel, PCI, DMA, NAPI, QEMU, DPDK (rte_ethdev)

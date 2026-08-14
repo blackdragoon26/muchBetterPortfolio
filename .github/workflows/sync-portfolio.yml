@@ -1,4 +1,4 @@
-name: Sync portfolio and resume
+name: Sync portfolio and resumes
 
 on:
   push:
@@ -6,7 +6,12 @@ on:
     paths:
       - .github/workflows/sync-portfolio.yml
       - scripts/**
-      - resume/resume.tex
+      - cmd/**
+      - internal/**
+      - data/blocks/**
+      - resumes/**
+      - go.mod
+      - go.sum
   repository_dispatch:
     types: [profile-readme-updated]
   schedule:
@@ -25,6 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       MIN_REPO_STARS: ${{ vars.PORTFOLIO_MIN_REPO_STARS || '300' }}
+      TECTONIC_VERSION: "0.15.0"
     steps:
       - name: Check out portfolio
         uses: actions/checkout@v4
@@ -42,6 +48,12 @@ jobs:
           node-version: 20
           cache: npm
 
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.25"
+          cache-dependency-path: go.sum
+
       - name: Install locked dependencies
         run: npm ci
 
@@ -57,24 +69,38 @@ jobs:
       - name: Capture live project screenshots
         run: node scripts/capture-project-screenshots.mjs
 
-      - name: Generate projects and contributions in the resume
-        run: node scripts/generate-resume-highlights.mjs
+      # Refreshes machine-owned facts on every block. Authored prose and variants
+      # are held in a separate map and are never written by this step.
+      - name: Import portfolio data into the block store
+        run: go run ./cmd/importer
 
-      - name: Compile LaTeX resume
-        uses: xu-cheng/latex-action@v4
+      - name: Install tectonic
+        run: |
+          curl -fsSL -o tectonic.tar.gz \
+            "https://github.com/tectonic-typesetting/tectonic/releases/download/tectonic%40${TECTONIC_VERSION}/tectonic-${TECTONIC_VERSION}-x86_64-unknown-linux-gnu.tar.gz"
+          tar -xzf tectonic.tar.gz
+          sudo install -m 0755 tectonic /usr/local/bin/tectonic
+          tectonic --version
+
+      # tectonic fetches only the LaTeX packages this document needs, then caches
+      # them. Without this the first compile of every run spends minutes on
+      # downloads that never change.
+      - name: Cache tectonic support files
+        uses: actions/cache@v4
         with:
-          working_directory: resume
-          root_file: resume.tex
-          latexmk_use_xelatex: true
+          path: ~/.cache/Tectonic
+          key: tectonic-${{ env.TECTONIC_VERSION }}-${{ hashFiles('internal/render/templates/document.tmpl') }}
+          restore-keys: |
+            tectonic-${{ env.TECTONIC_VERSION }}-
 
-      - name: Publish resume PDF
-        run: mv resume/resume.pdf public/resume/Sankalp-Jha-Resume.pdf
+      - name: Build every résumé
+        run: go run ./cmd/resumekit build
 
       - name: Commit generated content
         run: |
           git config user.name "portfolio-sync[bot]"
           git config user.email "portfolio-sync[bot]@users.noreply.github.com"
-          git add src/generated public/generated public/resume resume/generated
+          git add src/generated public/generated public/resume data/blocks
           git diff --cached --quiet && exit 0
-          git commit -m "chore: sync portfolio content and resume"
+          git commit -m "chore: sync portfolio content and resumes"
           git push

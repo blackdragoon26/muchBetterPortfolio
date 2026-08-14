@@ -1,0 +1,25 @@
+<<- $c := .Content ->>
+<<- /* The entries layout renders prose bullets; every other layout uses the
+       objective/approach/impact table that the existing résumé established. */ ->>
+<<- if eq (printf "%s" .Layout) "entries" >>
+\noindent\textbf{<< tex (str $c "title") >>}<< if has $c "stack" >> $|$ \textit{\fontsize{8.5}{9.5}\selectfont << tex (str $c "stack") >>}<< end >>
+\begin{itemize}[labelindent=10pt, leftmargin=25pt, labelsep=5pt, topsep=0pt, itemsep=0pt]
+<<- range strAt $c "bullets" >>
+  \item << mkn . >>
+<<- end >>
+<<- if not (has $c "bullets") >>
+  \item << mkn (str $c "objective") >> << mkn (joinClauses (strAt $c "approach")) >>. << mkn (str $c "impact") >>
+<<- end >>
+\end{itemize}%
+<<- else >>
+\noindent\begin{minipage}{\linewidth}
+\entryhead{<< tex (str $c "title") >>}{<< tex (str $c "stack") >>}{\href{<< href (str $c "link") >>}{Project Link}}%
+\noindent\begin{tabular}{|p{\dimexpr\linewidth-2\tabcolsep-2\arrayrulewidth\relax}|}
+\hline
+\textbf{Objective:}\enspace << mkn (str $c "objective") >> \\[1.5pt]
+\textbf{Approach:}\enspace << mkn (joinClauses (strAt $c "approach")) >>. \\[1.5pt]
+\textbf{Impact:}\enspace << mkn (str $c "impact") >> \\
+\hline
+\end{tabular}%
+\end{minipage}\par
+<<- end >>

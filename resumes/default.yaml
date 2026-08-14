@@ -1,0 +1,53 @@
+# Reproduces the résumé currently published at public/resume/Sankalp-Jha-Resume.pdf.
+# It exists as a regression baseline: if the block renderer can rebuild this one,
+# the presets that diverge from it can be trusted.
+id: default
+label: General - Open Source & Software Engineering
+output: public/resume/Sankalp-Jha-Resume.pdf
+maxPages: 2
+
+sections:
+  - heading: ""
+    blocks:
+      - block: header:main
+
+  - heading: Education
+    blocks:
+      - block: education:main
+
+  - heading: Experience
+    blocks:
+      - block: experience:gsoc-2025
+
+  - heading: Open Source Contributions
+    layout: boxed
+    blocks:
+      - block: contribution:wasmedge-wasmedge
+        variant: headline
+      - block: contribution:project-hami-hami
+        variant: raw
+      - block: contribution:facebook-bpfilter
+
+  - heading: Key Projects
+    blocks:
+      - block: project:cutable
+      - block: project:dmie
+      - block: project:slix
+      - block: project:myprod
+      - block: project:xnic-v1
+
+  - heading: Technical Skills
+    blocks:
+      - block: skills:main
+
+  - heading: Positions of Leadership
+    blocks:
+      - block: leadership:main
+
+  - heading: Publications
+    blocks:
+      - block: publication:trusture
+
+  - heading: Certifications & Honors
+    blocks:
+      - block: certificates:main

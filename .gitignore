@@ -44,3 +44,4 @@ __pycache__/
 # OAuth Credentials (NEVER COMMIT)
 client_secret.json
 token.json
+.resumekit/

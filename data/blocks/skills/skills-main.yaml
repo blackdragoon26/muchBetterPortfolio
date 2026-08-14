@@ -1,0 +1,58 @@
+id: skills:main
+kind: skills
+source: manual
+tags:
+  - core
+content:
+  groups:
+    - items: Python, C, C++, JavaScript, TypeScript, Go, P4
+      label: 'Language:'
+    - items: NodeJS, Numpy, Matplotlib, eBPF, gRPC, Protobufs, Next.js, Scapy, MLIR, LLVM, Sklearn, React, Web Services
+      label: 'Libraries/Frameworks:'
+    - items: Docker, CI/CD, VS Code, UTM, GitHub, GitLab, DaVinci Resolve, Linux (x86_64, ARM64 & AMD64)
+      label: 'Tools/Platforms:'
+    - items: SQL, MongoDB, GraphQL, Redis, PostgreSQL, MySQL
+      label: 'Databases:'
+variants:
+  ai:
+    groups:
+      - items: Python, Go, TypeScript, JavaScript, C++
+        label: 'Languages:'
+      - items: OpenRouter, Azure OpenAI, MCP, E2B, LLM tool-calling, vector search, Sklearn
+        label: 'AI & Orchestration:'
+      - items: FastAPI, NodeJS, gRPC, Protobufs, WebSockets, PostgreSQL, Redis, MongoDB
+        label: 'Backend & Data:'
+      - items: Docker, Nomad, CI/CD, Next.js, React, Linux
+        label: 'Tools / Platforms:'
+  backend:
+    groups:
+      - items: Go, Python, C, C++, TypeScript, JavaScript
+        label: 'Languages:'
+      - items: Nomad, Kubernetes, Traefik, WireGuard, gRPC, Protobufs, Docker
+        label: 'Distributed Systems:'
+      - items: PostgreSQL, Redis, MongoDB, MySQL, SQL, GraphQL
+        label: 'Data & Storage:'
+      - items: CI/CD, GitHub Actions, Linux (x86_64, ARM64), SOPS, Netlify DNS
+        label: 'Tools / Platforms:'
+  hardware-rtl:
+    groups:
+      - items: Verilog, C, C++, Python, P4, Go
+        label: 'Language & RTL:'
+      - items: PCIe, Ethernet, DPDK, DMA, BAR0 MMIO, NAPI, eBPF
+        label: 'High-Speed Systems & Interfaces:'
+      - items: QEMU, Wireshark, Scapy, LLVM, MLIR, Fault Injection, CI/CD
+        label: 'Simulation & Verification:'
+      - items: Linux Kernel (x86_64, ARM64), VS Code, Docker, Git
+        label: 'Tools & Platforms:'
+  systems-c:
+    groups:
+      - items: C, C++, Python, Go, P4, JavaScript, TypeScript, Rust
+        label: 'Languages:'
+      - items: Linux (x86_64, ARM64, AMD64), eBPF, gRPC, Protobufs, Scapy, socket-level networking
+        label: 'Systems / Networking:'
+      - items: gdb, perf, pprof, htop
+        label: 'Debugging / Profiling:'
+      - items: Docker, CI/CD, GitHub, GitLab, UTM
+        label: 'Tools / Platforms:'
+      - items: SQL, PostgreSQL, MySQL, MongoDB, Redis, GraphQL
+        label: 'Databases:'

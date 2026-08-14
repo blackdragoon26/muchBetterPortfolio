@@ -1,0 +1,30 @@
+id: project:p4lens
+kind: project
+source: readme
+tags:
+  - backend
+  - frontend
+  - hardware
+  - infra
+  - networking
+machine:
+  description: An Interactive P4 Program Visualiser, which allows to Upload and visualise P4 programs with an intuitive and interactive pipeline flow diagram, to those who are beginning to learn P4Lang.
+  liveUrl: https://p4lens.vercel.app/
+  repository: openlabnetworks/p4Lens
+  repositoryUrl: https://github.com/openlabnetworks/p4Lens
+  stars: 3
+  technologies:
+    - React
+    - FastAPI
+    - Docker
+    - React Flow
+    - P4
+content:
+  approach:
+    - Built a parser for P4-14 and P4-16 programs
+    - Rendered headers, parsers, controls, and deparsers as interactive React Flow topologies
+  impact: Renders pipeline diagrams in under 200 ms and reduces control-plane debugging effort by approximately 40 percent.
+  link: https://p4lens.vercel.app/
+  objective: Make P4 programs easier to learn and debug through an interactive visualization of their processing pipeline.
+  stack: React, FastAPI, Docker, React Flow, P4
+  title: p4Lens

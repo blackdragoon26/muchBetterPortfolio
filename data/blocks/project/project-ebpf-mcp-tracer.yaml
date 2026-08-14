@@ -1,0 +1,38 @@
+id: project:ebpf-mcp-tracer
+kind: project
+source: readme
+tags:
+  - ai
+  - kernel
+  - systems
+machine:
+  description: A secure MCP server which lets LLMs write and run bpftrace scripts against Linux kernel, with strict probe allowlist, dry-run validation and hard timeout, so AI agents can debug system bottlenecks without raw unsafe eBPF access.
+  liveUrl: ""
+  repository: blackdragoon26/ebpf-mcp-tracer
+  repositoryUrl: https://github.com/blackdragoon26/ebpf-mcp-tracer
+  stars: 1
+  technologies:
+    - Python
+    - bpftrace
+    - eBPF
+    - Linux
+    - MCP
+content:
+  approach:
+    - Implemented a strict probe allowlist, dry-run validation, and execution timeouts around bpftrace
+    - Exposed the guarded tracing workflow through MCP
+  impact: Enables kernel-level diagnostics while reducing command-injection and runaway-probe risk.
+  link: https://github.com/blackdragoon26/ebpf-mcp-tracer
+  objective: Let AI debugging agents inspect Linux performance without granting unrestricted eBPF execution.
+  stack: Python, bpftrace, eBPF, Linux, MCP
+  title: ebpf-mcp-tracer
+variants:
+  bullets:
+    bullets:
+      - 'Secure server exposing controlled Linux kernel tracing to LLM agents: strict probe allowlist, dry-run validation, and hard timeouts so agents can debug system bottlenecks without raw unsafe eBPF access.'
+    stack: Python, bpftrace, eBPF, Linux
+  tight:
+    approach:
+      - Wrapped bpftrace in a strict probe allowlist, dry-run validation, and execution timeouts, exposed over MCP
+    impact: Enables kernel-level diagnostics while reducing command-injection and runaway-probe risk.
+    objective: Let AI debugging agents inspect Linux performance without granting unrestricted eBPF execution.
