@@ -1,28 +1,28 @@
-content:
-  entries:
-  - number: 507
-    summary: ''
-  label: facebook/bpfilter
-id: 'contribution:facebook-bpfilter'
+id: contribution:facebook-bpfilter
 kind: contribution
-machine:
-  pullRequests:
-  - additions: 7
-    changedFiles: 4
-    deletions: 4
-    href: 'https://github.com/facebook/bpfilter/pull/507'
-    mergedAt: '2026-04-24T10:52:56Z'
-    number: 507
-    title: 'build: update clang-tidy brace config, fix opts.c/set.c, and NOLINT dump.c'
-  repository: facebook/bpfilter
-  stars: 350
 source: github
 tags:
-- systems
-- opensource
+  - systems
+  - opensource
+machine:
+  pullRequests:
+    - additions: 7
+      changedFiles: 4
+      deletions: 4
+      href: https://github.com/facebook/bpfilter/pull/507
+      mergedAt: "2026-04-24T10:52:56Z"
+      number: 507
+      title: 'build: update clang-tidy brace config, fix opts.c/set.c, and NOLINT dump.c'
+  repository: facebook/bpfilter
+  stars: 350
+content:
+  entries:
+    - number: 507
+      summary: ""
+  label: facebook/bpfilter
 variants:
   lines:
     entries:
-    - number: 507
-      summary: 'build: update clang-tidy brace config, fix opts.c/set.c, and NOLINT dump.c'
+      - number: 507
+        summary: 'build: update clang-tidy brace config, fix opts.c/set.c, and NOLINT dump.c'
     layout: lines
