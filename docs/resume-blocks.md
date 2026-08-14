@@ -100,8 +100,12 @@ rendered and measured.
 ## The builder
 
 ```bash
-RESUMEKIT_TOKEN=$(openssl rand -hex 24) go run ./cmd/resumed
+go run ./cmd/resumekit totp            # once: prints a key to enrol
+RESUMEKIT_TOTP_SECRET=<key> go run ./cmd/resumed
 ```
+
+Login is a six-digit code from an authenticator app, rate-limited and
+single-use.
 
 Drag blocks between sections, pick variants, edit content with the three-way
 save, live PDF preview. Deployment notes are in

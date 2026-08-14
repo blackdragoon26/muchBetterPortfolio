@@ -36,6 +36,7 @@ import (
 	"github.com/blackdragoon26/muchBetterPortfolio/internal/manifest"
 	"github.com/blackdragoon26/muchBetterPortfolio/internal/persist"
 	"github.com/blackdragoon26/muchBetterPortfolio/internal/render"
+	"github.com/blackdragoon26/muchBetterPortfolio/internal/totp"
 )
 
 //go:embed ui/*
@@ -63,8 +64,12 @@ type server struct {
 	blocksRoot  string
 	resumesRoot string
 
-	token string
-	git   *persist.Git
+	// secret backs the browser login. token is optional and exists only so
+	// scripts and curl can reach the API without a one-time code.
+	secret totp.Secret
+	guard  *totp.Guard
+	token  string
+	git    *persist.Git
 
 	// compileSlots admits one compile at a time; the select on it never blocks,
 	// so a second request is rejected immediately with 429.
@@ -89,6 +94,7 @@ func main() {
 	addr := envOr("RESUMEKIT_ADDR", "0.0.0.0:8080")
 	repo := envOr("RESUMEKIT_REPO", ".")
 	token := os.Getenv("RESUMEKIT_TOKEN")
+	rawSecret := os.Getenv("RESUMEKIT_TOTP_SECRET")
 
 	// The runtime image carries no curl or wget, so the container health check
 	// re-executes this binary instead of shelling out to an HTTP client.
@@ -101,7 +107,17 @@ func main() {
 		log.Fatalf("resolve repo path: %v", err)
 	}
 
+	secret, err := totp.ParseSecret(rawSecret)
+	if err != nil {
+		// Starting without a login would expose an editor that can rewrite the
+		// résumé and push to the repository.
+		log.Fatalf("RESUMEKIT_TOTP_SECRET is required and must be valid base32: %v\n"+
+			"generate one with: resumekit totp", err)
+	}
+
 	instance := &server{
+		secret:       secret,
+		guard:        totp.NewGuard(),
 		repoRoot:     absRepo,
 		blocksRoot:   filepath.Join(absRepo, "data", "blocks"),
 		resumesRoot:  filepath.Join(absRepo, "resumes"),
@@ -118,17 +134,12 @@ func main() {
 		},
 	}
 
-	if token == "" {
-		// Without a token the editor would let anyone rewrite the résumé and
-		// push to the repository, so refuse rather than start open.
-		log.Fatal("RESUMEKIT_TOKEN is required; refusing to start an unauthenticated editor")
-	}
-
 	if _, err := block.Load(instance.blocksRoot); err != nil {
 		log.Fatalf("block store at %s is not readable: %v", instance.blocksRoot, err)
 	}
 
-	log.Printf("resumed listening on %s (repo %s, push=%v)", addr, absRepo, instance.git.Push)
+	log.Printf("resumed listening on %s (repo %s, push=%v, api-token=%v)",
+		addr, absRepo, instance.git.Push, token != "")
 	httpServer := &http.Server{
 		Addr:              addr,
 		Handler:           instance.routes(),
@@ -201,43 +212,56 @@ func (s *server) authed(next http.HandlerFunc) http.Handler {
 }
 
 func (s *server) authorized(r *http.Request) bool {
-	expected := sessionValue(s.token)
+	expected := sessionValue(s.secret.Base32)
 	if cookie, err := r.Cookie(sessionCookie); err == nil {
 		if subtle.ConstantTimeCompare([]byte(cookie.Value), []byte(expected)) == 1 {
 			return true
 		}
 	}
-	// A bearer header keeps the API usable from scripts and from curl.
+	// A bearer header keeps the API usable from scripts and from curl. It is
+	// optional: with no token configured, nothing can authenticate this way.
+	if s.token == "" {
+		return false
+	}
 	header := strings.TrimPrefix(r.Header.Get("Authorization"), "Bearer ")
 	return subtle.ConstantTimeCompare([]byte(header), []byte(s.token)) == 1
 }
 
-// sessionValue derives the cookie value from the token so the raw token is not
-// what sits in the browser jar.
-func sessionValue(token string) string {
-	sum := sha256.Sum256([]byte("resumekit-session:" + token))
+// sessionValue derives the cookie value from the shared secret, so the secret
+// itself is never what sits in the browser jar.
+func sessionValue(secret string) string {
+	sum := sha256.Sum256([]byte("resumekit-session:" + secret))
 	return hex.EncodeToString(sum[:])
 }
 
 func (s *server) handleLogin(w http.ResponseWriter, r *http.Request) {
 	r.Body = http.MaxBytesReader(w, r.Body, 4096)
 	var body struct {
-		Token string `json:"token"`
+		Code string `json:"code"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "bad request"})
 		return
 	}
-	if subtle.ConstantTimeCompare([]byte(body.Token), []byte(s.token)) != 1 {
-		// A deliberate small delay blunts online guessing without needing any
-		// stateful rate limiting.
-		time.Sleep(500 * time.Millisecond)
-		writeJSON(w, http.StatusUnauthorized, map[string]string{"error": "invalid token"})
+
+	if err := s.guard.Check(s.secret, body.Code, time.Now()); err != nil {
+		var locked totp.ErrLocked
+		if errors.As(err, &locked) {
+			writeJSON(w, http.StatusTooManyRequests, map[string]any{
+				"error":     err.Error(),
+				"lockedFor": int(locked.Remaining.Seconds()),
+			})
+			return
+		}
+		// A small delay on every wrong code costs a human nothing and removes
+		// the value of rapid-fire guessing before the lockout even engages.
+		time.Sleep(400 * time.Millisecond)
+		writeJSON(w, http.StatusUnauthorized, map[string]string{"error": err.Error()})
 		return
 	}
 	http.SetCookie(w, &http.Cookie{
 		Name:     sessionCookie,
-		Value:    sessionValue(s.token),
+		Value:    sessionValue(s.secret.Base32),
 		Path:     "/",
 		HttpOnly: true,
 		Secure:   r.TLS != nil || r.Header.Get("X-Forwarded-Proto") == "https",

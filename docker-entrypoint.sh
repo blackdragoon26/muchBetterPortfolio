@@ -24,8 +24,9 @@ for candidate in /run/secrets/resume-builder.env /run/secrets/cutable.env; do
   fi
 done
 
-if [ -z "${RESUMEKIT_TOKEN:-}" ]; then
-  echo "entrypoint: RESUMEKIT_TOKEN is not set; refusing to start an unauthenticated editor" >&2
+if [ -z "${RESUMEKIT_TOTP_SECRET:-}" ]; then
+  echo "entrypoint: RESUMEKIT_TOTP_SECRET is not set; refusing to start an unauthenticated editor" >&2
+  echo "entrypoint: generate one with 'resumekit totp' and add it to the runtime env file" >&2
   exit 1
 fi
 
