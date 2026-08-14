@@ -51,14 +51,22 @@ func (g *Git) Commit(ctx context.Context, message string, paths ...string) (bool
 		return false, err
 	}
 
+	// Every git call below is scoped to these paths. Without the pathspec,
+	// `diff --cached` and `commit` inspect the whole index, so an editor save
+	// would sweep up any unrelated staged change sitting in the working tree
+	// and attribute it to this commit.
+	pathspec := append([]string{"--"}, paths...)
+
 	// --quiet exits non-zero when the index differs from HEAD, so a plain error
 	// here means "there are staged changes", not a failure.
-	if _, err := g.run(ctx, "diff", "--cached", "--quiet"); err == nil {
+	diffArgs := append([]string{"diff", "--cached", "--quiet"}, pathspec...)
+	if _, err := g.run(ctx, diffArgs...); err == nil {
 		return false, nil
 	}
 
 	author := fmt.Sprintf("%s <%s>", g.AuthorName, g.AuthorEmail)
-	if _, err := g.run(ctx, "commit", "--author", author, "-m", message); err != nil {
+	commitArgs := append([]string{"commit", "--author", author, "-m", message}, pathspec...)
+	if _, err := g.run(ctx, commitArgs...); err != nil {
 		return false, err
 	}
 	if !g.Push {

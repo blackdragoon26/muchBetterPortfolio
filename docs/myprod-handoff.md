@@ -69,10 +69,18 @@ Observed:
 Per contract item 5, public traffic is bounded:
 
 - Request bodies are capped at 1 MB.
-- At most one LaTeX compile runs at a time, with a queue depth of 4; beyond that
-  the service returns HTTP 429 rather than accumulating work.
+- Exactly one LaTeX compile runs at a time. A second concurrent request is
+  refused with HTTP 429 rather than queued, so load cannot accumulate.
+- Each compile runs in its own scratch directory, so concurrent requests can
+  never read each other's artifacts.
 - Each compile is cancelled after 60 s.
 - Generated PDFs are held in memory only, capped at 24, roughly 50 KB each.
+- All repository writes are serialised behind one mutex, so overlapping saves
+  cannot collide on `index.lock` or commit a partial set of files.
+- Commits are scoped to the paths the request touched, so an editor save never
+  sweeps up unrelated staged changes.
+- `Manifest.Output` is validated to a relative `.pdf` path under
+  `public/resume/`, so a manifest cannot direct a write outside the repository.
 - Every route except `/healthz` and `/` requires the access token.
 
 ## Secrets

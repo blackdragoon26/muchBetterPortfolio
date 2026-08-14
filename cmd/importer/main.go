@@ -1,8 +1,10 @@
-// Command seed performs the one-time extraction of src/generated/portfolio.json
-// into the block store. It is idempotent for machine-owned facts and refuses to
-// touch human-owned prose on blocks that already exist, so it doubles as a
-// smoke test for the importer semantics that scripts/sync-portfolio.mjs will
-// eventually adopt.
+// Command importer reconciles src/generated/portfolio.json into the block store.
+//
+// It replaces machine-owned facts wholesale on every run and never writes to a
+// block's authored content, so the nightly sync cannot overwrite prose. New
+// projects and repositories arrive as draft blocks; newly merged pull requests
+// are reported rather than added, because which ones are worth showing is an
+// editorial decision.
 package main
 
 import (
@@ -15,6 +17,7 @@ import (
 	"strings"
 
 	"github.com/blackdragoon26/muchBetterPortfolio/internal/block"
+	"github.com/blackdragoon26/muchBetterPortfolio/internal/manifest"
 )
 
 type portfolio struct {
@@ -133,6 +136,13 @@ func main() {
 		}
 
 		if existing, found := store.Get(id); found {
+			// A manual block is documented as never imported, so honour that
+			// rather than injecting machine data into something hand-authored
+			// that happens to share an id.
+			if existing.Source == block.SourceManual {
+				fmt.Printf("skipping %s: source is manual\n", id)
+				continue
+			}
 			// Refresh machine facts only. This is the invariant the whole design
 			// rests on: a sync must never be able to rewrite authored prose.
 			existing.Machine = machine
@@ -212,6 +222,10 @@ func main() {
 		}
 
 		if existing, present := store.Get(id); present {
+			if existing.Source == block.SourceManual {
+				fmt.Printf("skipping %s: source is manual\n", id)
+				continue
+			}
 			existing.Machine = machine
 			if err := store.Save(existing); err != nil {
 				log.Fatalf("refresh %s: %v", id, err)
@@ -256,23 +270,47 @@ func main() {
 // useless. But staying silent about them is just as bad, because a genuinely
 // good PR would sit unnoticed in the machine map forever. So they are reported.
 func reportUnreferenced(store *block.Store, resumesDir string) {
+	// A résumé can pull a pull request in through a manifest override, which
+	// lives outside the block file entirely. Those count as referenced too, or
+	// the report nags about PRs that are already on a résumé.
+	overrides := map[string][]any{}
+	if manifests, err := manifest.LoadAll(resumesDir); err == nil {
+		for _, target := range manifests {
+			for _, section := range target.Sections {
+				for _, entry := range section.Blocks {
+					listed, ok := entry.Override["entries"].([]any)
+					if ok {
+						overrides[entry.Block] = append(overrides[entry.Block], listed...)
+					}
+				}
+			}
+		}
+	} else {
+		fmt.Fprintf(os.Stderr, "warning: could not read %s, override entries ignored: %v\n",
+			resumesDir, err)
+	}
+
 	var pending []string
 	for _, current := range store.ByKind(block.KindContribution) {
 		referenced := map[int]bool{}
-		// A PR counts as referenced if any variant lists it, not just base
-		// content — a PR shown only on the hardware résumé is still in use.
-		collect := func(content map[string]any) {
-			entries, _ := content["entries"].([]any)
-			for _, item := range entries {
+		collectList := func(items []any) {
+			for _, item := range items {
 				if entry, ok := item.(map[string]any); ok {
 					referenced[asInt(entry["number"])] = true
 				}
 			}
 		}
+		// A PR counts as referenced if any variant lists it, not just base
+		// content — a PR shown only on the hardware résumé is still in use.
+		collect := func(content map[string]any) {
+			entries, _ := content["entries"].([]any)
+			collectList(entries)
+		}
 		collect(current.Content)
 		for _, variant := range current.Variants {
 			collect(variant)
 		}
+		collectList(overrides[current.ID])
 
 		imported, _ := current.Machine["pullRequests"].([]any)
 		for _, item := range imported {

@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strings"
 	"text/template"
+	"unicode"
+	"unicode/utf8"
 )
 
 // templateFuncs exposes the escaping helpers plus a handful of map accessors.
@@ -166,7 +168,10 @@ func joinClauses(clauses []string) string {
 			continue
 		}
 		if index > 0 {
-			trimmed = strings.ToLower(trimmed[:1]) + trimmed[1:]
+			// Lowercase the first rune, not the first byte: slicing [:1] splits a
+			// multi-byte rune and ToLower turns the fragment into U+FFFD.
+			first, width := utf8.DecodeRuneInString(trimmed)
+			trimmed = string(unicode.ToLower(first)) + trimmed[width:]
 		}
 		assembled = append(assembled, trimmed)
 	}

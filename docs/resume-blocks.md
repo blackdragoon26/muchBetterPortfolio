@@ -12,7 +12,7 @@ fit. Those were per-résumé decisions living in code.
 
 ## Layout
 
-```
+```text
 data/blocks/<kind>/*.yaml    the library — one block per file
 resumes/*.yaml               one manifest per résumé
 internal/block               store, variants, three-way resolution
@@ -87,7 +87,7 @@ go run ./cmd/importer                 # refresh machine facts
 Building reports page counts against `maxPages` and, when a résumé is over,
 ranks the variant swaps that would shorten it:
 
-```
+```text
 systems  2 page(s)  OVER
     shorter variants available (by characters saved):
       -497   project:xnic-v1   bullets -> tight

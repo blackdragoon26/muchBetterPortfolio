@@ -22,8 +22,13 @@ import (
 
 // Result describes one compilation.
 type Result struct {
-	PDF      []byte
-	Pages    int
+	PDF   []byte
+	Pages int
+
+	// PagesKnown is false when the engine printed no page summary. Callers must
+	// not treat Pages as 0 in that case: a page budget would silently pass.
+	PagesKnown bool
+
 	Overfull []Overflow
 	Log      string
 }
@@ -59,11 +64,23 @@ var (
 )
 
 // Run compiles the given LaTeX source and returns the PDF plus its fit report.
+//
+// Each run gets its own subdirectory. Concurrent callers would otherwise write
+// the same resume.tex and read the same resume.pdf, and could be handed a
+// document built from someone else's source. The tectonic support-file cache
+// lives outside this directory (under XDG_CACHE_HOME), so per-run isolation
+// costs nothing in compile time.
 func (c *Compiler) Run(ctx context.Context, source string) (*Result, error) {
 	if err := os.MkdirAll(c.WorkDir, 0o755); err != nil {
 		return nil, err
 	}
-	texPath := filepath.Join(c.WorkDir, "resume.tex")
+	runDir, err := os.MkdirTemp(c.WorkDir, "run-")
+	if err != nil {
+		return nil, err
+	}
+	defer os.RemoveAll(runDir)
+
+	texPath := filepath.Join(runDir, "resume.tex")
 	if err := os.WriteFile(texPath, []byte(source), 0o644); err != nil {
 		return nil, err
 	}
@@ -87,7 +104,7 @@ func (c *Compiler) Run(ctx context.Context, source string) (*Result, error) {
 	// The .log carries far more detail than stdout; merge both before parsing so
 	// a failure that only shows up in one of them is still reported.
 	logText := output
-	if fromFile, err := os.ReadFile(filepath.Join(c.WorkDir, "resume.log")); err == nil {
+	if fromFile, err := os.ReadFile(filepath.Join(runDir, "resume.log")); err == nil {
 		logText = output + "\n" + string(fromFile)
 	}
 
@@ -95,29 +112,34 @@ func (c *Compiler) Run(ctx context.Context, source string) (*Result, error) {
 		return nil, fmt.Errorf("tectonic: %w\n%s", runErr, tail(logText, 40))
 	}
 
-	pdf, err := os.ReadFile(filepath.Join(c.WorkDir, "resume.pdf"))
+	pdf, err := os.ReadFile(filepath.Join(runDir, "resume.pdf"))
 	if err != nil {
 		return nil, fmt.Errorf("tectonic reported success but produced no PDF: %w", err)
 	}
 
+	pages, pagesKnown := parsePages(logText)
 	return &Result{
-		PDF:      pdf,
-		Pages:    parsePages(output),
-		Overfull: parseOverfull(logText),
-		Log:      logText,
+		PDF:        pdf,
+		Pages:      pages,
+		PagesKnown: pagesKnown,
+		Overfull:   parseOverfull(logText),
+		Log:        logText,
 	}, nil
 }
 
-func parsePages(output string) int {
-	match := pagesPattern.FindStringSubmatch(output)
+// parsePages reads the engine's "(N pages, ...)" summary. It reports whether a
+// count was found at all, because silently returning 0 would make every page
+// budget pass.
+func parsePages(logText string) (int, bool) {
+	match := pagesPattern.FindStringSubmatch(logText)
 	if match == nil {
-		return 0
+		return 0, false
 	}
 	count, err := strconv.Atoi(match[1])
 	if err != nil {
-		return 0
+		return 0, false
 	}
-	return count
+	return count, true
 }
 
 func parseOverfull(logText string) []Overflow {

@@ -98,6 +98,16 @@ func (s *Store) Save(b *Block) error {
 	path, known := s.paths[b.ID]
 	if !known {
 		path = filepath.Join(s.root, string(b.Kind), fileNameFor(b.ID))
+		// fileNameFor collapses every non-alphanumeric character to a dash, so
+		// two different ids of the same kind can produce one basename. Writing
+		// anyway would silently replace the other block's file while both ids
+		// stayed in memory, so refuse instead.
+		for otherID, otherPath := range s.paths {
+			if otherPath == path && otherID != b.ID {
+				return fmt.Errorf("block %s would overwrite %s: both map to %s",
+					b.ID, otherID, path)
+			}
+		}
 		if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
 			return err
 		}

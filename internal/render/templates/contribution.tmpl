@@ -18,6 +18,6 @@
 \textbullet\enspace \textbf{<< tex (str $c "label") >>:}\enspace << mkn (str $c "summaryLine") >>
 <<- else ->>
 \textbullet\enspace \textbf{<< tex (str $c "label") >>:}\enspace <<
-range $index, $pr := prs $c >><< if $index >>; << end >>\href{<< href $pr.Href >>}{\textbf{\#<< $pr.Number >>}} << mkn $pr.Summary >><< end >>.
+range $index, $pr := prs $c >><< if $index >>; << end >><< if $pr.Href >>\href{<< href $pr.Href >>}{\textbf{\#<< $pr.Number >>}}<< else >>\textbf{\#<< $pr.Number >>}<< end >> << mkn $pr.Summary >><< end >>.
 <<- end >>
 <<- end >>

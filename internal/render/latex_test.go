@@ -120,3 +120,34 @@ func TestHrefStripsBraces(t *testing.T) {
 		t.Errorf("Href() = %q, want %q", got, want)
 	}
 }
+
+// Href is the first argument of \href, and this renderer nests those links
+// inside \entryhead and \textbf, where the outer macro scans the argument before
+// hyperref ever sees it.
+func TestHrefEscapesTexSpecials(t *testing.T) {
+	cases := map[string]string{
+		// Percent-encoding is ordinary in real URLs, and a bare % would comment
+		// out the rest of the generated line.
+		"https://example.com/a%20b":     `https://example.com/a\%20b`,
+		"https://example.com/page#frag": `https://example.com/page\#frag`,
+		// Neither is valid in a URL; both could break out of the argument.
+		"https://example.com/a{b}c": "https://example.com/abc",
+		`https://example.com/a\b`:   "https://example.com/ab",
+		"https://example.com/plain": "https://example.com/plain",
+	}
+	for input, want := range cases {
+		if got := Href(input); got != want {
+			t.Errorf("Href(%q) = %q, want %q", input, got, want)
+		}
+	}
+}
+
+func TestJoinClausesLowercasesFirstRune(t *testing.T) {
+	// Slicing the first byte of a multi-byte rune and lowercasing it yields
+	// U+FFFD, which would reach the PDF.
+	got := joinClauses([]string{"First clause.", "Émulation of the driver."})
+	want := "First clause; émulation of the driver"
+	if got != want {
+		t.Errorf("joinClauses() = %q, want %q", got, want)
+	}
+}

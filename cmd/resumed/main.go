@@ -48,9 +48,9 @@ const (
 	// still refuses anything that could be used to exhaust memory.
 	maxRequestBytes = 1 << 20
 
-	// Compilation is serialised, so a queue this deep bounds the worst-case
-	// wait rather than letting requests pile up without limit.
-	maxQueuedCompiles = 4
+	// One tectonic run at a time. It is CPU-bound and the node is shared with
+	// other applications, so extra previews are refused rather than queued.
+	maxConcurrentCompiles = 1
 
 	compileTimeout = 60 * time.Second
 
@@ -66,10 +66,16 @@ type server struct {
 	token string
 	git   *persist.Git
 
-	// compileSlots bounds concurrent work. tectonic is CPU-bound and the node
-	// is shared with other applications, so exactly one compile runs at a time.
+	// compileSlots admits one compile at a time; the select on it never blocks,
+	// so a second request is rejected immediately with 429.
 	compileSlots chan struct{}
 	compiler     *compile.Compiler
+
+	// writeMu serialises every path that mutates the working tree. Both save
+	// handlers write files and then run git in the same repository, so without
+	// this two overlapping saves can collide on index.lock, commit a partial
+	// set of files, or lose a field through a read-modify-write cycle.
+	writeMu sync.Mutex
 
 	mu     sync.RWMutex
 	pdfs   map[string][]byte
@@ -100,7 +106,7 @@ func main() {
 		blocksRoot:   filepath.Join(absRepo, "data", "blocks"),
 		resumesRoot:  filepath.Join(absRepo, "resumes"),
 		token:        token,
-		compileSlots: make(chan struct{}, maxQueuedCompiles),
+		compileSlots: make(chan struct{}, maxConcurrentCompiles),
 		compiler:     compile.New(filepath.Join(os.TempDir(), "resumekit-work")),
 		pdfs:         map[string][]byte{},
 		startedAt:    time.Now(),
@@ -243,12 +249,18 @@ func (s *server) handleLogin(w http.ResponseWriter, r *http.Request) {
 
 // blockSummary is the shape the editor needs to draw the block palette.
 type blockSummary struct {
-	ID       string         `json:"id"`
-	Kind     string         `json:"kind"`
-	Tags     []string       `json:"tags"`
-	Variants []string       `json:"variants"`
-	Content  map[string]any `json:"content"`
-	Machine  map[string]any `json:"machine,omitempty"`
+	ID       string   `json:"id"`
+	Kind     string   `json:"kind"`
+	Tags     []string `json:"tags"`
+	Variants []string `json:"variants"`
+
+	Content map[string]any `json:"content"`
+	Machine map[string]any `json:"machine,omitempty"`
+
+	// VariantData carries each variant's overlay. Without it the editor can
+	// only show base content, so editing a block that renders through a variant
+	// would display text the résumé does not actually use.
+	VariantData map[string]map[string]any `json:"variantData,omitempty"`
 }
 
 func (s *server) handleState(w http.ResponseWriter, r *http.Request) {
@@ -266,12 +278,13 @@ func (s *server) handleState(w http.ResponseWriter, r *http.Request) {
 	blocks := make([]blockSummary, 0, store.Len())
 	for _, current := range store.All() {
 		blocks = append(blocks, blockSummary{
-			ID:       current.ID,
-			Kind:     string(current.Kind),
-			Tags:     current.Tags,
-			Variants: current.VariantNames(),
-			Content:  current.Content,
-			Machine:  current.Machine,
+			ID:          current.ID,
+			Kind:        string(current.Kind),
+			Tags:        current.Tags,
+			Variants:    current.VariantNames(),
+			Content:     current.Content,
+			Machine:     current.Machine,
+			VariantData: current.Variants,
 		})
 	}
 
@@ -354,11 +367,12 @@ func (s *server) handlePreview(w http.ResponseWriter, r *http.Request) {
 	}
 
 	writeJSON(w, http.StatusOK, map[string]any{
-		"pdf":      "/api/pdf/" + id,
-		"pages":    result.Pages,
-		"maxPages": target.MaxPages,
-		"overfull": overfull,
-		"savings":  savings(store, renderer, &target),
+		"pdf":        "/api/pdf/" + id,
+		"pages":      result.Pages,
+		"pagesKnown": result.PagesKnown,
+		"maxPages":   target.MaxPages,
+		"overfull":   overfull,
+		"savings":    savings(store, renderer, &target),
 	})
 }
 
@@ -436,6 +450,9 @@ func (s *server) handleSaveResume(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "id mismatch"})
 		return
 	}
+	s.writeMu.Lock()
+	defer s.writeMu.Unlock()
+
 	path := filepath.Join(s.resumesRoot, id+".yaml")
 	if err := target.Save(path); err != nil {
 		writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
@@ -472,6 +489,9 @@ func (s *server) handleSaveBlock(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "no fields to save"})
 		return
 	}
+
+	s.writeMu.Lock()
+	defer s.writeMu.Unlock()
 
 	store, err := block.Load(s.blocksRoot)
 	if err != nil {

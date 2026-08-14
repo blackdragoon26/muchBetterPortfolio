@@ -54,9 +54,31 @@ func Latex(value string) string {
 	return escaped.String()
 }
 
-// Href strips braces from a URL so it cannot terminate the \href{...} group.
+// Href prepares a URL for use as the first argument of \href.
+//
+// hyperref copes with % and # when \href is written directly in the document,
+// but this renderer nests links inside \entryhead and \textbf, and an outer
+// macro scans its argument first. A percent sign then comments out the rest of
+// the generated line, and a hash raises an illegal-parameter error. Since
+// percent-encoding makes % common in real URLs, both are escaped here.
+// Backslashes and braces are dropped outright: neither is valid in a URL, and
+// either could start a control sequence or close the argument group.
 func Href(value string) string {
-	return strings.NewReplacer("{", "", "}", "").Replace(value)
+	var cleaned strings.Builder
+	cleaned.Grow(len(value))
+	for _, symbol := range value {
+		switch symbol {
+		case '{', '}', '\\':
+			// Dropped, not escaped: these cannot appear in a well-formed URL.
+		case '%':
+			cleaned.WriteString(`\%`)
+		case '#':
+			cleaned.WriteString(`\#`)
+		default:
+			cleaned.WriteRune(symbol)
+		}
+	}
+	return cleaned.String()
 }
 
 // Markup escapes a string and then honours a deliberately tiny inline syntax:

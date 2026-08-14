@@ -197,7 +197,15 @@ async function boot() {
 }
 
 function pickResume(id) {
-  current = structuredClone(state.resumes.find(r => r.id === id));
+  const found = state.resumes.find(r => r.id === id);
+  if (!found) {
+    current = null;
+    document.getElementById('layout').innerHTML =
+      '<p style="color:var(--muted)">No résumés found in resumes/. Add a manifest and reload.</p>';
+    setStatus('bad', 'no résumé selected');
+    return;
+  }
+  current = structuredClone(found);
   document.getElementById('resumePicker').value = id;
   draw();
   schedulePreview();
@@ -341,12 +349,19 @@ async function runPreview() {
   try {
     const result = await api('/api/preview', { method: 'POST', body: JSON.stringify(current) });
     document.getElementById('preview').src = result.pdf;
-    const over = result.maxPages > 0 && result.pages > result.maxPages;
-    setStatus(over ? 'bad' : 'ok',
-      `${result.pages} page${result.pages === 1 ? '' : 's'}` +
-      (result.maxPages ? ` / budget ${result.maxPages}` : ''),
-      result.overfull.length ? `${result.overfull.length} overfull line(s)` : '');
-    drawAdvice(over || result.overfull.length ? result.savings : []);
+    if (!result.pagesKnown) {
+      setStatus('bad', 'page count unavailable',
+        'the engine printed no page summary, so the budget was not checked');
+    } else {
+      const over = result.maxPages > 0 && result.pages > result.maxPages;
+      setStatus(over ? 'bad' : 'ok',
+        `${result.pages} page${result.pages === 1 ? '' : 's'}` +
+        (result.maxPages ? ` / budget ${result.maxPages}` : ''),
+        result.overfull.length ? `${result.overfull.length} overfull line(s)` : '');
+    }
+    const tight = !result.pagesKnown ||
+      (result.maxPages > 0 && result.pages > result.maxPages) || result.overfull.length;
+    drawAdvice(tight ? result.savings : []);
   } catch (err) {
     setStatus('bad', err.message);
   } finally {
@@ -401,7 +416,10 @@ function openEditor(blockId, sectionIndex, entryIndex) {
   host.innerHTML = '';
   // Only scalar and simple-list fields are editable here; nested structures are
   // edited in the YAML directly, where the shape is visible.
-  const merged = { ...source.content, ...(entry.override || {}) };
+  const activeVariant = entry.variant && entry.variant !== 'full'
+    ? ((source.variantData || {})[entry.variant] || {})
+    : {};
+  const merged = { ...source.content, ...activeVariant, ...(entry.override || {}) };
   Object.keys(merged).sort().forEach(key => {
     const value = merged[key];
     const editable = typeof value === 'string' ||
@@ -430,9 +448,14 @@ async function applyEdit() {
   const source = byId(editing.blockId);
   const entry = current.sections[editing.sectionIndex].blocks[editing.entryIndex];
 
+  const activeVariant = entry.variant && entry.variant !== 'full'
+    ? ((source.variantData || {})[entry.variant] || {})
+    : {};
+  const resolved = { ...source.content, ...activeVariant };
+
   const fields = {};
   document.querySelectorAll('#edFields textarea').forEach(area => {
-    const original = source.content[area.dataset.key];
+    const original = resolved[area.dataset.key];
     const value = area.dataset.list === 'true'
       ? area.value.split('\n').map(s => s.trim()).filter(Boolean)
       : area.value;
@@ -463,7 +486,11 @@ async function applyEdit() {
       state = await api('/api/state');
       current = draft;
       document.getElementById('resumePicker').value = picked;
-      if (scope === 'variant' && variant) entry.variant = variant;
+      if (scope === 'variant' && variant) {
+        // current was replaced by the clone above, so `entry` now points into a
+        // discarded object. Reach the live entry through its indices.
+        current.sections[editing.sectionIndex].blocks[editing.entryIndex].variant = variant;
+      }
     }
     closeEditor();
     draw();
@@ -474,6 +501,7 @@ async function applyEdit() {
 }
 
 async function saveResume() {
+  if (!current) return;
   try {
     const result = await api('/api/resume/' + encodeURIComponent(current.id), {
       method: 'POST', body: JSON.stringify(current),

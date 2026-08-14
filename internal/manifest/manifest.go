@@ -129,6 +129,13 @@ func (m *Manifest) Validate() error {
 	if m.Output == "" {
 		return fmt.Errorf("manifest %s: output path is required", m.ID)
 	}
+	// Output arrives from the builder over HTTP and is later handed straight to
+	// os.MkdirAll and os.WriteFile, so an absolute path or a ".." segment would
+	// write outside the repository. Confine it to a relative path below
+	// public/resume, which is the only place a built résumé belongs.
+	if err := validOutput(m.Output); err != nil {
+		return fmt.Errorf("manifest %s: %w", m.ID, err)
+	}
 	if len(m.Sections) == 0 {
 		return fmt.Errorf("manifest %s: has no sections", m.ID)
 	}
@@ -152,6 +159,34 @@ func (m *Manifest) Validate() error {
 			}
 			seen[entry.Block] = section.Heading
 		}
+	}
+	return nil
+}
+
+// OutputDir is the only directory a built résumé may be written to.
+const OutputDir = "public/resume"
+
+func validOutput(output string) error {
+	if filepath.IsAbs(output) || strings.HasPrefix(output, "~") {
+		return fmt.Errorf("output %q must be a relative path", output)
+	}
+	if strings.ContainsRune(output, '\x00') {
+		return fmt.Errorf("output contains a null byte")
+	}
+	cleaned := filepath.ToSlash(filepath.Clean(output))
+	if cleaned != filepath.ToSlash(output) {
+		return fmt.Errorf("output %q must already be in its simplest form (got %q)", output, cleaned)
+	}
+	if !strings.HasPrefix(cleaned, OutputDir+"/") {
+		return fmt.Errorf("output %q must sit under %s/", output, OutputDir)
+	}
+	// Clean has already resolved any interior "..", so a survivor means the path
+	// tried to climb out of the prefix.
+	if strings.Contains(cleaned, "../") {
+		return fmt.Errorf("output %q must not traverse upward", output)
+	}
+	if !strings.HasSuffix(cleaned, ".pdf") {
+		return fmt.Errorf("output %q must end in .pdf", output)
 	}
 	return nil
 }

@@ -12,6 +12,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/blackdragoon26/muchBetterPortfolio/internal/block"
@@ -117,18 +118,26 @@ func build(filter []string) error {
 		}
 
 		status := "ok"
-		if target.MaxPages > 0 && result.Pages > target.MaxPages {
+		pages := strconv.Itoa(result.Pages)
+		switch {
+		case !result.PagesKnown:
+			// The engine printed no page summary, so the budget cannot be
+			// checked. Treat that as a failure rather than reporting "0 pages".
+			status = "UNKNOWN"
+			pages = "?"
+			failures++
+		case target.MaxPages > 0 && result.Pages > target.MaxPages:
 			status = "OVER"
 			failures++
 		}
-		fmt.Printf("%-22s %d page(s)  %6.1f KB  %-4s  %s\n",
-			target.ID, result.Pages, float64(len(result.PDF))/1024, status, target.Output)
+		fmt.Printf("%-22s %s page(s)  %6.1f KB  %-7s  %s\n",
+			target.ID, pages, float64(len(result.PDF))/1024, status, target.Output)
 
 		report(store, renderer, target, result)
 	}
 
 	if failures > 0 {
-		return fmt.Errorf("%d résumé(s) exceeded their page budget", failures)
+		return fmt.Errorf("%d résumé(s) failed their page check", failures)
 	}
 	return nil
 }
@@ -145,7 +154,7 @@ func report(store *block.Store, renderer *render.Renderer, target *manifest.Mani
 		fmt.Printf("    overfull %.1fpt: %s\n", overflow.Points, overflow.Detail)
 	}
 
-	overBudget := target.MaxPages > 0 && result.Pages > target.MaxPages
+	overBudget := target.MaxPages > 0 && result.PagesKnown && result.Pages > target.MaxPages
 	if !overBudget && len(result.Overfull) == 0 {
 		return
 	}
