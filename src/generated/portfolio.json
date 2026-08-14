@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-14T21:21:57.506Z",
+  "generatedAt": "2026-08-14T21:32:42.454Z",
   "filter": {
     "minimumRepositoryStars": 300,
     "maximumPullRequests": 999
@@ -257,7 +257,7 @@
       "screenshot": "auto",
       "screenshotWaitSeconds": 7,
       "stars": 1,
-      "image": "/generated/projects/ebpf-mcp-tracer.svg",
+      "image": "/generated/projects/ebpf-mcp-tracer.png",
       "resume": {
         "include": false,
         "objective": "Let AI debugging agents inspect Linux performance without granting unrestricted eBPF execution.",
