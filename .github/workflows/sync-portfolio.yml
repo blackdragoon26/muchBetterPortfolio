@@ -86,13 +86,14 @@ jobs:
           sudo install -m 0755 tectonic /usr/local/bin/tectonic
           tectonic --version
 
-      # tectonic fetches only the LaTeX packages this document needs, then caches
-      # them. Without this the first compile of every run spends minutes on
-      # downloads that never change.
+      # tectonic fetches the LaTeX packages this document needs and caches them.
+      # The directory is lowercase: caching ~/.cache/Tectonic matched nothing on
+      # a case-sensitive filesystem, so the 45 MB bundle was re-fetched on every
+      # run and any hiccup surfaced as a different missing file each time.
       - name: Cache tectonic support files
         uses: actions/cache@v4
         with:
-          path: ~/.cache/Tectonic
+          path: ~/.cache/tectonic
           key: tectonic-${{ env.TECTONIC_VERSION }}-${{ hashFiles('internal/render/templates/document.tmpl') }}
           restore-keys: |
             tectonic-${{ env.TECTONIC_VERSION }}-
