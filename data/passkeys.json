@@ -1,0 +1,27 @@
+[
+  {
+    "label": "MacBook Touch ID",
+    "addedAt": "2026-08-15T11:27:47.117541774Z",
+    "lastUsedAt": "0001-01-01T00:00:00Z",
+    "credential": {
+      "id": "1fHbqth2GVVnMVljV6uN9tu28jk=",
+      "publicKey": "pQECAyYgASFYIAeFuAtvIAWB9/sqmYRv673rZXxhoKOy/A1YidVtlWo4Ilgg1R02kZ0wsTztFJUb+UZsbR1rsw602UK2xkgrat3fTaA=",
+      "attestationType": "none",
+      "attestationFormat": "none",
+      "flags": {
+        "userPresent": true,
+        "userVerified": true,
+        "backupEligible": true,
+        "backupState": true
+      },
+      "authenticator": {
+        "AAGUID": "+/wwBxVOTsyMC24CBVfXvQ=="
+      },
+      "attestation": {
+        "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uY3JlYXRlIiwiY2hhbGxlbmdlIjoiN2k5elJRazYyd29mTVlTSU0zNVRvREo5WGdPaFZqQThXNkVLRUdGWGlpQSIsIm9yaWdpbiI6Imh0dHBzOi8vcmVzdW1lLnNhbmthbHBqaGEuZGV2IiwiY3Jvc3NPcmlnaW4iOmZhbHNlfQ==",
+        "clientDataHash": "PPckmhImakccs8H61PiDJMa34DktKZAOi28HNvmJU/s=",
+        "object": "o2NmbXRkbm9uZWdhdHRTdG10oGhhdXRoRGF0YViYmrCaNdkd1NsfLojGq5wSyK03Y/xb/tfCesO26etFUpBdAAAAAPv8MAcVTk7MjAtuAgVX170AFNXx26rYdhlVZzFZY1erjfbbtvI5pQECAyYgASFYIAeFuAtvIAWB9/sqmYRv673rZXxhoKOy/A1YidVtlWo4Ilgg1R02kZ0wsTztFJUb+UZsbR1rsw602UK2xkgrat3fTaA="
+      }
+    }
+  }
+]
