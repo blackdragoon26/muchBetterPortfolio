@@ -487,17 +487,40 @@ function drawPalette() {
     });
 }
 
+function clearDropHints() {
+  document.querySelectorAll('.drop').forEach(d => d.classList.remove('over'));
+  document.querySelectorAll('.card').forEach(c =>
+    c.classList.remove('insert-before', 'insert-after'));
+}
+
+// place() moves or adds a block at an exact index. Dropping on the section
+// background still appends, which is what keeps an empty section a valid target.
+function place(payload, sectionIndex, targetIndex) {
+  let entry;
+  if (payload.from === 'palette') {
+    entry = { block: payload.id };
+  } else {
+    const source = current.sections[payload.sectionIndex].blocks;
+    entry = source[payload.entryIndex];
+    source.splice(payload.entryIndex, 1);
+    // Removing first shifts everything after it, so a target that sat below the
+    // old position in the same section is now one index closer. Without this a
+    // block dragged downward lands one slot short of where it was dropped.
+    if (payload.sectionIndex === sectionIndex && payload.entryIndex < targetIndex) {
+      targetIndex -= 1;
+    }
+  }
+  const blocks = current.sections[sectionIndex].blocks;
+  blocks.splice(Math.max(0, Math.min(targetIndex, blocks.length)), 0, entry);
+  draw();
+  schedulePreview();
+}
+
 function onDrop(event, sectionIndex) {
   event.preventDefault();
-  document.querySelectorAll('.drop').forEach(d => d.classList.remove('over'));
-  const payload = JSON.parse(event.dataTransfer.getData('text/plain'));
-  if (payload.from === 'palette') {
-    current.sections[sectionIndex].blocks.push({ block: payload.id });
-  } else {
-    const [moved] = current.sections[payload.sectionIndex].blocks.splice(payload.entryIndex, 1);
-    current.sections[sectionIndex].blocks.push(moved);
-  }
-  draw(); schedulePreview();
+  clearDropHints();
+  place(JSON.parse(event.dataTransfer.getData('text/plain')),
+        sectionIndex, current.sections[sectionIndex].blocks.length);
 }
 
 document.getElementById('filter').oninput = drawPalette;
