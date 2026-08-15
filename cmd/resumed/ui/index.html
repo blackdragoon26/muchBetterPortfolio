@@ -198,6 +198,9 @@
   <input id="code" inputmode="numeric" pattern="[0-9]*" maxlength="7"
          placeholder="000000" autocomplete="one-time-code">
   <button onclick="login()">Unlock</button>
+  <button id="passkeyBtn" onclick="passkeyLogin()" style="display:none;margin-top:9px;
+          background:var(--glass-strong);border:1px solid var(--hairline);color:var(--ink)">
+    Use Touch ID</button>
   <div class="err" id="loginErr"></div>
 </div>
 
@@ -215,6 +218,7 @@
               title="Pull blocks committed since this server started">↻</button>
       <button class="btn" onclick="newResume()" title="New résumé">+</button>
       <button class="btn" onclick="deleteResume()" title="Delete this résumé">🗑</button>
+      <button class="btn" onclick="enrolPasskey()" title="Enrol Touch ID on this device">☝</button>
       <button class="btn primary" onclick="saveResume()">Save</button>
     </div>
     <div class="scroll"><div id="layout"></div></div>
@@ -819,6 +823,99 @@ async function saveResume() {
     setStatus('bad', err.message);
   }
 }
+
+/* passkeys — an alternative to the code, never a second step */
+
+// WebAuthn speaks ArrayBuffers where JSON speaks base64url, so every id and
+// challenge has to be converted in both directions.
+const b64urlToBuf = value => {
+  const padded = value.replace(/-/g, '+').replace(/_/g, '/')
+    .padEnd(value.length + (4 - value.length % 4) % 4, '=');
+  return Uint8Array.from(atob(padded), c => c.charCodeAt(0)).buffer;
+};
+const bufToB64url = buffer =>
+  btoa(String.fromCharCode(...new Uint8Array(buffer)))
+    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+
+async function passkeyLogin() {
+  const err = document.getElementById('loginErr');
+  err.textContent = '';
+  try {
+    const { options, token } = await api('/api/passkey/login/begin', { method: 'POST' });
+    const publicKey = options.publicKey || options;
+    publicKey.challenge = b64urlToBuf(publicKey.challenge);
+    (publicKey.allowCredentials || []).forEach(c => { c.id = b64urlToBuf(c.id); });
+
+    const assertion = await navigator.credentials.get({ publicKey });
+    await api('/api/passkey/login/finish?token=' + encodeURIComponent(token), {
+      method: 'POST',
+      body: JSON.stringify({
+        id: assertion.id,
+        rawId: bufToB64url(assertion.rawId),
+        type: assertion.type,
+        response: {
+          clientDataJSON: bufToB64url(assertion.response.clientDataJSON),
+          authenticatorData: bufToB64url(assertion.response.authenticatorData),
+          signature: bufToB64url(assertion.response.signature),
+          userHandle: assertion.response.userHandle
+            ? bufToB64url(assertion.response.userHandle) : null,
+        },
+      }),
+    });
+    document.getElementById('login').style.display = 'none';
+    document.getElementById('app').style.display = 'grid';
+    await boot();
+  } catch (failure) {
+    // A cancelled prompt is a choice, not a failure worth shouting about.
+    err.textContent = failure.name === 'NotAllowedError'
+      ? 'Touch ID was cancelled.' : failure.message;
+  }
+}
+
+async function enrolPasskey() {
+  const label = prompt('Name this device', 'MacBook Touch ID');
+  if (label === null) return;
+  try {
+    const { options, token } = await api('/api/passkey/register/begin', {
+      method: 'POST', body: JSON.stringify({ label }),
+    });
+    const publicKey = options.publicKey || options;
+    publicKey.challenge = b64urlToBuf(publicKey.challenge);
+    publicKey.user.id = b64urlToBuf(publicKey.user.id);
+    (publicKey.excludeCredentials || []).forEach(c => { c.id = b64urlToBuf(c.id); });
+
+    const credential = await navigator.credentials.create({ publicKey });
+    const result = await api('/api/passkey/register/finish?token=' + encodeURIComponent(token), {
+      method: 'POST',
+      body: JSON.stringify({
+        id: credential.id,
+        rawId: bufToB64url(credential.rawId),
+        type: credential.type,
+        response: {
+          clientDataJSON: bufToB64url(credential.response.clientDataJSON),
+          attestationObject: bufToB64url(credential.response.attestationObject),
+        },
+      }),
+    });
+    setStatus('ok', `enrolled "${result.label}"`,
+      result.committed ? 'committed' : (result.gitError || ''));
+  } catch (failure) {
+    setStatus('bad', failure.name === 'NotAllowedError'
+      ? 'enrolment cancelled' : failure.message);
+  }
+}
+
+// Offer the button only where it can work: a passkey needs a secure context,
+// the server needs it configured, and at least one device must be enrolled.
+(async () => {
+  if (!window.PublicKeyCredential || !window.isSecureContext) return;
+  try {
+    const state = await fetch('/api/passkey/available').then(r => r.json());
+    if (state.enabled && state.enrolled > 0) {
+      document.getElementById('passkeyBtn').style.display = 'block';
+    }
+  } catch { /* leave the button hidden */ }
+})();
 
 const codeInput = document.getElementById('code');
 codeInput.addEventListener('keydown', e => { if (e.key === 'Enter') login(); });

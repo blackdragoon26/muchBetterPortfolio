@@ -24,7 +24,8 @@ ephemeral data behavior: the working copy under /data/repo is a shallow clone
   application data lives on the node. Preview PDFs are held in memory, capped at
   24, and lost on restart.
 required environment variables: RESUMEKIT_REPO_URL, RESUMEKIT_REPO_BRANCH
-  (both have working defaults baked into the image)
+  (both have working defaults baked into the image), and RESUMEKIT_ORIGIN set to
+  the public URL to enable Touch ID / Face ID sign-in
 required secrets: RESUMEKIT_TOTP_SECRET (editor login), GITHUB_TOKEN (push access)
 publicly pullable without authentication: yes, once the GHCR package is marked public
 local container smoke command: see below
@@ -106,6 +107,25 @@ checked before it is relied on.
 
 `RESUMEKIT_TOKEN` is now optional and grants API access to scripts only. Leave
 it unset and the one-time code becomes the sole way in.
+
+### Passkeys
+
+Setting `RESUMEKIT_ORIGIN=https://resume.sankalpjha.dev` enables Touch ID and
+Face ID alongside the one-time code. It is not a secret — it is the public URL —
+so it belongs in the dashboard's environment field rather than the SSH-managed
+secret file.
+
+The two are alternatives, never layered. A passkey is the quick path on a device
+that has one enrolled; the authenticator code covers every other device and is
+the way back in if a device is lost. Requiring both would turn a lost laptop
+into a lockout.
+
+Only public keys are stored, in `data/passkeys.json`, and they are committed
+like any other content. Unlike the TOTP secret there is nothing there worth
+stealing: the private key never leaves the device's secure enclave, so a copy of
+that file cannot produce an assertion.
+
+Enrol from the builder with the ☝ button once signed in, once per device.
 
 Register the app with `secret_env: true`. The entrypoint also accepts the file at
 `/run/secrets/resume-builder.env`.

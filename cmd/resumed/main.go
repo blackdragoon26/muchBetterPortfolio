@@ -34,6 +34,7 @@ import (
 	"github.com/blackdragoon26/muchBetterPortfolio/internal/block"
 	"github.com/blackdragoon26/muchBetterPortfolio/internal/compile"
 	"github.com/blackdragoon26/muchBetterPortfolio/internal/manifest"
+	"github.com/blackdragoon26/muchBetterPortfolio/internal/passkey"
 	"github.com/blackdragoon26/muchBetterPortfolio/internal/persist"
 	"github.com/blackdragoon26/muchBetterPortfolio/internal/render"
 	"github.com/blackdragoon26/muchBetterPortfolio/internal/totp"
@@ -70,6 +71,12 @@ type server struct {
 	guard  *totp.Guard
 	token  string
 	git    *persist.Git
+
+	// passkeys is an alternative to the one-time code, not an addition to it.
+	// Requiring both would mean a lost laptop locks the account out; offering
+	// either keeps Touch ID convenient without making it load-bearing.
+	passkeys *passkey.Store
+	webauthn *passkey.Authenticator
 
 	// compileSlots admits one compile at a time; the select on it never blocks,
 	// so a second request is rejected immediately with 429.
@@ -134,6 +141,23 @@ func main() {
 		},
 	}
 
+	// Passkeys are optional. Without an origin the service runs exactly as
+	// before, on the one-time code alone, so an existing deployment keeps
+	// working until the origin is configured.
+	instance.passkeys, err = passkey.Open(filepath.Join(absRepo, "data", "passkeys.json"))
+	if err != nil {
+		log.Fatalf("read passkeys: %v", err)
+	}
+	if origin := os.Getenv("RESUMEKIT_ORIGIN"); origin != "" {
+		instance.webauthn, err = passkey.New(instance.passkeys, origin)
+		if err != nil {
+			log.Fatalf("passkey origin: %v", err)
+		}
+		log.Printf("passkeys enabled for %s (%d enrolled)", origin, instance.passkeys.Len())
+	} else {
+		log.Printf("passkeys disabled: set RESUMEKIT_ORIGIN to the public URL to enable Touch ID")
+	}
+
 	if _, err := block.Load(instance.blocksRoot); err != nil {
 		log.Fatalf("block store at %s is not readable: %v", instance.blocksRoot, err)
 	}
@@ -165,6 +189,26 @@ func (s *server) routes() http.Handler {
 	})
 
 	mux.HandleFunc("POST /api/login", s.handleLogin)
+
+	// Signing in with a passkey cannot require a session, because it is how a
+	// session is obtained. WebAuthn is not guessable, so unlike the six-digit
+	// code these need no rate limiting of their own.
+	// Whether a passkey can be used is not sensitive, and the login screen needs
+	// it before any session exists. A dedicated status route keeps the page from
+	// probing the login endpoint and logging its refusal as a console error.
+	mux.HandleFunc("GET /api/passkey/available", func(w http.ResponseWriter, r *http.Request) {
+		writeJSON(w, http.StatusOK, map[string]any{
+			"enabled":  s.webauthn != nil,
+			"enrolled": s.passkeys.Len(),
+		})
+	})
+	mux.HandleFunc("POST /api/passkey/login/begin", s.handlePasskeyLoginBegin)
+	mux.HandleFunc("POST /api/passkey/login/finish", s.handlePasskeyLoginFinish)
+
+	mux.Handle("GET /api/passkey", s.authed(s.handlePasskeyList))
+	mux.Handle("POST /api/passkey/register/begin", s.authed(s.handlePasskeyRegisterBegin))
+	mux.Handle("POST /api/passkey/register/finish", s.authed(s.handlePasskeyRegisterFinish))
+	mux.Handle("DELETE /api/passkey/{id}", s.authed(s.handlePasskeyRemove))
 
 	mux.Handle("GET /api/state", s.authed(s.handleState))
 	mux.Handle("GET /api/pdf/{id}", s.authed(s.handlePDF))
@@ -277,6 +321,12 @@ func (s *server) handleLogin(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, http.StatusUnauthorized, map[string]string{"error": err.Error()})
 		return
 	}
+	s.openSession(w, r)
+	writeJSON(w, http.StatusOK, map[string]string{"status": "ok"})
+}
+
+// openSession issues the session cookie both sign-in paths share.
+func (s *server) openSession(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, &http.Cookie{
 		Name:     sessionCookie,
 		Value:    sessionValue(s.secret.Base32),
@@ -286,7 +336,111 @@ func (s *server) handleLogin(w http.ResponseWriter, r *http.Request) {
 		SameSite: http.SameSiteLaxMode,
 		MaxAge:   int((30 * 24 * time.Hour).Seconds()),
 	})
+}
+
+func (s *server) passkeysReady(w http.ResponseWriter) bool {
+	if s.webauthn == nil {
+		writeJSON(w, http.StatusNotImplemented, map[string]string{
+			"error": "passkeys are not configured on this server"})
+		return false
+	}
+	return true
+}
+
+func (s *server) handlePasskeyLoginBegin(w http.ResponseWriter, r *http.Request) {
+	if !s.passkeysReady(w) {
+		return
+	}
+	options, token, err := s.webauthn.BeginLogin()
+	if err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]any{"options": options, "token": token})
+}
+
+func (s *server) handlePasskeyLoginFinish(w http.ResponseWriter, r *http.Request) {
+	if !s.passkeysReady(w) {
+		return
+	}
+	token := r.URL.Query().Get("token")
+	if err := s.webauthn.FinishLogin(token, r); err != nil {
+		writeJSON(w, http.StatusUnauthorized, map[string]string{"error": err.Error()})
+		return
+	}
+	s.openSession(w, r)
 	writeJSON(w, http.StatusOK, map[string]string{"status": "ok"})
+}
+
+func (s *server) handlePasskeyList(w http.ResponseWriter, r *http.Request) {
+	devices := []map[string]any{}
+	for _, record := range s.passkeys.List() {
+		devices = append(devices, map[string]any{
+			"id": record.ID(), "label": record.Label,
+			"addedAt": record.AddedAt, "lastUsedAt": record.LastUsedAt,
+		})
+	}
+	writeJSON(w, http.StatusOK, map[string]any{
+		"devices": devices, "enabled": s.webauthn != nil})
+}
+
+func (s *server) handlePasskeyRegisterBegin(w http.ResponseWriter, r *http.Request) {
+	if !s.passkeysReady(w) {
+		return
+	}
+	var body struct {
+		Label string `json:"label"`
+	}
+	json.NewDecoder(r.Body).Decode(&body)
+
+	options, token, err := s.webauthn.BeginRegistration(body.Label)
+	if err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]any{"options": options, "token": token})
+}
+
+func (s *server) handlePasskeyRegisterFinish(w http.ResponseWriter, r *http.Request) {
+	if !s.passkeysReady(w) {
+		return
+	}
+	token := r.URL.Query().Get("token")
+	record, err := s.webauthn.FinishRegistration(token, r)
+	if err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+		return
+	}
+
+	// Only public keys are written, so committing them is safe and is what
+	// carries an enrolled device across a redeploy.
+	s.writeMu.Lock()
+	committed, gitErr := s.git.Commit(r.Context(),
+		fmt.Sprintf("passkey: enrol %q", record.Label), s.passkeys.Path())
+	s.writeMu.Unlock()
+
+	response := map[string]any{"status": "enrolled", "id": record.ID(),
+		"label": record.Label, "committed": committed}
+	if gitErr != nil {
+		response["gitError"] = gitErr.Error()
+	}
+	writeJSON(w, http.StatusOK, response)
+}
+
+func (s *server) handlePasskeyRemove(w http.ResponseWriter, r *http.Request) {
+	if err := s.passkeys.Remove(r.PathValue("id")); err != nil {
+		writeJSON(w, http.StatusNotFound, map[string]string{"error": err.Error()})
+		return
+	}
+	s.writeMu.Lock()
+	committed, gitErr := s.git.Commit(r.Context(), "passkey: remove a device", s.passkeys.Path())
+	s.writeMu.Unlock()
+
+	response := map[string]any{"status": "removed", "committed": committed}
+	if gitErr != nil {
+		response["gitError"] = gitErr.Error()
+	}
+	writeJSON(w, http.StatusOK, response)
 }
 
 // blockSummary is the shape the editor needs to draw the block palette.
