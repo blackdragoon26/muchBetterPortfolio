@@ -146,29 +146,77 @@ func (r *Renderer) renderSection(view sectionView) (string, error) {
 		fmt.Fprintf(&rendered, "\\sectionhead{%s}%%\n", Latex(view.Heading))
 	}
 
-	// A boxed section draws one table around all of its blocks, so the wrapper
-	// belongs to the section rather than to any single block.
-	if view.Layout == manifest.LayoutBoxed {
-		rendered.WriteString("\\noindent\\begin{tabular}{|p{\\dimexpr\\linewidth-2\\tabcolsep-2\\arrayrulewidth\\relax}|}\n\\hline\n")
+	type piece struct {
+		body string
+		row  bool
 	}
-
-	var rows []string
+	var pieces []piece
 	for _, current := range view.Blocks {
 		var single strings.Builder
 		name := string(current.Kind) + ".tmpl"
 		if err := r.templates.ExecuteTemplate(&single, name, current); err != nil {
 			return "", fmt.Errorf("block %s: %w", current.ID, err)
 		}
-		rows = append(rows, strings.TrimRight(single.String(), "\n"))
+		pieces = append(pieces, piece{
+			body: strings.TrimRight(single.String(), "\n"),
+			row:  rowShaped(current.Kind),
+		})
 	}
 
-	if view.Layout == manifest.LayoutBoxed {
-		rendered.WriteString(strings.Join(rows, "\\\\[2.5pt]\n"))
-		rendered.WriteString("\\\\\n\\hline\n\\end{tabular}%\n")
+	if view.Layout != manifest.LayoutBoxed {
+		var bodies []string
+		for _, current := range pieces {
+			bodies = append(bodies, current.body)
+		}
+		rendered.WriteString(strings.Join(bodies, "\n"))
+		rendered.WriteString("\n")
 		return rendered.String(), nil
 	}
 
-	rendered.WriteString(strings.Join(rows, "\n"))
-	rendered.WriteString("\n")
+	// A boxed section draws a bordered table, but only some blocks are shaped
+	// like table rows. A project emits its own minipage and tabular, and
+	// dropping that inside a cell produces a \par where LaTeX will not accept
+	// one — which surfaces as "Incomplete \ifx" from \entryhead rather than as
+	// anything that names the real problem.
+	//
+	// So consecutive row-shaped blocks are grouped into one table and anything
+	// else is emitted between tables, in the order it was placed. A block landing
+	// in the wrong section then looks wrong rather than failing to compile.
+	const openTable = "\\noindent\\begin{tabular}{|p{\\dimexpr\\linewidth-2\\tabcolsep-2\\arrayrulewidth\\relax}|}\n\\hline\n"
+	const closeTable = "\\\\\n\\hline\n\\end{tabular}%\n"
+
+	var run []string
+	flush := func() {
+		if len(run) == 0 {
+			return
+		}
+		rendered.WriteString(openTable)
+		rendered.WriteString(strings.Join(run, "\\\\[2.5pt]\n"))
+		rendered.WriteString(closeTable)
+		run = nil
+	}
+
+	for _, current := range pieces {
+		if current.row {
+			run = append(run, current.body)
+			continue
+		}
+		flush()
+		rendered.WriteString(current.body)
+		rendered.WriteString("\n")
+	}
+	flush()
 	return rendered.String(), nil
+}
+
+// rowShaped reports whether a block renders as a single table row, and so may
+// sit inside a boxed section's tabular. Everything else brings its own block
+// structure and has to live outside one.
+func rowShaped(kind block.Kind) bool {
+	switch kind {
+	case block.KindContribution, block.KindSpacer:
+		return true
+	default:
+		return false
+	}
 }
