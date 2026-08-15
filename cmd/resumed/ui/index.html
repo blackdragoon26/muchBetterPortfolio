@@ -219,7 +219,7 @@
       <button class="btn" onclick="newResume()" title="New résumé">+</button>
       <button class="btn" onclick="deleteResume()" title="Delete this résumé">🗑</button>
       <button class="btn" onclick="enrolPasskey()" title="Enrol Touch ID on this device">☝</button>
-      <button class="btn primary" onclick="saveResume()">Save</button>
+      <button class="btn primary" id="saveBtn" onclick="saveResume()">Save</button>
     </div>
     <div class="scroll"><div id="layout"></div></div>
   </div>
@@ -478,7 +478,10 @@ function drawPalette() {
   const host = document.getElementById('palette');
   host.innerHTML = '';
   state.blocks
-    .filter(b => !used.has(b.id))
+    // Spacers stay available however many are already placed: one gap between
+    // every pair of projects is a normal thing to want, and the manifest
+    // exempts them from the duplicate rule for exactly that reason.
+    .filter(b => b.kind === 'spacer' || !used.has(b.id))
     .filter(b => !filter || b.id.includes(filter) || (b.tags || []).some(t => t.includes(filter)))
     .forEach(source => {
       const node = el('div', 'card');
@@ -814,13 +817,28 @@ async function applyEdit() {
 
 async function saveResume() {
   if (!current) return;
+  const button = document.getElementById('saveBtn');
+  button.disabled = true;
+  button.textContent = 'Saving…';
   try {
     const result = await api('/api/resume/' + encodeURIComponent(current.id), {
       method: 'POST', body: JSON.stringify(current),
     });
-    setStatus('ok', result.committed ? 'saved + committed' : 'saved (no change)', result.gitError || '');
+
+    // state.resumes is what pickResume reloads from. Without this the picker
+    // would hand back the pre-save copy the moment you switched away and
+    // returned, which looks exactly like the save having done nothing.
+    const index = state.resumes.findIndex(r => r.id === current.id);
+    if (index >= 0) state.resumes[index] = structuredClone(current);
+
+    button.textContent = result.committed ? 'Saved ✓' : 'No changes';
+    setStatus('ok', result.committed ? 'saved + committed' : 'saved (no change)',
+      result.gitError || '');
   } catch (err) {
+    button.textContent = 'Save failed';
     setStatus('bad', err.message);
+  } finally {
+    setTimeout(() => { button.disabled = false; button.textContent = 'Save'; }, 1600);
   }
 }
 
