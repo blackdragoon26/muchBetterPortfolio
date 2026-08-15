@@ -181,7 +181,11 @@ func (s *server) routes() http.Handler {
 			http.NotFound(w, r)
 			return
 		}
-		w.Header().Set("Content-Type", "image/x-icon")
+		// The portfolio's favicon.ico is actually a PNG with an .ico extension.
+		// Announcing it as image/x-icon makes browsers reject it and show no
+		// icon at all, so the type is sniffed from the bytes instead of assumed
+		// from the filename.
+		w.Header().Set("Content-Type", http.DetectContentType(icon))
 		w.Header().Set("Cache-Control", "public, max-age=86400")
 		w.Write(icon)
 	})

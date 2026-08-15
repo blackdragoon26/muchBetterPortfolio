@@ -121,6 +121,10 @@
   .icon:hover { color: var(--ink); }
   .icon.danger:hover { color: var(--bad); }
   .card.overridden { box-shadow: inset 2px 0 0 var(--warn); }
+  /* Where the block will land. Without this the only feedback was the whole
+     section highlighting, which could not express a position. */
+  .card.insert-before { box-shadow: 0 -2px 0 var(--accent); }
+  .card.insert-after  { box-shadow: 0  2px 0 var(--accent); }
 
   /* preview */
   #status { display: flex; gap: 9px; align-items: center; flex-wrap: wrap;
@@ -400,6 +404,27 @@ function card(entry, sectionIndex, entryIndex) {
     node.classList.add('dragging');
   };
   node.ondragend = () => node.classList.remove('dragging');
+
+  // Dropping onto a card inserts at that card rather than appending to the
+  // section, which is the only way to place something between two blocks.
+  node.ondragover = event => {
+    event.preventDefault();
+    event.stopPropagation();
+    const box = node.getBoundingClientRect();
+    const after = event.clientY > box.top + box.height / 2;
+    node.classList.toggle('insert-after', after);
+    node.classList.toggle('insert-before', !after);
+  };
+  node.ondragleave = () => node.classList.remove('insert-before', 'insert-after');
+  node.ondrop = event => {
+    event.preventDefault();
+    event.stopPropagation();
+    const box = node.getBoundingClientRect();
+    const after = event.clientY > box.top + box.height / 2;
+    clearDropHints();
+    place(JSON.parse(event.dataTransfer.getData('text/plain')),
+          sectionIndex, entryIndex + (after ? 1 : 0));
+  };
 
   const row = el('div', 'row');
   const id = el('span', 'id');
