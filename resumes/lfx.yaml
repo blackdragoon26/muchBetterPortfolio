@@ -19,14 +19,23 @@ sections:
     layout: boxed
     blocks:
       - block: contribution:project-hami-hami
-        variant: rollup
+        variant: lines
       - block: contribution:wasmedge-wasmedge
-        variant: headline
+        variant: lines
       - block: contribution:facebook-bpfilter
+        variant: lines
   - heading: Key Projects
     blocks:
       - block: project:cutable
       - block: project:dmie
+      - block: spacer:small
+      - block: project:xnic-v1
+      - block: project:do-it
+      - block: project:ebpf-mcp-tracer
+      - block: project:los-tecnicos
+      - block: project:open-claw-lab
+      - block: project:slix
+      - block: project:p4lens
       - block: project:moodish
       - block: project:myprod
         variant: tight
