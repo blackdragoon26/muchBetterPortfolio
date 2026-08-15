@@ -6,15 +6,12 @@ sections:
   - heading: ""
     blocks:
       - block: header:main
-        variant: ai
   - heading: Education
     blocks:
       - block: education:main
-        variant: recent
   - heading: Experience
     blocks:
       - block: experience:gsoc-2025
-        variant: tight
   - heading: Open Source Contributions
     layout: boxed
     blocks:
@@ -27,31 +24,36 @@ sections:
   - heading: Key Projects
     blocks:
       - block: project:cutable
+      - block: spacer:small
       - block: project:dmie
       - block: spacer:small
       - block: project:xnic-v1
+        variant: bullets
+      - block: spacer:small
       - block: project:do-it
+      - block: spacer:small
       - block: project:ebpf-mcp-tracer
+      - block: spacer:small
       - block: project:los-tecnicos
+      - block: spacer:small
       - block: project:open-claw-lab
+      - block: spacer:small
       - block: project:slix
+      - block: spacer:small
       - block: project:p4lens
+      - block: spacer:small
       - block: project:moodish
+      - block: spacer:small
       - block: project:myprod
-        variant: tight
   - heading: Technical Skills
     blocks:
       - block: skills:main
-        variant: ai
   - heading: Positions of Leadership
     blocks:
       - block: leadership:main
-        variant: compact
   - heading: Publications
     blocks:
       - block: publication:trusture
-        variant: compact
   - heading: Certifications & Honors
     blocks:
       - block: certificates:main
-        variant: oneline
