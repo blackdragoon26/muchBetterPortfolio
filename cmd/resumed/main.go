@@ -149,11 +149,18 @@ func main() {
 		log.Fatalf("read passkeys: %v", err)
 	}
 	if origin := os.Getenv("RESUMEKIT_ORIGIN"); origin != "" {
-		instance.webauthn, err = passkey.New(instance.passkeys, origin)
-		if err != nil {
-			log.Fatalf("passkey origin: %v", err)
+		authenticator, originErr := passkey.New(instance.passkeys, origin)
+		if originErr != nil {
+			// A malformed origin disables passkeys and nothing else. Refusing to
+			// start would take the whole editor down over an optional
+			// convenience, and the value is easy to mistype — "example.dev"
+			// without a scheme parses to an empty host.
+			log.Printf("passkeys disabled: RESUMEKIT_ORIGIN=%q is not usable: %v", origin, originErr)
+			log.Printf("passkeys expect the full public URL, for example https://resume.sankalpjha.dev")
+		} else {
+			instance.webauthn = authenticator
+			log.Printf("passkeys enabled for %s (%d enrolled)", origin, instance.passkeys.Len())
 		}
-		log.Printf("passkeys enabled for %s (%d enrolled)", origin, instance.passkeys.Len())
 	} else {
 		log.Printf("passkeys disabled: set RESUMEKIT_ORIGIN to the public URL to enable Touch ID")
 	}
