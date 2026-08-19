@@ -1,7 +1,7 @@
 id: lfx
 label: Whole
 output: public/resume/lfx.pdf
-maxPages: 2
+maxPages: 3
 sections:
   - heading: ""
     blocks:
