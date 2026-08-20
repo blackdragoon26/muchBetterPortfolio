@@ -6,6 +6,20 @@ tags:
   - opensource
 machine:
   pullRequests:
+    - additions: 514
+      changedFiles: 8
+      deletions: 15
+      href: https://github.com/Project-HAMi/HAMi/pull/2469
+      mergedAt: "2026-08-17T07:23:52Z"
+      number: 2469
+      title: 'feat(scheduler): support per-pod device scoring weights'
+    - additions: 23
+      changedFiles: 1
+      deletions: 0
+      href: https://github.com/Project-HAMi/HAMi/pull/2583
+      mergedAt: "2026-08-17T07:23:04Z"
+      number: 2583
+      title: 'test(device): fuzz container codec round trip'
     - additions: 57
       changedFiles: 5
       deletions: 5
@@ -42,7 +56,7 @@ machine:
       number: 2221
       title: 'fix(workflow): skip non-translatable issue comments'
   repository: Project-HAMi/HAMi
-  stars: 4346
+  stars: 4405
 content:
   entries:
     - number: 2292
