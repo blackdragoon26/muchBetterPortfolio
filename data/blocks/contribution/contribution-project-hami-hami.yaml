@@ -6,6 +6,13 @@ tags:
   - opensource
 machine:
   pullRequests:
+    - additions: 27
+      changedFiles: 4
+      deletions: 175
+      href: https://github.com/Project-HAMi/HAMi/pull/2602
+      mergedAt: "2026-08-20T10:01:08Z"
+      number: 2602
+      title: 'docs: refresh GitHub Pages Helm repository landing page'
     - additions: 514
       changedFiles: 8
       deletions: 15
@@ -56,7 +63,7 @@ machine:
       number: 2221
       title: 'fix(workflow): skip non-translatable issue comments'
   repository: Project-HAMi/HAMi
-  stars: 4405
+  stars: 4411
 content:
   entries:
     - number: 2292
