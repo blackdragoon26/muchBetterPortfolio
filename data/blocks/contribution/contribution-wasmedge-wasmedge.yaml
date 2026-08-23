@@ -36,7 +36,7 @@ machine:
       number: 4452
       title: 'docs(README): fix broken introduction and blog links'
   repository: WasmEdge/WasmEdge
-  stars: 10775
+  stars: 10777
 content:
   entries:
     - number: 4470
