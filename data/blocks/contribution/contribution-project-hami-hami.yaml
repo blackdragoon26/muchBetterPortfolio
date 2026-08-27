@@ -6,6 +6,13 @@ tags:
   - opensource
 machine:
   pullRequests:
+    - additions: 101
+      changedFiles: 5
+      deletions: 12
+      href: https://github.com/Project-HAMi/HAMi/pull/2840
+      mergedAt: "2026-08-27T02:38:43Z"
+      number: 2840
+      title: 'fix(dashboard): align node GPU memory ratio scale'
     - additions: 27
       changedFiles: 4
       deletions: 175
@@ -63,7 +70,7 @@ machine:
       number: 2221
       title: 'fix(workflow): skip non-translatable issue comments'
   repository: Project-HAMi/HAMi
-  stars: 4432
+  stars: 4445
 content:
   entries:
     - number: 2292
