@@ -6,6 +6,13 @@ tags:
   - opensource
 machine:
   pullRequests:
+    - additions: 51
+      changedFiles: 2
+      deletions: 9
+      href: https://github.com/Project-HAMi/HAMi/pull/2852
+      mergedAt: "2026-09-02T07:31:27Z"
+      number: 2852
+      title: 'fix(dashboard): use native node labels for host panels'
     - additions: 101
       changedFiles: 5
       deletions: 12
@@ -70,7 +77,7 @@ machine:
       number: 2221
       title: 'fix(workflow): skip non-translatable issue comments'
   repository: Project-HAMi/HAMi
-  stars: 4469
+  stars: 4478
 content:
   entries:
     - number: 2292
