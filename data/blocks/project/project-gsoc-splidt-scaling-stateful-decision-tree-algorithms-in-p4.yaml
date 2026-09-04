@@ -11,7 +11,7 @@ machine:
   liveUrl: https://splidt-showcase.vercel.app/
   repository: p4lang/gsoc
   repositoryUrl: https://github.com/p4lang/gsoc
-  stars: 30
+  stars: 31
   technologies:
     - P4
     - Python
