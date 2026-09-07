@@ -27,13 +27,6 @@ const REFERENCES = [
   { src: "/after-hours/dark-fantasy-reference.png", alt: "Dark fantasy line-art reference", label: "myth file" },
 ] as const;
 
-const FACTORY_FEEDS = [
-  { id: "rail", index: "01", label: "freight spine", src: "/after-hours/factory-feed-01.mp4", poster: "/after-hours/factory-feed-01.jpg" },
-  { id: "cross", index: "02", label: "white furnace", src: "/after-hours/factory-feed-02.mp4", poster: "/after-hours/factory-feed-02.jpg" },
-  { id: "night", index: "03", label: "night grid", src: "/after-hours/factory-feed-03.mp4", poster: "/after-hours/factory-feed-03.jpg" },
-  { id: "ore", index: "04", label: "ore loop", src: "/after-hours/factory-feed-04.mp4", poster: "/after-hours/factory-feed-04.jpg" },
-] as const;
-
 type Offset = { x: number; y: number };
 
 // YouTube is the playback engine while the site presents its own in-dash
@@ -325,7 +318,6 @@ export default function AfterHoursPage() {
   const renderedOffsetRef = useRef<Offset>({ x: 0, y: 0 });
   const [offset, setOffset] = useState<Offset>({ x: 0, y: 0 });
   const [activeLandmark, setActiveLandmark] = useState<string>("");
-  const [activeFeed, setActiveFeed] = useState(0);
   const [spotlightIndex, setSpotlightIndex] = useState(0);
   const [galleryIndex, setGalleryIndex] = useState(0);
   const [galleryOpen, setGalleryOpen] = useState(false);
@@ -381,7 +373,7 @@ export default function AfterHoursPage() {
       window.removeEventListener("focus", startFactoryFeed);
       document.removeEventListener("visibilitychange", resumeWhenVisible);
     };
-  }, [activeFeed, startFactoryFeed]);
+  }, [startFactoryFeed]);
 
   useEffect(() => {
     let frame = 0;
@@ -463,19 +455,18 @@ export default function AfterHoursPage() {
       >
         <video
           ref={factoryVideoRef}
-          key={FACTORY_FEEDS[activeFeed].src}
           className={styles.factoryVideo}
           style={{ transform: `translate3d(${offset.x * 0.035}px, ${offset.y * 0.035}px, 0) scale(1.055)` }}
           autoPlay
           muted
+          loop
           playsInline
           preload="auto"
-          poster={FACTORY_FEEDS[activeFeed].poster}
+          poster="/after-hours/factory-feed-01.jpg"
           onCanPlay={startFactoryFeed}
           onLoadedData={startFactoryFeed}
-          onEnded={() => setActiveFeed((current) => (current + 1) % FACTORY_FEEDS.length)}
         >
-          <source src={FACTORY_FEEDS[activeFeed].src} type="video/mp4" />
+          <source src="/after-hours/factory-feed.mp4" type="video/mp4" />
         </video>
         <div className={styles.factoryGrade} aria-hidden="true" />
 
