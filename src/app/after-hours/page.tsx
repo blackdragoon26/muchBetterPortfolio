@@ -6,6 +6,7 @@ import { ChevronLeft, ChevronRight, LocateFixed, Pause, Play, RotateCcw, X } fro
 import {
   type PointerEvent as ReactPointerEvent,
   type WheelEvent as ReactWheelEvent,
+  useCallback,
   useEffect,
   useRef,
   useState,
@@ -319,6 +320,7 @@ function DashboardStereo() {
 export default function AfterHoursPage() {
   const viewportRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<HTMLDivElement>(null);
+  const factoryVideoRef = useRef<HTMLVideoElement>(null);
   const targetOffsetRef = useRef<Offset>({ x: 0, y: 0 });
   const renderedOffsetRef = useRef<Offset>({ x: 0, y: 0 });
   const [offset, setOffset] = useState<Offset>({ x: 0, y: 0 });
@@ -328,6 +330,15 @@ export default function AfterHoursPage() {
   const [galleryIndex, setGalleryIndex] = useState(0);
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [clock, setClock] = useState("--:--:--");
+
+  const startFactoryFeed = useCallback(() => {
+    const video = factoryVideoRef.current;
+    if (!video) return;
+    video.defaultMuted = true;
+    video.muted = true;
+    const playback = video.play();
+    if (playback) void playback.catch(() => undefined);
+  }, []);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -355,6 +366,22 @@ export default function AfterHoursPage() {
     const interval = window.setInterval(updateClock, 1000);
     return () => window.clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(startFactoryFeed);
+    const resumeWhenVisible = () => {
+      if (document.visibilityState === "visible") startFactoryFeed();
+    };
+    window.addEventListener("pageshow", startFactoryFeed);
+    window.addEventListener("focus", startFactoryFeed);
+    document.addEventListener("visibilitychange", resumeWhenVisible);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("pageshow", startFactoryFeed);
+      window.removeEventListener("focus", startFactoryFeed);
+      document.removeEventListener("visibilitychange", resumeWhenVisible);
+    };
+  }, [activeFeed, startFactoryFeed]);
 
   useEffect(() => {
     let frame = 0;
@@ -435,6 +462,7 @@ export default function AfterHoursPage() {
         aria-label="Cursor-responsive personal factory map"
       >
         <video
+          ref={factoryVideoRef}
           key={FACTORY_FEEDS[activeFeed].src}
           className={styles.factoryVideo}
           style={{ transform: `translate3d(${offset.x * 0.035}px, ${offset.y * 0.035}px, 0) scale(1.055)` }}
@@ -443,6 +471,8 @@ export default function AfterHoursPage() {
           playsInline
           preload="auto"
           poster={FACTORY_FEEDS[activeFeed].poster}
+          onCanPlay={startFactoryFeed}
+          onLoadedData={startFactoryFeed}
           onEnded={() => setActiveFeed((current) => (current + 1) % FACTORY_FEEDS.length)}
         >
           <source src={FACTORY_FEEDS[activeFeed].src} type="video/mp4" />
