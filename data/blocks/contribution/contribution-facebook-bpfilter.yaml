@@ -6,6 +6,13 @@ tags:
   - opensource
 machine:
   pullRequests:
+    - additions: 601
+      changedFiles: 20
+      deletions: 74
+      href: https://github.com/facebook/bpfilter/pull/578
+      mergedAt: "2026-09-08T12:50:05Z"
+      number: 578
+      title: 'lib: log: support packet 5-tuple logging'
     - additions: 7
       changedFiles: 4
       deletions: 4
