@@ -21,7 +21,7 @@ machine:
       number: 507
       title: 'build: update clang-tidy brace config, fix opts.c/set.c, and NOLINT dump.c'
   repository: facebook/bpfilter
-  stars: 353
+  stars: 354
 content:
   entries:
     - number: 507
