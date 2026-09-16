@@ -55,10 +55,10 @@ export const ResumeCard = ({
             <AvatarFallback>{altText[0]}</AvatarFallback>
           </Avatar>
         </div>
-        <div className="flex-grow ml-4 items-center flex-col group">
+        <div className="group ml-3 min-w-0 flex-grow items-center flex-col sm:ml-4">
           <CardHeader>
-            <div className="flex items-center justify-between gap-x-2 text-base">
-              <h3 className="inline-flex items-center justify-center font-semibold leading-none text-xs sm:text-sm">
+            <div className="flex flex-col gap-1 text-base sm:flex-row sm:items-center sm:justify-between sm:gap-x-2">
+              <h3 className="inline-flex min-w-0 items-center font-semibold leading-snug text-xs sm:justify-center sm:text-sm sm:leading-none">
                 {title}
                 {badges && (
                   <span className="inline-flex gap-x-1">
@@ -80,7 +80,7 @@ export const ResumeCard = ({
                   )}
                 />
               </h3>
-              <div className="text-xs sm:text-sm tabular-nums text-muted-foreground text-right">
+              <div className="text-left text-[11px] tabular-nums text-muted-foreground sm:text-right sm:text-sm">
                 {period}
               </div>
             </div>

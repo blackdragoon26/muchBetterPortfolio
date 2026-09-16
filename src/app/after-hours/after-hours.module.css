@@ -234,6 +234,8 @@
   border-top: 0;
 }
 
+.mobileInstruction { display: none; }
+
 .landmarks {
   position: absolute;
   inset: 0;
@@ -1146,26 +1148,123 @@
 }
 
 @media (max-width: 700px) {
-  .hud { top: 12px; right: 12px; left: 12px; }
+  .world { min-height: 100dvh; }
+  .factoryVideo { object-position: 51% center; transform: scale(1.035) !important; }
+  .factoryGrade {
+    background:
+      linear-gradient(180deg, rgba(5,7,7,.56), rgba(5,7,7,.08) 32%, rgba(7,6,4,.12) 67%, rgba(4,5,4,.5)),
+      radial-gradient(circle at 50% 47%, transparent 0 38%, rgba(5,6,5,.34) 100%);
+  }
+
+  .hud { top: max(10px, env(safe-area-inset-top)); right: 10px; left: 10px; }
+  .identity { padding: 8px 9px; font-size: 8px; }
   .identity small, .modeSwitch > span:first-child { display: none; }
-  .mapCanvas { width: 1900px; }
-  .introNote { width: 340px; padding: 0; }
-  .liquidTitle { font-size: 1.7rem; }
-  .introNote h1 em { font-size: 0.78rem; }
-  .referenceCluster { width: 330px; }
-  .dashboardStereo { right: 12px; bottom: 12px; width: min(410px, calc(100vw - 24px)); padding: 7px; }
-  .deckBody { grid-template-columns: minmax(0, 1fr) 60px; gap: 5px; padding: 5px; }
-  .deckControls { grid-template-columns: 58px 1fr 52px; gap: 3px; }
-  .volumeKnob { width: 52px; height: 52px; }
-  .knobMarker { transform-origin: 50% 21px; }
+  .modeSwitch { gap: 7px; padding: 8px 9px; font-size: 8px; }
+  .switchTrack { width: 28px; height: 15px; }
+  .switchTrack span { width: 9px; height: 9px; margin-left: 13px; }
+
+  .mapCanvas {
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto;
+    overflow: visible;
+    transform: none !important;
+  }
+
+  .introNote {
+    top: max(78px, calc(env(safe-area-inset-top) + 66px));
+    left: 16px;
+    width: calc(100% - 32px);
+    filter: drop-shadow(0 12px 20px rgba(0,0,0,.56));
+  }
+  .introNote p { margin-bottom: 10px; font-size: 7px; }
+  .liquidTitle { max-width: 350px; font-size: clamp(1.6rem, 8.2vw, 2.15rem); line-height: 1.15; }
+  .introNote h1 em { margin-top: 13px; font-size: clamp(.72rem, 3.2vw, .86rem); }
+  .introNote small { margin-top: 14px; font-size: 7px; line-height: 1.5; }
+  .desktopInstruction { display: none; }
+  .mobileInstruction { display: inline; }
+
+  .landmark {
+    left: 16px !important;
+    gap: 6px;
+    min-height: 40px;
+    transform: none;
+  }
+  .landmark:nth-child(1) { top: 39% !important; }
+  .landmark:nth-child(2) { top: 47% !important; }
+  .landmark:nth-child(3) { top: 55% !important; }
+  .landmark:nth-child(4) { top: 63% !important; }
+  .landmarkIndex { display: none; }
+  .landmarkBeacon { width: 12px; height: 12px; }
+  .landmark strong { display: inline-flex; align-items: center; min-height: 32px; padding: 7px 8px 6px; font-size: 8px; }
+  .landmarkCopy {
+    top: 34px;
+    left: 17px;
+    z-index: 4;
+    width: min(260px, calc(100vw - 48px));
+    padding: 10px 11px;
+    font-size: 9px;
+  }
+
+  .referenceCluster {
+    top: 43%;
+    right: 12px;
+    left: auto;
+    width: min(46vw, 176px);
+    padding: 6px;
+    transform: rotate(.55deg);
+  }
+  .clusterLabel { margin-bottom: 6px; }
+  .clusterLabel p { font-size: 8px; }
+  .clusterLabel span { display: none; }
+  .referenceSpotlight { padding: 5px 5px 6px; }
+  .spotlightCaption { margin-top: 5px; font-size: 6px; }
+
+  .dashboardStereo {
+    right: 8px;
+    bottom: max(8px, env(safe-area-inset-bottom));
+    width: calc(100vw - 16px);
+    padding: 6px;
+  }
+  .deckBody { grid-template-columns: minmax(0, 1fr) 56px; gap: 4px; padding: 4px; }
+  .deckControls { grid-template-columns: 58px 1fr 56px; gap: 3px; }
+  .deckControls > button,
+  .deckControls > a { min-height: 32px; }
+  .volumeKnob { width: 50px; height: 50px; }
+  .knobMarker { height: 13px; transform-origin: 50% 20px; }
+  .deckBrand { padding-bottom: 5px; }
   .deckBrand span { display: none; }
   .trackMarquee strong { font-size: 7px; }
-  .visualizerGrid { grid-template-columns: 25px minmax(88px, 1fr) 25px; }
-  .volumeMeter { width: 108px; }
-  .recenter { bottom: 174px; left: 12px; }
-  .galleryOverlay { padding: 64px 14px 190px; }
-  .galleryStage { width: 100%; }
-  .galleryImage { height: min(52vh, 520px); }
+  .visualizerGrid { grid-template-columns: 23px minmax(76px, 1fr) 23px; height: 42px; }
+  .volumeMeter { width: min(102px, 31vw); height: 40px; }
+  .volumeMeter > i { height: 36px; }
+  .recenter { display: none; }
+
+  .galleryOverlay { padding: max(56px, calc(env(safe-area-inset-top) + 46px)) 10px 176px; }
+  .galleryStage { width: 100%; padding: 7px; }
+  .galleryImage { height: min(44dvh, 390px); }
+  .galleryFooter { gap: 8px; padding-top: 8px; }
+  .galleryFooter button { width: 42px; height: 36px; }
+}
+
+@media (max-width: 370px), (max-height: 650px) {
+  .introNote { top: 62px; }
+  .liquidTitle { font-size: 1.42rem; }
+  .introNote h1 em { margin-top: 9px; font-size: .68rem; }
+  .introNote small { margin-top: 9px; }
+  .landmark:nth-child(1) { top: 37% !important; }
+  .landmark:nth-child(2) { top: 45% !important; }
+  .landmark:nth-child(3) { top: 53% !important; }
+  .landmark:nth-child(4) { top: 61% !important; }
+  .referenceCluster { top: 41%; width: 142px; }
+  .spotlightCaption em { display: none; }
+  .deckScreen { padding: 5px 6px 4px; }
+  .visualizerGrid { height: 36px; }
+  .volumeMeter { height: 34px; }
+  .volumeMeter > i { height: 30px; }
+  .deckControls > button,
+  .deckControls > a { min-height: 29px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -491,7 +491,10 @@ export default function AfterHoursPage() {
               <span className={styles.liquidTitle} data-text="I build systems for a living.">I build systems for a living.</span>
               <em>This is what I build for fun.</em>
             </h1>
-            <small>Move your cursor. Let the factory follow. Find the live signals.</small>
+            <small>
+              <span className={styles.desktopInstruction}>Move your cursor. Let the factory follow. Find the live signals.</span>
+              <span className={styles.mobileInstruction}>Tap the signals. Open the archive. Keep the radio running.</span>
+            </small>
           </section>
 
           <nav className={styles.landmarks} aria-label="Factory landmarks">
