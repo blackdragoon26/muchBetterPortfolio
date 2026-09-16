@@ -13,9 +13,10 @@ import {
 type PeelStyle = CSSProperties & {
   "--peel-distance": string;
   "--peel-depth": string;
+  "--peel-flap": string;
 };
 
-const RESTING_CORNER = 76;
+const RESTING_CORNER = 62;
 const COMMIT_DELAY = 430;
 
 export function AfterHoursPeel() {
@@ -25,7 +26,6 @@ export function AfterHoursPeel() {
   const [committing, setCommitting] = useState(false);
   const startPoint = useRef({ x: 0, y: 0 });
   const distanceRef = useRef(0);
-  const draggedRef = useRef(false);
   const committingRef = useRef(false);
 
   useEffect(() => {
@@ -49,7 +49,6 @@ export function AfterHoursPeel() {
     if (committingRef.current || event.button !== 0) return;
     startPoint.current = { x: event.clientX, y: event.clientY };
     distanceRef.current = 0;
-    draggedRef.current = false;
     setDragging(true);
     event.currentTarget.setPointerCapture(event.pointerId);
   };
@@ -60,7 +59,6 @@ export function AfterHoursPeel() {
     const downwardTravel = Math.max(0, event.clientY - startPoint.current.y) * 0.82;
     const nextDistance = Math.min(threshold(), Math.max(horizontalTravel, downwardTravel));
     distanceRef.current = nextDistance;
-    draggedRef.current ||= nextDistance > 5;
     setDragDistance(nextDistance);
   };
 
@@ -70,7 +68,7 @@ export function AfterHoursPeel() {
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {
       event.currentTarget.releasePointerCapture(event.pointerId);
     }
-    if (distanceRef.current >= threshold() * 0.96) {
+    if (distanceRef.current >= threshold()) {
       commitPeel();
       return;
     }
@@ -78,21 +76,12 @@ export function AfterHoursPeel() {
     setDragDistance(0);
   };
 
-  const onClick = () => {
-    if (draggedRef.current) {
-      draggedRef.current = false;
-      return;
-    }
-    commitPeel();
-  };
-
-  const maxDistance = typeof window === "undefined" ? 640 : threshold();
-  const progress = Math.min(1, dragDistance / maxDistance);
   const visualDistance = RESTING_CORNER + dragDistance;
   const visualDepth = RESTING_CORNER + dragDistance * 0.72;
   const style: PeelStyle = {
     "--peel-distance": `${visualDistance}px`,
     "--peel-depth": `${visualDepth}px`,
+    "--peel-flap": `${Math.min(112, 52 + dragDistance * 0.1)}px`,
   };
 
   return (
@@ -106,19 +95,15 @@ export function AfterHoursPeel() {
         type="button"
         className="page-peel-trigger"
         aria-label="Peel open After Hours"
-        aria-describedby="page-peel-instruction"
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
         onPointerCancel={onPointerUp}
-        onClick={onClick}
-      >
-        <span>AFTER<br />HOURS</span>
-        <i aria-hidden="true">↙</i>
-      </button>
-      <span id="page-peel-instruction" className="page-peel-instruction">
-        {dragging ? `${Math.round(progress * 100)}% · keep peeling` : "drag halfway"}
-      </span>
+        onClick={(event) => {
+          // Preserve keyboard access without letting a pointer tap bypass the peel.
+          if (event.detail === 0) commitPeel();
+        }}
+      />
     </div>
   );
 }

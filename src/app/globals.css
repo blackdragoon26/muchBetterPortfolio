@@ -144,8 +144,9 @@ code[data-line-numbers-max-digits="3"] > [data-line]::before {
 }
 
 .page-peel {
-  --peel-distance: 76px;
-  --peel-depth: 76px;
+  --peel-distance: 62px;
+  --peel-depth: 62px;
+  --peel-flap: 52px;
   position: fixed;
   inset: 0;
   z-index: 70;
@@ -156,96 +157,63 @@ code[data-line-numbers-max-digits="3"] > [data-line]::before {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(rgba(4, 5, 5, .46), rgba(4, 5, 5, .46)),
+    linear-gradient(rgba(4, 5, 5, .26), rgba(4, 5, 5, .26)),
     url("/after-hours/factory-feed-01.jpg") center / cover no-repeat;
-  filter: grayscale(1) contrast(1.12);
+  filter: grayscale(.9) contrast(1.14) brightness(.92);
   clip-path: polygon(calc(100% - var(--peel-distance)) 0, 100% 0, 100% var(--peel-depth));
   transition: clip-path 360ms cubic-bezier(.22, 1, .36, 1), filter 360ms ease;
 }
 
 .page-peel-fold {
   position: absolute;
-  top: 0;
-  right: 0;
-  width: var(--peel-distance);
-  height: var(--peel-depth);
+  top: max(0px, calc(var(--peel-depth) - var(--peel-flap)));
+  right: max(0px, calc(var(--peel-distance) - var(--peel-flap)));
+  width: var(--peel-flap);
+  height: var(--peel-flap);
   background:
-    linear-gradient(135deg,
-      transparent 0 60%,
-      color-mix(in srgb, hsl(var(--foreground)) 18%, hsl(var(--background))) 61% 64%,
-      hsl(var(--foreground)) 65% 68%,
-      color-mix(in srgb, hsl(var(--foreground)) 68%, hsl(var(--background))) 69% 71%,
-      transparent 72%);
-  border-bottom-left-radius: 68% 54%;
-  filter: drop-shadow(-10px 14px 16px rgba(0, 0, 0, .28));
-  transition: width 360ms cubic-bezier(.22, 1, .36, 1), height 360ms cubic-bezier(.22, 1, .36, 1), opacity 180ms ease;
+    linear-gradient(145deg,
+      color-mix(in srgb, hsl(var(--background)) 88%, hsl(var(--foreground))) 0 34%,
+      hsl(var(--background)) 56% 100%);
+  border-left: 1px solid color-mix(in srgb, hsl(var(--foreground)) 13%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, hsl(var(--foreground)) 17%, transparent);
+  border-bottom-left-radius: 78% 38%;
+  clip-path: polygon(0 0, 100% 100%, 0 100%);
+  filter: drop-shadow(-7px 10px 9px rgba(0, 0, 0, .34));
+  transform: rotate(-2deg);
+  transform-origin: bottom left;
+  transition: top 360ms cubic-bezier(.22, 1, .36, 1), right 360ms cubic-bezier(.22, 1, .36, 1), width 360ms cubic-bezier(.22, 1, .36, 1), height 360ms cubic-bezier(.22, 1, .36, 1), filter 180ms ease, transform 180ms ease, opacity 180ms ease;
+}
+
+.dark .page-peel-fold {
+  background: linear-gradient(145deg,
+    color-mix(in srgb, hsl(var(--background)) 62%, hsl(var(--foreground))) 0 34%,
+    color-mix(in srgb, hsl(var(--background)) 88%, hsl(var(--foreground))) 56% 100%);
+  border-color: color-mix(in srgb, hsl(var(--foreground)) 28%, transparent);
 }
 
 .page-peel-trigger {
   position: absolute;
-  top: max(0px, calc(var(--peel-depth) - 82px));
-  right: max(0px, calc(var(--peel-distance) - 82px));
-  display: grid;
-  width: 82px;
-  height: 82px;
+  top: max(0px, calc(var(--peel-depth) - 72px));
+  right: max(0px, calc(var(--peel-distance) - 72px));
+  width: 72px;
+  height: 72px;
   padding: 0;
-  color: hsl(var(--background));
-  background: hsl(var(--foreground));
+  background: transparent;
   border: 0;
-  clip-path: polygon(0 0, 100% 0, 100% 100%);
   cursor: grab;
   pointer-events: auto;
   touch-action: none;
-  transition: top 360ms cubic-bezier(.22, 1, .36, 1), right 360ms cubic-bezier(.22, 1, .36, 1), filter 180ms ease, opacity 180ms ease;
+  transition: top 360ms cubic-bezier(.22, 1, .36, 1), right 360ms cubic-bezier(.22, 1, .36, 1), opacity 180ms ease;
 }
 
-.page-peel-trigger span {
-  position: absolute;
-  top: 14px;
-  right: 8px;
-  font: 750 10px/1.12 ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
-  letter-spacing: .08em;
-  text-align: right;
+.page-peel:has(.page-peel-trigger:hover) .page-peel-fold,
+.page-peel:focus-within .page-peel-fold {
+  filter: drop-shadow(-10px 14px 12px rgba(0, 0, 0, .42));
+  transform: translate(-2px, 2px) rotate(-4deg);
 }
-
-.page-peel-trigger i {
-  position: absolute;
-  top: 49px;
-  right: 13px;
-  font: normal 17px/1 ui-monospace, monospace;
-  transition: transform 180ms ease;
-}
-
-.page-peel-trigger:hover,
-.page-peel-trigger:focus-visible {
-  filter: invert(1) drop-shadow(-8px 10px 12px rgba(0, 0, 0, .28));
-}
-
-.page-peel-trigger:hover i,
-.page-peel-trigger:focus-visible i { transform: translate(-3px, 3px); }
 .page-peel-trigger:active,
 .page-peel-dragging .page-peel-trigger { cursor: grabbing; }
-.page-peel-trigger:focus-visible { outline: 2px solid hsl(var(--foreground)); outline-offset: -9px; }
-
-.page-peel-instruction {
-  position: absolute;
-  top: 88px;
-  right: 18px;
-  padding: 6px 8px;
-  color: hsl(var(--foreground));
-  font: 650 11px/1 ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
-  letter-spacing: .04em;
-  background: color-mix(in srgb, hsl(var(--background)) 88%, transparent);
-  border: 1px solid color-mix(in srgb, hsl(var(--foreground)) 22%, transparent);
-  opacity: 0;
-  transform: translateY(-4px);
-  transition: opacity 160ms ease, transform 160ms ease;
-  backdrop-filter: blur(12px);
-}
-
-.page-peel:hover .page-peel-instruction,
-.page-peel:focus-within .page-peel-instruction,
-.page-peel-dragging .page-peel-instruction { opacity: 1; transform: translateY(0); }
+.page-peel-trigger:focus-visible { outline: 2px solid color-mix(in srgb, hsl(var(--foreground)) 55%, transparent); outline-offset: -7px; }
 .page-peel-dragging .page-peel-preview,
 .page-peel-dragging .page-peel-fold,
 .page-peel-dragging .page-peel-trigger { transition: none; }
@@ -257,14 +225,10 @@ code[data-line-numbers-max-digits="3"] > [data-line]::before {
 }
 
 .page-peel-committing .page-peel-fold,
-.page-peel-committing .page-peel-trigger,
-.page-peel-committing .page-peel-instruction { opacity: 0; }
+.page-peel-committing .page-peel-trigger { opacity: 0; }
 
 @media (max-width: 700px) {
-  .page-peel-trigger { width: 74px; height: 74px; }
-  .page-peel-trigger span { top: 11px; right: 7px; font-size: 9px; }
-  .page-peel-trigger i { top: 43px; right: 11px; font-size: 15px; }
-  .page-peel-instruction { top: 78px; right: 10px; opacity: .72; }
+  .page-peel-trigger { width: 68px; height: 68px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
