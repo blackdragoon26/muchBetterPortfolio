@@ -13,7 +13,8 @@ import {
 type PeelStyle = CSSProperties & {
   "--peel-distance": string;
   "--peel-depth": string;
-  "--peel-flap": string;
+  "--peel-edge-length": string;
+  "--peel-edge-angle": string;
 };
 
 const RESTING_CORNER = 62;
@@ -78,10 +79,13 @@ export function AfterHoursPeel() {
 
   const visualDistance = RESTING_CORNER + dragDistance;
   const visualDepth = RESTING_CORNER + dragDistance * 0.72;
+  const edgeLength = Math.hypot(visualDistance, visualDepth);
+  const edgeAngle = Math.atan2(visualDepth, visualDistance) * (180 / Math.PI);
   const style: PeelStyle = {
     "--peel-distance": `${visualDistance}px`,
     "--peel-depth": `${visualDepth}px`,
-    "--peel-flap": `${Math.min(112, 52 + dragDistance * 0.1)}px`,
+    "--peel-edge-length": `${edgeLength}px`,
+    "--peel-edge-angle": `${edgeAngle}deg`,
   };
 
   return (
@@ -90,6 +94,7 @@ export function AfterHoursPeel() {
       style={style}
     >
       <div className="page-peel-preview" aria-hidden="true" />
+      <div className="page-peel-edge" aria-hidden="true" />
       <div className="page-peel-fold" aria-hidden="true" />
       <button
         type="button"

@@ -146,7 +146,8 @@ code[data-line-numbers-max-digits="3"] > [data-line]::before {
 .page-peel {
   --peel-distance: 62px;
   --peel-depth: 62px;
-  --peel-flap: 52px;
+  --peel-edge-length: 87.7px;
+  --peel-edge-angle: 45deg;
   position: fixed;
   inset: 0;
   z-index: 70;
@@ -164,31 +165,52 @@ code[data-line-numbers-max-digits="3"] > [data-line]::before {
   transition: clip-path 360ms cubic-bezier(.22, 1, .36, 1), filter 360ms ease;
 }
 
+.page-peel-edge {
+  position: absolute;
+  top: -1px;
+  left: calc(100% - var(--peel-distance));
+  width: var(--peel-edge-length);
+  height: 3px;
+  background: linear-gradient(to bottom,
+    color-mix(in srgb, hsl(var(--foreground)) 24%, hsl(var(--background))) 0 1px,
+    color-mix(in srgb, hsl(var(--foreground)) 58%, transparent) 1px 2px,
+    color-mix(in srgb, hsl(var(--background)) 42%, transparent) 2px 3px);
+  box-shadow:
+    0 2px 2px rgba(0, 0, 0, .34),
+    0 5px 9px rgba(0, 0, 0, .22);
+  transform: rotate(var(--peel-edge-angle));
+  transform-origin: left center;
+  pointer-events: none;
+  transition: left 360ms cubic-bezier(.22, 1, .36, 1), width 360ms cubic-bezier(.22, 1, .36, 1), transform 360ms cubic-bezier(.22, 1, .36, 1), opacity 180ms ease;
+}
+
+.dark .page-peel-edge {
+  background: linear-gradient(to bottom,
+    color-mix(in srgb, hsl(var(--foreground)) 46%, hsl(var(--background))) 0 1px,
+    color-mix(in srgb, hsl(var(--foreground)) 24%, transparent) 1px 2px,
+    rgba(0, 0, 0, .72) 2px 3px);
+}
+
 .page-peel-fold {
   position: absolute;
-  top: max(0px, calc(var(--peel-depth) - var(--peel-flap)));
-  right: max(0px, calc(var(--peel-distance) - var(--peel-flap)));
-  width: var(--peel-flap);
-  height: var(--peel-flap);
+  top: 0;
+  right: 0;
+  width: var(--peel-distance);
+  height: var(--peel-depth);
   background:
-    linear-gradient(145deg,
-      color-mix(in srgb, hsl(var(--background)) 88%, hsl(var(--foreground))) 0 34%,
-      hsl(var(--background)) 56% 100%);
-  border-left: 1px solid color-mix(in srgb, hsl(var(--foreground)) 13%, transparent);
-  border-bottom: 1px solid color-mix(in srgb, hsl(var(--foreground)) 17%, transparent);
-  border-bottom-left-radius: 78% 38%;
+    linear-gradient(135deg,
+      color-mix(in srgb, hsl(var(--background)) 76%, hsl(var(--foreground))) 0%,
+      color-mix(in srgb, hsl(var(--background)) 94%, hsl(var(--foreground))) 46%,
+      hsl(var(--background)) 100%);
   clip-path: polygon(0 0, 100% 100%, 0 100%);
-  filter: drop-shadow(-7px 10px 9px rgba(0, 0, 0, .34));
-  transform: rotate(-2deg);
-  transform-origin: bottom left;
-  transition: top 360ms cubic-bezier(.22, 1, .36, 1), right 360ms cubic-bezier(.22, 1, .36, 1), width 360ms cubic-bezier(.22, 1, .36, 1), height 360ms cubic-bezier(.22, 1, .36, 1), filter 180ms ease, transform 180ms ease, opacity 180ms ease;
+  transition: width 360ms cubic-bezier(.22, 1, .36, 1), height 360ms cubic-bezier(.22, 1, .36, 1), filter 180ms ease, opacity 180ms ease;
 }
 
 .dark .page-peel-fold {
-  background: linear-gradient(145deg,
-    color-mix(in srgb, hsl(var(--background)) 62%, hsl(var(--foreground))) 0 34%,
-    color-mix(in srgb, hsl(var(--background)) 88%, hsl(var(--foreground))) 56% 100%);
-  border-color: color-mix(in srgb, hsl(var(--foreground)) 28%, transparent);
+  background: linear-gradient(135deg,
+    color-mix(in srgb, hsl(var(--background)) 70%, hsl(var(--foreground))) 0%,
+    color-mix(in srgb, hsl(var(--background)) 91%, hsl(var(--foreground))) 46%,
+    hsl(var(--background)) 100%);
 }
 
 .page-peel-trigger {
@@ -208,13 +230,13 @@ code[data-line-numbers-max-digits="3"] > [data-line]::before {
 
 .page-peel:has(.page-peel-trigger:hover) .page-peel-fold,
 .page-peel:focus-within .page-peel-fold {
-  filter: drop-shadow(-10px 14px 12px rgba(0, 0, 0, .42));
-  transform: translate(-2px, 2px) rotate(-4deg);
+  filter: brightness(1.08);
 }
 .page-peel-trigger:active,
 .page-peel-dragging .page-peel-trigger { cursor: grabbing; }
 .page-peel-trigger:focus-visible { outline: 2px solid color-mix(in srgb, hsl(var(--foreground)) 55%, transparent); outline-offset: -7px; }
 .page-peel-dragging .page-peel-preview,
+.page-peel-dragging .page-peel-edge,
 .page-peel-dragging .page-peel-fold,
 .page-peel-dragging .page-peel-trigger { transition: none; }
 
@@ -225,6 +247,7 @@ code[data-line-numbers-max-digits="3"] > [data-line]::before {
 }
 
 .page-peel-committing .page-peel-fold,
+.page-peel-committing .page-peel-edge,
 .page-peel-committing .page-peel-trigger { opacity: 0; }
 
 @media (max-width: 700px) {
@@ -233,6 +256,7 @@ code[data-line-numbers-max-digits="3"] > [data-line]::before {
 
 @media (prefers-reduced-motion: reduce) {
   .page-peel-preview,
+  .page-peel-edge,
   .page-peel-fold,
   .page-peel-trigger { transition-duration: 1ms !important; }
 }
