@@ -74,7 +74,7 @@ export function ResumeActions() {
         <p className="text-[11px] text-muted-foreground">
           {resumeMetadata.fileName || "Sankalp-Jha-Resume.pdf"}
           {resumeMetadata.updatedAt 
-            ? ` · updated ${new Date(resumeMetadata.updatedAt).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" })}`
+            ? ` · updated ${new Date(resumeMetadata.updatedAt).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Kolkata" })}`
              : ""}
         </p>
       )}
