@@ -2,6 +2,7 @@ id: default
 label: General - Open Source & Software Engineering
 output: public/resume/Sankalp-Jha-Resume.pdf
 maxPages: 2
+featured: true
 sections:
 - heading: ''
   blocks:

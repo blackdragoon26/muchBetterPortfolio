@@ -106,7 +106,7 @@ func build(filter []string) error {
 	var failures int
 
 	for _, target := range targets {
-		source, err := renderer.Render(target)
+		source, err := sourceFor(renderer, target)
 		if err != nil {
 			return err
 		}
@@ -141,10 +141,40 @@ func build(filter []string) error {
 		report(store, renderer, target, result)
 	}
 
+	// The featured pointer is derived from whichever manifest carries
+	// `featured: true`, so it is refreshed from the full set on every build —
+	// even a filtered one — and can never drift from the flags.
+	all, err := manifest.LoadAll(resumesRoot)
+	if err != nil {
+		return err
+	}
+	if dest, err := manifest.WriteFeatured(".", all); err != nil {
+		return err
+	} else if dest != "" {
+		fmt.Printf("%-22s %s\n", "featured", dest)
+	}
+
 	if failures > 0 {
 		return fmt.Errorf("%d résumé(s) failed their page check", failures)
 	}
 	return nil
+}
+
+// sourceFor returns the LaTeX for a résumé: a raw résumé's hand-written sidecar
+// (guarded against reading files outside the compile), or the document rendered
+// from its blocks.
+func sourceFor(renderer *render.Renderer, target *manifest.Manifest) (string, error) {
+	if !target.Raw {
+		return renderer.Render(target)
+	}
+	raw, err := os.ReadFile(target.TexPath(resumesRoot))
+	if err != nil {
+		return "", fmt.Errorf("raw résumé %s: %w", target.ID, err)
+	}
+	if err := render.GuardRawTex(string(raw)); err != nil {
+		return "", fmt.Errorf("raw résumé %s: %w", target.ID, err)
+	}
+	return string(raw), nil
 }
 
 // report prints the fit feedback: what overflowed, and which swaps would
@@ -288,7 +318,7 @@ func writeTex(args []string) error {
 	if err != nil {
 		return err
 	}
-	source, err := renderer.Render(targets[0])
+	source, err := sourceFor(renderer, targets[0])
 	if err != nil {
 		return err
 	}

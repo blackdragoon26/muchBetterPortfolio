@@ -82,6 +82,10 @@ Per contract item 5, public traffic is bounded:
   sweeps up unrelated staged changes.
 - `Manifest.Output` is validated to a relative `.pdf` path under
   `public/resume/`, so a manifest cannot direct a write outside the repository.
+- Hand-written LaTeX (raw résumés) is compiled with shell-escape disabled, and
+  the source is refused before compiling if it reads a file by an absolute path,
+  a parent-directory (`..`) path, or a pipe. This is a guardrail against pulling
+  a secret into a PDF, not a sandbox; only the authenticated owner can submit it.
 - Login is a six-digit TOTP code. Five wrong codes lock logins for five
   minutes, and attempts made while locked restart that window, so guessing
   cannot simply be waited out. A correct code is single-use: replaying one

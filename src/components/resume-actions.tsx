@@ -4,16 +4,22 @@ import { Button } from "@/components/ui/button";
 import { Check, Copy, Download, ExternalLink, PencilRuler } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import resume from "@/generated/resume.json";
+import featured from "@/generated/featured-resume.json";
 
 
-// Always point to the static Next.js public folder path
-const RESUME_PATH = "/resume/Sankalp-Jha-Resume.pdf";
+// Which résumé the home page links to is chosen in the builder: it flags one
+// manifest as featured, and resumekit derives featured-resume.json from that.
+// Falling back to the general résumé keeps the buttons working even if the
+// pointer is ever missing.
+const DEFAULT_RESUME_PATH = "/resume/Sankalp-Jha-Resume.pdf";
 const BUILDER_URL = "https://resume.sankalpjha.dev/";
-const resumeMetadata = resume as {
+const featuredResume = featured as {
+  id?: string;
+  label?: string;
+  path?: string;
   fileName?: string;
-  updatedAt?: string;
 };
+const RESUME_PATH = featuredResume.path || DEFAULT_RESUME_PATH;
 
 export function ResumeActions() {
   const [copied, setCopied] = useState(false);
@@ -39,7 +45,7 @@ export function ResumeActions() {
     }
   }
 
-  const downloadFileName=resumeMetadata.fileName || "Sankalp-Jha-Resume.pdf";
+  const downloadFileName=featuredResume.fileName || "Sankalp-Jha-Resume.pdf";
 
   return (
     <div className="space-y-2">
@@ -70,12 +76,10 @@ export function ResumeActions() {
         </Button>
       </div>
 
-      {(resumeMetadata.fileName || resumeMetadata.updatedAt) && (
+      {(featuredResume.fileName || featuredResume.label) && (
         <p className="text-[11px] text-muted-foreground">
-          {resumeMetadata.fileName || "Sankalp-Jha-Resume.pdf"}
-          {resumeMetadata.updatedAt 
-            ? ` · updated ${new Date(resumeMetadata.updatedAt).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Kolkata" })}`
-             : ""}
+          {featuredResume.fileName || "Sankalp-Jha-Resume.pdf"}
+          {featuredResume.label ? ` · ${featuredResume.label}` : ""}
         </p>
       )}
     </div>
