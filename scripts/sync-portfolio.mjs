@@ -3,7 +3,7 @@ import path from "node:path";
 
 const USER = process.env.GITHUB_USER || "blackdragoon26";
 const PROFILE_README_PATH = process.env.PROFILE_README_PATH || "../profile/README.md";
-const MIN_REPO_STARS = Number(process.env.MIN_REPO_STARS || 300);
+const MIN_REPO_STARS = Number(process.env.MIN_REPO_STARS || 100);
 const MAX_PRS = Number(process.env.MAX_FEATURED_PRS || 999);
 const TOKEN = process.env.GITHUB_TOKEN || process.env.GH_TOKEN || "";
 const API = "https://api.github.com";

@@ -48,7 +48,6 @@ Use `live: none` when there is no deployment. `stack` is the authoritative techn
 
 ## Configuration
 
-- `PORTFOLIO_MIN_REPO_STARS`: minimum stars for featured merged PRs; defaults to `300`.
 - `DRIVE_OAUTH_TOKEN`: Google OAuth authorized-user JSON.
 - `DRIVE_FOLDER_ID`: destination Google Drive folder.
 
