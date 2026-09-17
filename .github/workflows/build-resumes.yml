@@ -91,7 +91,9 @@ jobs:
         run: |
           git config user.name "portfolio-sync[bot]"
           git config user.email "portfolio-sync[bot]@users.noreply.github.com"
-          git add public/resume data/blocks
+          # featured-resume.json is derived from the manifests by resumekit build;
+          # commit it so the home page's featured pointer stays in step.
+          git add public/resume data/blocks src/generated/featured-resume.json
           git diff --cached --quiet && exit 0
           git commit -m "chore: rebuild résumés"
           git push

@@ -220,9 +220,17 @@ func (s *server) routes() http.Handler {
 	mux.Handle("GET /api/state", s.authed(s.handleState))
 	mux.Handle("GET /api/pdf/{id}", s.authed(s.handlePDF))
 	mux.Handle("POST /api/preview", s.authed(s.handlePreview))
+	mux.Handle("POST /api/preview/tex", s.authed(s.handlePreviewTex))
 	mux.Handle("POST /api/tex", s.authed(s.handleTex))
 	mux.Handle("POST /api/resume/{id}", s.authed(s.handleSaveResume))
 	mux.Handle("DELETE /api/resume/{id}", s.authed(s.handleDeleteResume))
+	// Raw-LaTeX résumés: read the sidecar, save it, or revert to blocks. The
+	// {id}/tex and {id}/featured patterns are more specific than {id}, so Go's
+	// mux routes them ahead of the plain manifest handlers above.
+	mux.Handle("GET /api/resume/{id}/tex", s.authed(s.handleReadResumeTex))
+	mux.Handle("POST /api/resume/{id}/tex", s.authed(s.handleSaveResumeTex))
+	mux.Handle("DELETE /api/resume/{id}/tex", s.authed(s.handleRevertResumeTex))
+	mux.Handle("POST /api/resume/{id}/featured", s.authed(s.handleSetFeatured))
 	mux.Handle("POST /api/refresh", s.authed(s.handleRefresh))
 	mux.Handle("POST /api/block/{id}", s.authed(s.handleSaveBlock))
 
@@ -529,7 +537,7 @@ func (s *server) handleTex(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
 		return
 	}
-	source, err := renderer.Render(&target)
+	source, err := s.sourceFor(&target, renderer)
 	if err != nil {
 		writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
 		return
@@ -594,7 +602,7 @@ func (s *server) handlePreview(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
 		return
 	}
-	source, err := renderer.Render(&target)
+	source, err := s.sourceFor(&target, renderer)
 	if err != nil {
 		writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
 		return
@@ -614,14 +622,36 @@ func (s *server) handlePreview(w http.ResponseWriter, r *http.Request) {
 		overfull = append(overfull, map[string]any{"points": item.Points, "detail": item.Detail})
 	}
 
+	// A raw résumé has no blocks, so there are no variant swaps to suggest.
+	variantSavings := []map[string]any{}
+	if !target.Raw {
+		variantSavings = savings(store, renderer, &target)
+	}
+
 	writeJSON(w, http.StatusOK, map[string]any{
 		"pdf":        "/api/pdf/" + id,
 		"pages":      result.Pages,
 		"pagesKnown": result.PagesKnown,
 		"maxPages":   target.MaxPages,
 		"overfull":   overfull,
-		"savings":    savings(store, renderer, &target),
+		"savings":    variantSavings,
 	})
+}
+
+// sourceFor returns the LaTeX a résumé compiles from: a raw résumé's guarded
+// sidecar, or the document rendered from its blocks.
+func (s *server) sourceFor(target *manifest.Manifest, renderer *render.Renderer) (string, error) {
+	if !target.Raw {
+		return renderer.Render(target)
+	}
+	raw, err := os.ReadFile(target.TexPath(s.resumesRoot))
+	if err != nil {
+		return "", fmt.Errorf("raw résumé %s: %w", target.ID, err)
+	}
+	if err := render.GuardRawTex(string(raw)); err != nil {
+		return "", err
+	}
+	return string(raw), nil
 }
 
 // savings measures what each unused variant would shorten the document by, so
@@ -765,9 +795,303 @@ func (s *server) handleDeleteResume(w http.ResponseWriter, r *http.Request) {
 			paths = append(paths, built)
 		}
 	}
+	// A raw résumé's hand-written source lives beside the manifest; it is
+	// meaningless once the manifest is gone.
+	if sidecar := target.TexPath(s.resumesRoot); fileExists(sidecar) {
+		paths = append(paths, sidecar)
+	}
 
-	committed, err := s.git.Remove(r.Context(), fmt.Sprintf("resume(%s): delete", id), paths...)
+	// Deleting a résumé can orphan the home page's featured pointer, which may
+	// name the PDF that is going away. Recompute it from the manifests that
+	// remain and commit that in the same change, so the two never disagree.
+	remaining, err := manifest.LoadAll(s.resumesRoot)
+	if err != nil {
+		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
+		return
+	}
+	kept := remaining[:0]
+	for _, other := range remaining {
+		if other.ID != id {
+			kept = append(kept, other)
+		}
+	}
+	featuredFile := filepath.Join(s.repoRoot, filepath.FromSlash(manifest.FeaturedFile))
+	if len(kept) > 0 {
+		if _, err := manifest.WriteFeatured(s.repoRoot, kept); err != nil {
+			writeJSON(w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
+			return
+		}
+	} else if fileExists(featuredFile) {
+		// Nothing is left to point at, so drop the stale pointer rather than
+		// leave it naming a résumé that no longer exists.
+		if err := os.Remove(featuredFile); err != nil && !os.IsNotExist(err) {
+			writeJSON(w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
+			return
+		}
+	}
+
+	// Remove the résumé's own files, then stage every tracked path — the
+	// removals plus the modified-or-removed pointer — into one commit. Filtering
+	// to tracked paths keeps `git add` from failing on an untracked stray.
+	for _, p := range paths {
+		if err := os.Remove(p); err != nil && !os.IsNotExist(err) {
+			writeJSON(w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
+			return
+		}
+	}
+	commitPaths := make([]string, 0, len(paths)+1)
+	for _, p := range append(paths, featuredFile) {
+		if s.git.IsTracked(r.Context(), p) {
+			commitPaths = append(commitPaths, p)
+		}
+	}
+
+	committed, err := s.git.Commit(r.Context(), fmt.Sprintf("resume(%s): delete", id), commitPaths...)
 	response := map[string]any{"status": "deleted", "committed": committed}
+	if err != nil {
+		response["gitError"] = err.Error()
+	}
+	writeJSON(w, http.StatusOK, response)
+}
+
+// handlePreviewTex compiles hand-written LaTeX directly, without a manifest or
+// the block store. It is the live-preview path while a raw résumé is being
+// edited, so the editor can compile exactly what is in the textarea rather than
+// what was last saved to the sidecar.
+func (s *server) handlePreviewTex(w http.ResponseWriter, r *http.Request) {
+	var body struct {
+		Tex      string `json:"tex"`
+		MaxPages int    `json:"maxPages"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+		return
+	}
+	if strings.TrimSpace(body.Tex) == "" {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "no LaTeX to compile"})
+		return
+	}
+	if err := render.GuardRawTex(body.Tex); err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+		return
+	}
+
+	select {
+	case s.compileSlots <- struct{}{}:
+		defer func() { <-s.compileSlots }()
+	default:
+		writeJSON(w, http.StatusTooManyRequests, map[string]string{"error": "compiler busy, retry shortly"})
+		return
+	}
+
+	ctx, cancel := context.WithTimeout(r.Context(), compileTimeout)
+	defer cancel()
+	result, err := s.compiler.Run(ctx, body.Tex)
+	if err != nil {
+		writeJSON(w, http.StatusUnprocessableEntity, map[string]string{"error": err.Error()})
+		return
+	}
+
+	id := s.storePDF(result.PDF)
+	overfull := make([]map[string]any, 0, len(result.Overfull))
+	for _, item := range result.Overfull {
+		overfull = append(overfull, map[string]any{"points": item.Points, "detail": item.Detail})
+	}
+	writeJSON(w, http.StatusOK, map[string]any{
+		"pdf":        "/api/pdf/" + id,
+		"pages":      result.Pages,
+		"pagesKnown": result.PagesKnown,
+		"maxPages":   body.MaxPages,
+		"overfull":   overfull,
+		"savings":    []map[string]any{},
+	})
+}
+
+// handleReadResumeTex returns a raw résumé's stored LaTeX verbatim, so the
+// editor loads exactly what will compile rather than a banner-wrapped copy.
+func (s *server) handleReadResumeTex(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+	if !safeID(id) {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "invalid résumé id"})
+		return
+	}
+	raw, err := os.ReadFile(filepath.Join(s.resumesRoot, id+".tex"))
+	if err != nil {
+		writeJSON(w, http.StatusNotFound, map[string]string{"error": "no saved LaTeX for this résumé"})
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]any{"tex": string(raw), "engine": s.compiler.Engine()})
+}
+
+// handleSaveResumeTex persists a hand-written résumé: it writes the manifest
+// (marked raw) and the sidecar .tex together in one commit, so the two can
+// never land out of step.
+func (s *server) handleSaveResumeTex(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+	if !safeID(id) {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "invalid résumé id"})
+		return
+	}
+	var body struct {
+		Manifest manifest.Manifest `json:"manifest"`
+		Tex      string            `json:"tex"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+		return
+	}
+	if body.Manifest.ID != id {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "id mismatch"})
+		return
+	}
+	if strings.TrimSpace(body.Tex) == "" {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "no LaTeX to save"})
+		return
+	}
+	if err := render.GuardRawTex(body.Tex); err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+		return
+	}
+	body.Manifest.Raw = true
+
+	s.writeMu.Lock()
+	defer s.writeMu.Unlock()
+
+	manifestPath := filepath.Join(s.resumesRoot, id+".yaml")
+	if err := body.Manifest.Save(manifestPath); err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+		return
+	}
+	texPath := body.Manifest.TexPath(s.resumesRoot)
+	// LaTeX is edited without a trailing newline as often as not; add one so the
+	// committed file is a well-formed text file and its diffs stay clean.
+	if !strings.HasSuffix(body.Tex, "\n") {
+		body.Tex += "\n"
+	}
+	if err := os.WriteFile(texPath, []byte(body.Tex), 0o644); err != nil {
+		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
+		return
+	}
+
+	committed, err := s.git.Commit(r.Context(),
+		fmt.Sprintf("resume(%s): save hand-edited LaTeX", id), manifestPath, texPath)
+	response := map[string]any{"status": "saved", "committed": committed}
+	if err != nil {
+		response["gitError"] = err.Error()
+	}
+	writeJSON(w, http.StatusOK, response)
+}
+
+// handleRevertResumeTex turns a raw résumé back into a block-based one: it clears
+// the raw flag on the manifest and removes the sidecar, committing both changes
+// together.
+func (s *server) handleRevertResumeTex(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+	if !safeID(id) {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "invalid résumé id"})
+		return
+	}
+
+	s.writeMu.Lock()
+	defer s.writeMu.Unlock()
+
+	manifestPath := filepath.Join(s.resumesRoot, id+".yaml")
+	target, err := manifest.Load(manifestPath)
+	if err != nil {
+		writeJSON(w, http.StatusNotFound, map[string]string{"error": "no such résumé"})
+		return
+	}
+	if len(target.Sections) == 0 {
+		writeJSON(w, http.StatusBadRequest, map[string]string{
+			"error": "this résumé has no blocks to fall back to; edit the LaTeX or delete it instead"})
+		return
+	}
+	target.Raw = false
+	if err := target.Save(manifestPath); err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+		return
+	}
+	// Removing the file first, then staging it, records the deletion and the
+	// manifest edit as one commit. Only stage the sidecar if git actually tracks
+	// it: `git add` of an untracked path fails the whole commit with an unmatched
+	// pathspec, which would leave the manifest edit uncommitted while the handler
+	// still reported success.
+	texPath := target.TexPath(s.resumesRoot)
+	tracked := s.git.IsTracked(r.Context(), texPath)
+	if err := os.Remove(texPath); err != nil && !os.IsNotExist(err) {
+		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
+		return
+	}
+
+	commitPaths := []string{manifestPath}
+	if tracked {
+		commitPaths = append(commitPaths, texPath)
+	}
+	committed, err := s.git.Commit(r.Context(),
+		fmt.Sprintf("resume(%s): revert to block-based layout", id), commitPaths...)
+	response := map[string]any{"status": "reverted", "committed": committed}
+	if err != nil {
+		response["gitError"] = err.Error()
+	}
+	writeJSON(w, http.StatusOK, response)
+}
+
+// handleSetFeatured moves the "featured" flag to one résumé, clears it from the
+// rest, and regenerates the pointer the portfolio home page reads. Everything it
+// changes is committed together.
+func (s *server) handleSetFeatured(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+	if !safeID(id) {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "invalid résumé id"})
+		return
+	}
+
+	s.writeMu.Lock()
+	defer s.writeMu.Unlock()
+
+	manifests, err := manifest.LoadAll(s.resumesRoot)
+	if err != nil {
+		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
+		return
+	}
+
+	var changed []string
+	found := false
+	for _, current := range manifests {
+		want := current.ID == id
+		if want {
+			found = true
+		}
+		if current.Featured == want {
+			continue
+		}
+		current.Featured = want
+		path := filepath.Join(s.resumesRoot, current.ID+".yaml")
+		if err := current.Save(path); err != nil {
+			writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+			return
+		}
+		changed = append(changed, path)
+	}
+	if !found {
+		writeJSON(w, http.StatusNotFound, map[string]string{"error": "no such résumé"})
+		return
+	}
+
+	// Rewrite the derived pointer from the now-updated manifests so the home page
+	// reflects the change without waiting for a full CI rebuild.
+	featuredPath, err := manifest.WriteFeatured(s.repoRoot, manifests)
+	if err != nil {
+		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
+		return
+	}
+	if featuredPath != "" {
+		changed = append(changed, featuredPath)
+	}
+
+	committed, err := s.git.Commit(r.Context(),
+		fmt.Sprintf("resume: feature %s on the home page", id), changed...)
+	response := map[string]any{"status": "featured", "committed": committed}
 	if err != nil {
 		response["gitError"] = err.Error()
 	}
@@ -850,6 +1174,12 @@ func (s *server) handleSaveBlock(w http.ResponseWriter, r *http.Request) {
 		response["gitError"] = err.Error()
 	}
 	writeJSON(w, http.StatusOK, response)
+}
+
+// fileExists reports whether a path is present and is a regular file.
+func fileExists(path string) bool {
+	info, err := os.Stat(path)
+	return err == nil && info.Mode().IsRegular()
 }
 
 // safeID refuses anything that could escape the manifest directory.

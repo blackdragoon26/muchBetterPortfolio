@@ -64,7 +64,32 @@ type Manifest struct {
 	// guardrail that turns "keep it to one page" from a habit into a check.
 	MaxPages int `yaml:"maxPages,omitempty" json:"maxPages,omitempty"`
 
+	// Raw marks a résumé as a hand-written LaTeX document rather than a selection
+	// of blocks. The source lives in a sidecar file next to the manifest
+	// (resumes/<id>.tex); when Raw is set the renderer is bypassed and that file
+	// is compiled directly. Sections are kept as an inert record of what the
+	// document was generated from, so a raw résumé can be reverted to blocks.
+	Raw bool `yaml:"raw,omitempty" json:"raw,omitempty"`
+
+	// Featured marks the single résumé the portfolio home page links to. Exactly
+	// one manifest should carry it; the builder clears it from the others when it
+	// is moved. resumekit derives src/generated/featured-resume.json from it, so
+	// the manifests remain the single source of truth for the featured choice.
+	Featured bool `yaml:"featured,omitempty" json:"featured,omitempty"`
+
 	Sections []Section `yaml:"sections" json:"sections"`
+}
+
+// TexPath is the sidecar LaTeX file for a raw résumé, sitting next to the
+// manifest as resumes/<id>.tex.
+func (m *Manifest) TexPath(resumesRoot string) string {
+	return filepath.Join(resumesRoot, m.ID+".tex")
+}
+
+// WebPath turns the repository-relative Output (public/resume/X.pdf) into the
+// path the static site serves it at (/resume/X.pdf).
+func (m *Manifest) WebPath() string {
+	return "/" + strings.TrimPrefix(filepath.ToSlash(m.Output), "public/")
 }
 
 // Load reads a single manifest file.
@@ -136,7 +161,9 @@ func (m *Manifest) Validate() error {
 	if err := validOutput(m.Output); err != nil {
 		return fmt.Errorf("manifest %s: %w", m.ID, err)
 	}
-	if len(m.Sections) == 0 {
+	// A raw résumé carries its source in a sidecar .tex file, so it is allowed to
+	// have no sections. A block-based one with none would render an empty page.
+	if len(m.Sections) == 0 && !m.Raw {
 		return fmt.Errorf("manifest %s: has no sections", m.ID)
 	}
 

@@ -111,6 +111,62 @@ Drag blocks between sections, pick variants, edit content with the three-way
 save, live PDF preview. Deployment notes are in
 [myprod-handoff.md](myprod-handoff.md).
 
+## Raw LaTeX résumés
+
+Sometimes a version needs a tweak the blocks cannot express — a bespoke command,
+hand-tuned spacing, a one-off layout. Any résumé can be switched to a hand-edited
+LaTeX document instead of a selection of blocks.
+
+In the builder, the **TeX** button converts the open résumé: the LaTeX generated
+from its current blocks becomes the starting point, the middle column turns into
+a source editor, and the preview compiles exactly what you type. **Save** writes
+the source to a sidecar file beside the manifest and marks the manifest raw:
+
+```text
+resumes/<id>.yaml     raw: true
+resumes/<id>.tex      the hand-written source
+```
+
+Both are committed together, so a raw version is still a reviewable diff. A raw
+résumé no longer auto-updates from block or PR changes — it is frozen prose. The
+**Blocks** button reverts it: the sidecar is removed and the manifest compiles
+from its blocks again. The blocks are always intact, so switching back is safe —
+but any edits made to the LaTeX itself live only in that sidecar and are
+discarded on revert. Copy the source out first if you want to keep it. (Because
+it is committed, a discarded sidecar is still recoverable from git history.)
+
+`resumekit build` compiles a raw résumé straight from its sidecar; everything
+downstream (page-budget check, PDF output path) is unchanged.
+
+### What raw LaTeX may not do
+
+tectonic runs with shell-escape off, so `\write18` cannot execute commands. On
+top of that the builder refuses source that reads a file outside the compile —
+`\input`, `\include`, `\openin`, `\includegraphics` and friends pointing at an
+absolute path, a parent directory (`..`) or a pipe are rejected before anything
+compiles. It is a guardrail against accidentally pulling a secret into a PDF, not
+a sandbox; the only person who can submit LaTeX is the authenticated owner.
+
+## The featured résumé
+
+The portfolio home page links to one résumé. That choice is a flag on a
+manifest:
+
+```yaml
+featured: true
+```
+
+Exactly one manifest should carry it. The builder's ☆ button enforces that from
+the UI — it moves the flag to the open résumé and clears it from the rest —
+but nothing validates hand-edited YAML, so if you set the flag by hand keep it on
+a single file. When the invariant is broken, the derivation is still
+deterministic rather than arbitrary: `resumekit` picks the first flagged manifest
+in id order, or the first manifest of all when none is flagged. `resumekit build`
+derives `src/generated/featured-resume.json` from that choice, and the home
+page's résumé section imports the pointer for its View / Download links, filename
+and label — so featuring a different version is a one-click change that
+ships on the next build.
+
 ## Requirements
 
 `tectonic` on PATH. It fetches only the packages this document needs and caches

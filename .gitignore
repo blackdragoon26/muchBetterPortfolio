@@ -45,3 +45,7 @@ __pycache__/
 client_secret.json
 token.json
 .resumekit/
+
+# builder binaries built from ./cmd during local dev
+/resumed
+/resumekit
