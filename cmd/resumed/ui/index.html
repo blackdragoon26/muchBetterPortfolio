@@ -311,6 +311,10 @@ let previewTimer = null;
 let inFlight = false;
 let lastTex = null;
 let lastPdfUrl = null;
+// Bumped every time a résumé is selected. Async handlers capture it before an
+// await and bail if it changed, so a slow response for one résumé can never
+// write itself into — or be saved under — the résumé the user has since picked.
+let pickSeq = 0;
 
 const byId = id => state.blocks.find(b => b.id === id);
 const el = (t, c) => { const n = document.createElement(t); if (c) n.className = c; return n; };
@@ -363,6 +367,7 @@ async function boot() {
 }
 
 async function pickResume(id) {
+  const seq = ++pickSeq;
   const found = state.resumes.find(r => r.id === id);
   if (!found) {
     current = null;
@@ -383,12 +388,15 @@ async function pickResume(id) {
     current._savedRaw = true;
     try {
       const stored = await api('/api/resume/' + encodeURIComponent(id) + '/tex');
+      if (seq !== pickSeq) return; // a newer selection superseded this load
       current._tex = stored.tex;
     } catch (err) {
+      if (seq !== pickSeq) return;
       current._tex = '';
       setStatus('bad', err.message);
     }
   }
+  if (seq !== pickSeq) return;
   draw();
   schedulePreview();
 }
@@ -634,11 +642,13 @@ function drawRawEditor(host) {
 async function runRawPreview() {
   if (inFlight) { schedulePreview(); return; }
   inFlight = true;
+  const seq = pickSeq;
   try {
     const result = await api('/api/preview/tex', {
       method: 'POST',
       body: JSON.stringify({ tex: current._tex || '', maxPages: current.maxPages || 0 }),
     });
+    if (seq !== pickSeq) return; // switched résumés mid-compile; discard result
     lastPdfUrl = result.pdf;
     document.getElementById('preview').src = result.pdf;
     if (!result.pagesKnown) {
@@ -653,10 +663,10 @@ async function runRawPreview() {
     }
     drawAdvice([]);
   } catch (err) {
-    setStatus('bad', err.message);
+    if (seq === pickSeq) setStatus('bad', err.message);
   } finally {
     inFlight = false;
-    setLoading(false);
+    if (seq === pickSeq) setLoading(false);
   }
 }
 
@@ -674,14 +684,19 @@ async function enterRawMode() {
     'You can switch back to blocks later.')) return;
   setStatus('busy', 'rendering LaTeX…');
   setLoading(true);
+  // Hold the résumé this conversion belongs to; if the user switches away while
+  // the render is in flight, its source must not land on the new selection.
+  const target = current;
   try {
-    const rendered = await api('/api/tex', { method: 'POST', body: JSON.stringify(stripClient(current)) });
+    const rendered = await api('/api/tex', { method: 'POST', body: JSON.stringify(stripClient(target)) });
+    if (current !== target) return;
     current.raw = true;
     current._savedRaw = false;
     current._tex = stripBanner(rendered.tex);
     draw();
     schedulePreview();
   } catch (err) {
+    if (current !== target) return;
     setStatus('bad', err.message);
     setLoading(false);
   }
@@ -742,12 +757,17 @@ async function saveResumeTex() {
 async function toggleFeatured() {
   if (!current) return;
   if (current.featured) { setStatus('ok', 'already featured'); return; }
+  // Feature the résumé that was open when the button was clicked, not whichever
+  // one the user has switched to by the time the request returns.
+  const targetId = current.id;
   try {
-    const result = await api('/api/resume/' + encodeURIComponent(current.id) + '/featured', { method: 'POST' });
+    const result = await api('/api/resume/' + encodeURIComponent(targetId) + '/featured', { method: 'POST' });
     // Reflect the move locally: exactly one résumé is featured at a time.
-    state.resumes.forEach(r => { r.featured = r.id === current.id; });
-    current.featured = true;
-    updateModeBar();
+    state.resumes.forEach(r => { r.featured = r.id === targetId; });
+    if (current && current.id === targetId) {
+      current.featured = true;
+      updateModeBar();
+    }
     setStatus('ok', result.committed ? 'featured + committed' : 'featured (no change)', result.gitError || '');
   } catch (err) {
     setStatus('bad', err.message);
@@ -757,8 +777,10 @@ async function toggleFeatured() {
 async function runPreview() {
   if (inFlight) { schedulePreview(); return; }
   inFlight = true;
+  const seq = pickSeq;
   try {
-    const result = await api('/api/preview', { method: 'POST', body: JSON.stringify(current) });
+    const result = await api('/api/preview', { method: 'POST', body: JSON.stringify(stripClient(current)) });
+    if (seq !== pickSeq) return; // switched résumés mid-compile; discard result
     lastPdfUrl = result.pdf;
     document.getElementById('preview').src = result.pdf;
     if (!result.pagesKnown) {
@@ -775,10 +797,10 @@ async function runPreview() {
       (result.maxPages > 0 && result.pages > result.maxPages) || result.overfull.length;
     drawAdvice(tight ? result.savings : []);
   } catch (err) {
-    setStatus('bad', err.message);
+    if (seq === pickSeq) setStatus('bad', err.message);
   } finally {
     inFlight = false;
-    setLoading(false);
+    if (seq === pickSeq) setLoading(false);
   }
 }
 

@@ -37,6 +37,15 @@ var (
 	// One compiled matcher per input command, built once at package load.
 	texInputMatchers = buildInputMatchers()
 
+	// \input alone (unlike \include) also accepts a filename with no braces —
+	// \input /run/secrets/x, and even the quoted \input"/run/secrets/x" with no
+	// separating space, both read that file just as \input{...} does, so the
+	// braced matchers above would miss them. This matches those bare forms: an
+	// \input followed by an optional-quote path token that does not open a brace
+	// group (a leading { is left to the braced matcher). Quotes are peeled off in
+	// unsafeTeXPath before the path is judged.
+	bareInputMatcher = regexp.MustCompile(`\\input\b\s*("[^"]*"|'[^']*'|[^\s{}\\%][^\s{}]*)`)
+
 	// \openin<stream>=<path> and \read forms name their target after an equals
 	// sign or as a bare token rather than in braces.
 	openInMatcher = regexp.MustCompile(`\\open(?:in|out)\b[^=\n]*=\s*([^\s{}\\]+|\{[^}]*\})`)
@@ -79,6 +88,14 @@ func GuardRawTex(source string) error {
 		}
 	}
 
+	for _, match := range bareInputMatcher.FindAllStringSubmatch(clean, -1) {
+		if unsafeTeXPath(match[1]) {
+			return fmt.Errorf(
+				"raw LaTeX: \\input of %q is not allowed — absolute paths, parent-directory (..) paths and pipes are blocked",
+				strings.TrimSpace(match[1]))
+		}
+	}
+
 	for _, match := range openInMatcher.FindAllStringSubmatch(clean, -1) {
 		target := strings.Trim(match[1], "{}")
 		if unsafeTeXPath(target) {
@@ -112,6 +129,9 @@ func splitTeXPaths(argument string) []string {
 // unsafeTeXPath reports whether a file argument escapes the scratch directory.
 func unsafeTeXPath(candidate string) bool {
 	trimmed := strings.TrimSpace(candidate)
+	// A quoted filename (\input"/abs/file") would otherwise slip past the prefix
+	// checks below, so peel the surrounding quotes off first.
+	trimmed = strings.Trim(trimmed, `"'`)
 	if trimmed == "" {
 		return false
 	}

@@ -801,7 +801,52 @@ func (s *server) handleDeleteResume(w http.ResponseWriter, r *http.Request) {
 		paths = append(paths, sidecar)
 	}
 
-	committed, err := s.git.Remove(r.Context(), fmt.Sprintf("resume(%s): delete", id), paths...)
+	// Deleting a résumé can orphan the home page's featured pointer, which may
+	// name the PDF that is going away. Recompute it from the manifests that
+	// remain and commit that in the same change, so the two never disagree.
+	remaining, err := manifest.LoadAll(s.resumesRoot)
+	if err != nil {
+		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
+		return
+	}
+	kept := remaining[:0]
+	for _, other := range remaining {
+		if other.ID != id {
+			kept = append(kept, other)
+		}
+	}
+	featuredFile := filepath.Join(s.repoRoot, filepath.FromSlash(manifest.FeaturedFile))
+	if len(kept) > 0 {
+		if _, err := manifest.WriteFeatured(s.repoRoot, kept); err != nil {
+			writeJSON(w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
+			return
+		}
+	} else if fileExists(featuredFile) {
+		// Nothing is left to point at, so drop the stale pointer rather than
+		// leave it naming a résumé that no longer exists.
+		if err := os.Remove(featuredFile); err != nil && !os.IsNotExist(err) {
+			writeJSON(w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
+			return
+		}
+	}
+
+	// Remove the résumé's own files, then stage every tracked path — the
+	// removals plus the modified-or-removed pointer — into one commit. Filtering
+	// to tracked paths keeps `git add` from failing on an untracked stray.
+	for _, p := range paths {
+		if err := os.Remove(p); err != nil && !os.IsNotExist(err) {
+			writeJSON(w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
+			return
+		}
+	}
+	commitPaths := make([]string, 0, len(paths)+1)
+	for _, p := range append(paths, featuredFile) {
+		if s.git.IsTracked(r.Context(), p) {
+			commitPaths = append(commitPaths, p)
+		}
+	}
+
+	committed, err := s.git.Commit(r.Context(), fmt.Sprintf("resume(%s): delete", id), commitPaths...)
 	response := map[string]any{"status": "deleted", "committed": committed}
 	if err != nil {
 		response["gitError"] = err.Error()
@@ -966,17 +1011,24 @@ func (s *server) handleRevertResumeTex(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
 		return
 	}
-	// Removing the file first, then staging both paths, records the deletion and
-	// the manifest edit as one commit. git add stages a deletion for a tracked
-	// path, so the sidecar leaves the tree in the same commit that unsets raw.
+	// Removing the file first, then staging it, records the deletion and the
+	// manifest edit as one commit. Only stage the sidecar if git actually tracks
+	// it: `git add` of an untracked path fails the whole commit with an unmatched
+	// pathspec, which would leave the manifest edit uncommitted while the handler
+	// still reported success.
 	texPath := target.TexPath(s.resumesRoot)
+	tracked := s.git.IsTracked(r.Context(), texPath)
 	if err := os.Remove(texPath); err != nil && !os.IsNotExist(err) {
 		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
 		return
 	}
 
+	commitPaths := []string{manifestPath}
+	if tracked {
+		commitPaths = append(commitPaths, texPath)
+	}
 	committed, err := s.git.Commit(r.Context(),
-		fmt.Sprintf("resume(%s): revert to block-based layout", id), manifestPath, texPath)
+		fmt.Sprintf("resume(%s): revert to block-based layout", id), commitPaths...)
 	response := map[string]any{"status": "reverted", "committed": committed}
 	if err != nil {
 		response["gitError"] = err.Error()

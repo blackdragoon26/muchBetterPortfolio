@@ -5,6 +5,10 @@ import "testing"
 func TestGuardRawTexRejectsUnsafe(t *testing.T) {
 	cases := map[string]string{
 		"absolute input":        `\input{/run/secrets/resume-builder.env}`,
+		"bare absolute input":   `\input /run/secrets/resume-builder.env`,
+		"bare no-extension":     `\input /etc/hosts`,
+		"bare parent input":     `\input ../../secret`,
+		"quoted absolute input": `\input"/run/secrets/x"`,
 		"absolute openin":       `\openin\probe=/etc/hosts`,
 		"home relative":         `\include{~/.ssh/id_rsa}`,
 		"parent traversal":      `\input{../../etc/passwd}`,
@@ -28,6 +32,7 @@ func TestGuardRawTexAllowsSafe(t *testing.T) {
 		"plain document":     "\\documentclass{article}\n\\begin{document}\nHello\n\\end{document}",
 		"relative include":   `\includegraphics{figures/logo.png}`,
 		"relative input":     `\input{sections/header}`,
+		"bare relative input": `\input sections/header`,
 		"commented absolute": `% \input{/etc/hosts} is only a comment` + "\n" + `\input{body}`,
 		"percent literal":    `Coverage was 90\% \input{stats}`,
 		"no file commands":   `\textbf{Sankalp Jha} \\ \href{https://example.com}{site}`,

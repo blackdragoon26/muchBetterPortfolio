@@ -130,7 +130,10 @@ resumes/<id>.tex      the hand-written source
 Both are committed together, so a raw version is still a reviewable diff. A raw
 résumé no longer auto-updates from block or PR changes — it is frozen prose. The
 **Blocks** button reverts it: the sidecar is removed and the manifest compiles
-from its blocks again, so nothing is lost by trying.
+from its blocks again. The blocks are always intact, so switching back is safe —
+but any edits made to the LaTeX itself live only in that sidecar and are
+discarded on revert. Copy the source out first if you want to keep it. (Because
+it is committed, a discarded sidecar is still recoverable from git history.)
 
 `resumekit build` compiles a raw résumé straight from its sidecar; everything
 downstream (page-budget check, PDF output path) is unchanged.
@@ -153,11 +156,15 @@ manifest:
 featured: true
 ```
 
-Exactly one manifest carries it. The builder's ☆ button moves the flag to the
-open résumé and clears it from the rest. `resumekit build` derives
-`src/generated/featured-resume.json` from whichever manifest is flagged, and the
-home page's résumé section imports that pointer for its View / Download links,
-filename and label — so featuring a different version is a one-click change that
+Exactly one manifest should carry it. The builder's ☆ button enforces that from
+the UI — it moves the flag to the open résumé and clears it from the rest —
+but nothing validates hand-edited YAML, so if you set the flag by hand keep it on
+a single file. When the invariant is broken, the derivation is still
+deterministic rather than arbitrary: `resumekit` picks the first flagged manifest
+in id order, or the first manifest of all when none is flagged. `resumekit build`
+derives `src/generated/featured-resume.json` from that choice, and the home
+page's résumé section imports the pointer for its View / Download links, filename
+and label — so featuring a different version is a one-click change that
 ships on the next build.
 
 ## Requirements

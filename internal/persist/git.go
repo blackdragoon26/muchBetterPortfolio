@@ -121,6 +121,15 @@ func (g *Git) Pull(ctx context.Context) (string, error) {
 	return "updated to " + strings.TrimSpace(after)[:12], nil
 }
 
+// IsTracked reports whether a path is tracked in the repository. Committing a
+// deletion goes through `git add`, which fails the whole commit with an
+// unmatched pathspec if handed a path git has never seen; callers use this to
+// decide whether a removed file is worth staging at all.
+func (g *Git) IsTracked(ctx context.Context, path string) bool {
+	_, err := g.run(ctx, "ls-files", "--error-unmatch", "--", path)
+	return err == nil
+}
+
 // Remove deletes paths from the working tree and commits the deletion.
 func (g *Git) Remove(ctx context.Context, message string, paths ...string) (bool, error) {
 	if len(paths) == 0 {
