@@ -1,0 +1,22 @@
+id: contribution:frameworkcomputer-framework-system
+kind: contribution
+source: github
+tags:
+  - systems
+  - opensource
+machine:
+  pullRequests:
+    - additions: 247
+      changedFiles: 1
+      deletions: 42
+      href: https://github.com/FrameworkComputer/framework-system/pull/369
+      mergedAt: "2026-09-16T14:57:23Z"
+      number: 369
+      title: '--thermal: Return data instead of only printing it'
+  repository: FrameworkComputer/framework-system
+  stars: 123
+content:
+  entries:
+    - number: 369
+      summary: ""
+  label: FrameworkComputer/framework-system

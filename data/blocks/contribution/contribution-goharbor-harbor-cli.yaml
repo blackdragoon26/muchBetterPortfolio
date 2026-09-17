@@ -1,0 +1,21 @@
+id: contribution:goharbor-harbor-cli
+kind: contribution
+source: github
+tags:
+  - opensource
+machine:
+  pullRequests:
+    - additions: 1
+      changedFiles: 1
+      deletions: 1
+      href: https://github.com/goharbor/harbor-cli/pull/529
+      mergedAt: "2025-08-12T08:32:10Z"
+      number: 529
+      title: Update README.md
+  repository: goharbor/harbor-cli
+  stars: 163
+content:
+  entries:
+    - number: 529
+      summary: ""
+  label: goharbor/harbor-cli

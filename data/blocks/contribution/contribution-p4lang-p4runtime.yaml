@@ -1,0 +1,30 @@
+id: contribution:p4lang-p4runtime
+kind: contribution
+source: github
+tags:
+  - opensource
+machine:
+  pullRequests:
+    - additions: 5
+      changedFiles: 1
+      deletions: 0
+      href: https://github.com/p4lang/p4runtime/pull/631
+      mergedAt: "2026-09-10T19:12:36Z"
+      number: 631
+      title: Document licensing of generated Protobuf code
+    - additions: 2
+      changedFiles: 1
+      deletions: 2
+      href: https://github.com/p4lang/p4runtime/pull/633
+      mergedAt: "2026-09-10T19:12:05Z"
+      number: 633
+      title: 'docs: replace outdated CLA guidance with DCO'
+  repository: p4lang/p4runtime
+  stars: 175
+content:
+  entries:
+    - number: 631
+      summary: ""
+    - number: 633
+      summary: ""
+  label: p4lang/p4runtime

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-16T10:01:33.993Z",
+  "generatedAt": "2026-09-17T05:40:14.324Z",
   "filter": {
     "minimumRepositoryStars": 100,
     "maximumPullRequests": 999
@@ -318,7 +318,7 @@
       "screenshot": "auto",
       "screenshotWaitSeconds": 7,
       "stars": 1,
-      "image": "/generated/projects/open-claw-lab.png",
+      "image": "/generated/projects/open-claw-lab.svg",
       "resume": {
         "include": false,
         "objective": "Discover high-signal engineering opportunities while preventing unsupported or stale leads from reaching the user.",
@@ -384,6 +384,60 @@
   ],
   "pullRequests": [
     {
+      "id": "FrameworkComputer/framework-system#369",
+      "title": "--thermal: Return data instead of only printing it",
+      "number": 369,
+      "href": "https://github.com/FrameworkComputer/framework-system/pull/369",
+      "repository": "FrameworkComputer/framework-system",
+      "repositoryUrl": "https://github.com/FrameworkComputer/framework-system",
+      "repositoryDescription": "Rust libraries and tools to interact with the Framework Computer systems",
+      "organizationLogo": "/generated/organizations/frameworkcomputer.jpg",
+      "stars": 123,
+      "mergedAt": "2026-09-16T14:57:23Z",
+      "additions": 247,
+      "deletions": 42,
+      "changedFiles": 1,
+      "technologies": [
+        "Rust"
+      ]
+    },
+    {
+      "id": "p4lang/p4runtime#631",
+      "title": "Document licensing of generated Protobuf code",
+      "number": 631,
+      "href": "https://github.com/p4lang/p4runtime/pull/631",
+      "repository": "p4lang/p4runtime",
+      "repositoryUrl": "https://github.com/p4lang/p4runtime",
+      "repositoryDescription": "Specification documents for the P4Runtime control-plane API",
+      "organizationLogo": "/generated/organizations/p4lang.jpg",
+      "stars": 175,
+      "mergedAt": "2026-09-10T19:12:36Z",
+      "additions": 5,
+      "deletions": 0,
+      "changedFiles": 1,
+      "technologies": [
+        "Markdown"
+      ]
+    },
+    {
+      "id": "p4lang/p4runtime#633",
+      "title": "docs: replace outdated CLA guidance with DCO",
+      "number": 633,
+      "href": "https://github.com/p4lang/p4runtime/pull/633",
+      "repository": "p4lang/p4runtime",
+      "repositoryUrl": "https://github.com/p4lang/p4runtime",
+      "repositoryDescription": "Specification documents for the P4Runtime control-plane API",
+      "organizationLogo": "/generated/organizations/p4lang.jpg",
+      "stars": 175,
+      "mergedAt": "2026-09-10T19:12:05Z",
+      "additions": 2,
+      "deletions": 2,
+      "changedFiles": 1,
+      "technologies": [
+        "Markdown"
+      ]
+    },
+    {
       "id": "facebook/bpfilter#578",
       "title": "lib: log: support packet 5-tuple logging",
       "number": 578,
@@ -414,7 +468,7 @@
       "repositoryUrl": "https://github.com/Project-HAMi/HAMi",
       "repositoryDescription": "Heterogeneous GPU Sharing on Kubernetes",
       "organizationLogo": "/generated/organizations/project-hami.jpg",
-      "stars": 4610,
+      "stars": 4617,
       "mergedAt": "2026-09-02T07:31:27Z",
       "additions": 51,
       "deletions": 9,
@@ -433,7 +487,7 @@
       "repositoryUrl": "https://github.com/Project-HAMi/HAMi",
       "repositoryDescription": "Heterogeneous GPU Sharing on Kubernetes",
       "organizationLogo": "/generated/organizations/project-hami.jpg",
-      "stars": 4610,
+      "stars": 4617,
       "mergedAt": "2026-08-27T02:38:43Z",
       "additions": 101,
       "deletions": 12,
@@ -453,7 +507,7 @@
       "repositoryUrl": "https://github.com/Project-HAMi/HAMi",
       "repositoryDescription": "Heterogeneous GPU Sharing on Kubernetes",
       "organizationLogo": "/generated/organizations/project-hami.jpg",
-      "stars": 4610,
+      "stars": 4617,
       "mergedAt": "2026-08-20T10:01:08Z",
       "additions": 27,
       "deletions": 175,
@@ -471,7 +525,7 @@
       "repositoryUrl": "https://github.com/Project-HAMi/HAMi",
       "repositoryDescription": "Heterogeneous GPU Sharing on Kubernetes",
       "organizationLogo": "/generated/organizations/project-hami.jpg",
-      "stars": 4610,
+      "stars": 4617,
       "mergedAt": "2026-08-17T07:23:52Z",
       "additions": 514,
       "deletions": 15,
@@ -490,7 +544,7 @@
       "repositoryUrl": "https://github.com/Project-HAMi/HAMi",
       "repositoryDescription": "Heterogeneous GPU Sharing on Kubernetes",
       "organizationLogo": "/generated/organizations/project-hami.jpg",
-      "stars": 4610,
+      "stars": 4617,
       "mergedAt": "2026-08-17T07:23:04Z",
       "additions": 23,
       "deletions": 0,
@@ -508,7 +562,7 @@
       "repositoryUrl": "https://github.com/Project-HAMi/HAMi",
       "repositoryDescription": "Heterogeneous GPU Sharing on Kubernetes",
       "organizationLogo": "/generated/organizations/project-hami.jpg",
-      "stars": 4610,
+      "stars": 4617,
       "mergedAt": "2026-08-04T08:51:52Z",
       "additions": 57,
       "deletions": 5,
@@ -526,7 +580,7 @@
       "repositoryUrl": "https://github.com/Project-HAMi/HAMi",
       "repositoryDescription": "Heterogeneous GPU Sharing on Kubernetes",
       "organizationLogo": "/generated/organizations/project-hami.jpg",
-      "stars": 4610,
+      "stars": 4617,
       "mergedAt": "2026-08-04T03:55:50Z",
       "additions": 134,
       "deletions": 41,
@@ -544,7 +598,7 @@
       "repositoryUrl": "https://github.com/Project-HAMi/HAMi",
       "repositoryDescription": "Heterogeneous GPU Sharing on Kubernetes",
       "organizationLogo": "/generated/organizations/project-hami.jpg",
-      "stars": 4610,
+      "stars": 4617,
       "mergedAt": "2026-08-02T09:42:49Z",
       "additions": 123,
       "deletions": 3,
@@ -562,7 +616,7 @@
       "repositoryUrl": "https://github.com/Project-HAMi/HAMi",
       "repositoryDescription": "Heterogeneous GPU Sharing on Kubernetes",
       "organizationLogo": "/generated/organizations/project-hami.jpg",
-      "stars": 4610,
+      "stars": 4617,
       "mergedAt": "2026-07-31T10:46:46Z",
       "additions": 158,
       "deletions": 21,
@@ -580,7 +634,7 @@
       "repositoryUrl": "https://github.com/Project-HAMi/HAMi",
       "repositoryDescription": "Heterogeneous GPU Sharing on Kubernetes",
       "organizationLogo": "/generated/organizations/project-hami.jpg",
-      "stars": 4610,
+      "stars": 4617,
       "mergedAt": "2026-07-31T10:37:47Z",
       "additions": 7,
       "deletions": 0,
@@ -675,6 +729,24 @@
       "mergedAt": "2025-12-18T14:53:20Z",
       "additions": 4,
       "deletions": 5,
+      "changedFiles": 1,
+      "technologies": [
+        "Markdown"
+      ]
+    },
+    {
+      "id": "goharbor/harbor-cli#529",
+      "title": "Update README.md",
+      "number": 529,
+      "href": "https://github.com/goharbor/harbor-cli/pull/529",
+      "repository": "goharbor/harbor-cli",
+      "repositoryUrl": "https://github.com/goharbor/harbor-cli",
+      "repositoryDescription": "Official Harbor CLI",
+      "organizationLogo": "/generated/organizations/goharbor.jpg",
+      "stars": 163,
+      "mergedAt": "2025-08-12T08:32:10Z",
+      "additions": 1,
+      "deletions": 1,
       "changedFiles": 1,
       "technologies": [
         "Markdown"
