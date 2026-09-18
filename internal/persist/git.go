@@ -77,12 +77,68 @@ func (g *Git) Commit(ctx context.Context, message string, paths ...string) (bool
 	if err != nil {
 		return true, err
 	}
-	if _, err := g.run(ctx, "push", "origin", branch); err != nil {
+	if err := g.push(ctx, branch); err != nil {
 		// The commit succeeded even if the push did not; report both so the
 		// caller can tell the user their edit is saved but not yet shared.
-		return true, fmt.Errorf("committed locally but push failed: %w", err)
+		return true, err
 	}
 	return true, nil
+}
+
+// push sends the branch upstream, replaying local commits on top of the remote
+// when it has moved on.
+//
+// This is the normal case here, not an edge case: CI commits rebuilt PDFs and
+// synced portfolio data to the same branch several times a day, so any builder
+// that has been running for a while is behind. A plain push is then rejected as
+// a non-fast-forward, and the container's working copy is ephemeral — a restart
+// reclones — so a commit that cannot be pushed is a commit that will be lost.
+//
+// Rebase rather than merge keeps the history linear, and rather than reset
+// because the local commits are the edit being saved. A conflict aborts and is
+// reported instead of being resolved blindly.
+func (g *Git) push(ctx context.Context, branch string) error {
+	if _, err := g.run(ctx, "push", "origin", branch); err == nil {
+		return nil
+	}
+	if err := g.rebaseOnRemote(ctx, branch); err != nil {
+		return fmt.Errorf("committed locally but push failed: %w", err)
+	}
+	if _, err := g.run(ctx, "push", "origin", branch); err != nil {
+		return fmt.Errorf("committed locally but push failed after rebasing onto origin/%s: %w", branch, err)
+	}
+	return nil
+}
+
+// rebaseOnRemote fetches the branch and replays local commits on top of it.
+func (g *Git) rebaseOnRemote(ctx context.Context, branch string) error {
+	if err := g.fetch(ctx, branch); err != nil {
+		return err
+	}
+	if _, err := g.run(ctx, "rebase", "origin/"+branch); err != nil {
+		// Leave the working copy exactly as it was rather than half-rebased.
+		g.run(ctx, "rebase", "--abort")
+		return fmt.Errorf("local edits conflict with origin/%s and could not be replayed: %w", branch, err)
+	}
+	return nil
+}
+
+// fetch updates the remote branch, deepening a shallow clone first.
+//
+// The container clones with --depth 1, and a rebase needs the merge base: once
+// the remote is more than one commit ahead, that commit is outside the shallow
+// boundary and the rebase fails with no common ancestor. Deepening is skipped on
+// a full clone, where --depth would make the repository shallow instead.
+func (g *Git) fetch(ctx context.Context, branch string) error {
+	shallow, _ := g.run(ctx, "rev-parse", "--is-shallow-repository")
+	args := []string{"fetch", "origin", branch}
+	if strings.TrimSpace(shallow) == "true" {
+		args = []string{"fetch", "--depth=50", "origin", branch}
+	}
+	if _, err := g.run(ctx, args...); err != nil {
+		return fmt.Errorf("fetch origin/%s: %w", branch, err)
+	}
+	return nil
 }
 
 // Pull fast-forwards the working copy to origin.
@@ -91,15 +147,16 @@ func (g *Git) Commit(ctx context.Context, message string, paths ...string) (bool
 // startup, so a running builder cannot see blocks that CI committed afterwards.
 // This is how it catches up without a redeploy.
 //
-// --ff-only is deliberate. A reset would silently discard commits made here that
-// failed to push — exactly the state a save reports when the token is wrong —
-// so refusing to move and saying why is the honest outcome.
+// It rebases rather than fast-forwarding. An earlier version refused to move
+// whenever this copy held commits that were never pushed, on the grounds that a
+// reset would discard them — but that left the builder wedged in exactly the
+// situation it most needs to recover from: a save whose push was rejected
+// because CI had committed meanwhile. Refusing kept the commit safe only until
+// the next restart recloned the container and dropped it anyway. Replaying the
+// local commits on top of the remote preserves them and unwedges the push.
 func (g *Git) Pull(ctx context.Context) (string, error) {
 	branch, err := g.Branch(ctx)
 	if err != nil {
-		return "", err
-	}
-	if _, err := g.run(ctx, "fetch", "origin", branch); err != nil {
 		return "", err
 	}
 
@@ -107,8 +164,8 @@ func (g *Git) Pull(ctx context.Context) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	if _, err := g.run(ctx, "merge", "--ff-only", "origin/"+branch); err != nil {
-		return "", fmt.Errorf("cannot fast-forward to origin/%s; this copy has commits that were never pushed: %w", branch, err)
+	if err := g.rebaseOnRemote(ctx, branch); err != nil {
+		return "", err
 	}
 	after, err := g.run(ctx, "rev-parse", "HEAD")
 	if err != nil {
@@ -160,8 +217,8 @@ func (g *Git) Remove(ctx context.Context, message string, paths ...string) (bool
 	if err != nil {
 		return true, err
 	}
-	if _, err := g.run(ctx, "push", "origin", branch); err != nil {
-		return true, fmt.Errorf("committed locally but push failed: %w", err)
+	if err := g.push(ctx, branch); err != nil {
+		return true, err
 	}
 	return true, nil
 }
