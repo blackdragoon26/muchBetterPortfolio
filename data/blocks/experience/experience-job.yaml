@@ -1,0 +1,16 @@
+id: experience:job
+kind: experience
+source: manual
+tags:
+  - ai
+  - job
+content:
+  bullets:
+    - 'Retrieval Pipeline: Built a RAG layer over vibration reports with FastAPI and LangChain.'
+    - 'Capture Client: Shipped Flutter and iOS apps with locked exposure, focus and frame timing.'
+  dates: August 2026 -- Present
+  organization: SYNRA Inc. , Tokyo, Japan
+  project: RAG-Backed Analysis Platform & Cross-Platform Capture Client
+  projectUrl: https://www.synra.us/#top
+  role: Software Engineer
+  stack: Python, LangChain, FastAPI, Flutter, Swift, C++
