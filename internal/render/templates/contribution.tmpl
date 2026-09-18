@@ -7,7 +7,7 @@
        The run-together form fits more into a page; the stacked form is far
        easier to scan when a repository has more than two or three. */ ->>
 <<- if eq $layout "entries" >>
-\entryhead{<< tex (str $c "role") >> - << tex (str $c "label") >><< if has $c "language" >> (<< tex (str $c "language") >>)<< end >>}{}{<< tex (str $c "since") >>}%
+\entryhead{<< mk (str $c "role") >> - << mk (str $c "label") >><< if has $c "language" >> (<< mk (str $c "language") >>)<< end >>}{}{<< mk (str $c "since") >>}%
 \begin{itemize}[labelindent=10pt, leftmargin=25pt, labelsep=5pt, topsep=0pt, itemsep=0pt]
 <<- if has $c "summaryLine" >>
   \item << mkn (str $c "summaryLine") >>
@@ -17,13 +17,13 @@
 <<- end >>
 \end{itemize}%
 <<- else if eq (str $c "layout") "lines" ->>
-\textbullet\enspace \textbf{<< tex (str $c "label") >>:}<< if has $c "summaryLine" >>\enspace << mkn (str $c "summaryLine") >><< end >>
+\textbullet\enspace \textbf{<< mk (str $c "label") >>:}<< if has $c "summaryLine" >>\enspace << mkn (str $c "summaryLine") >><< end >>
 <<- range prs $c >>\newline\hspace*{1.6em}<< if $pr := . >><< end >><< if .Href >>\href{<< href .Href >>}{\textbf{\#<< .Number >>}}<< else >>\textbf{\#<< .Number >>}<< end >> << mkn .Summary >><< end >>
 <<- else ->>
 <<- if has $c "summaryLine" ->>
-\textbullet\enspace \textbf{<< tex (str $c "label") >>:}\enspace << mkn (str $c "summaryLine") >>
+\textbullet\enspace \textbf{<< mk (str $c "label") >>:}\enspace << mkn (str $c "summaryLine") >>
 <<- else ->>
-\textbullet\enspace \textbf{<< tex (str $c "label") >>:}\enspace <<
+\textbullet\enspace \textbf{<< mk (str $c "label") >>:}\enspace <<
 range $index, $pr := prs $c >><< if $index >>; << end >><< if $pr.Href >>\href{<< href $pr.Href >>}{\textbf{\#<< $pr.Number >>}}<< else >>\textbf{\#<< $pr.Number >>}<< end >> << mkn $pr.Summary >><< end >>.
 <<- end >>
 <<- end >>

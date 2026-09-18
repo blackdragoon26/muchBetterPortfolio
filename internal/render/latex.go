@@ -104,28 +104,81 @@ func MarkupNumbers(value string) string {
 	return applyEmphasis(LatexBoldNumbers(value))
 }
 
+// applyEmphasis turns the inline markers into LaTeX: **bold** and *italic*.
+//
+// The markers are read on already-escaped text, so the content inside them is
+// escaped exactly as it would be otherwise. Bold is matched before italic, so a
+// bold run is never mistaken for two empty italics, and each run is re-scanned so
+// *italic* nests inside **bold** and the other way round.
+//
+// Italic deliberately uses the asterisk and not the underscore: résumé content is
+// full of identifiers like x86_64 and snake_case, and pairing those into italics
+// would corrupt real text. An asterisk that is meant literally is left alone
+// unless it is "tight" on both sides — no space after the opener, none before the
+// closer — which keeps "5 * 3" and a trailing "*" from being read as markup.
 func applyEmphasis(escaped string) string {
 	var output strings.Builder
 	output.Grow(len(escaped))
 
-	remaining := escaped
-	for {
-		open := strings.Index(remaining, "**")
-		if open < 0 {
-			break
+	for index := 0; index < len(escaped); {
+		if strings.HasPrefix(escaped[index:], "**") {
+			if end := strings.Index(escaped[index+2:], "**"); end > 0 {
+				output.WriteString(`\textbf{`)
+				output.WriteString(applyEmphasis(escaped[index+2 : index+2+end]))
+				output.WriteString(`}`)
+				index += end + 4
+				continue
+			}
+			// An unmatched ** is literal text, and writing both bytes here stops
+			// the italic branch below from swallowing it as an empty run.
+			output.WriteString("**")
+			index += 2
+			continue
 		}
-		close := strings.Index(remaining[open+2:], "**")
-		if close < 0 {
-			break
+
+		if escaped[index] == '*' {
+			if end := tightItalic(escaped, index); end > 0 {
+				output.WriteString(`\textit{`)
+				output.WriteString(applyEmphasis(escaped[index+1 : index+1+end]))
+				output.WriteString(`}`)
+				index += end + 2
+				continue
+			}
 		}
-		output.WriteString(remaining[:open])
-		output.WriteString(`\textbf{`)
-		output.WriteString(remaining[open+2 : open+2+close])
-		output.WriteString(`}`)
-		remaining = remaining[open+2+close+2:]
+
+		output.WriteByte(escaped[index])
+		index++
 	}
-	output.WriteString(remaining)
 	return output.String()
+}
+
+// tightItalic reports the length of the italic run opening at index, or 0 when
+// the asterisk there does not open one.
+func tightItalic(escaped string, index int) int {
+	if index+1 >= len(escaped) || isSpace(escaped[index+1]) {
+		return 0
+	}
+	for offset := index + 1; offset < len(escaped); offset++ {
+		if escaped[offset] != '*' {
+			continue
+		}
+		// A bold marker sitting inside the run is not the closer; step over both
+		// of its bytes so **bold** can nest within an italic run.
+		if offset+1 < len(escaped) && escaped[offset+1] == '*' {
+			offset++
+			continue
+		}
+		// A closer must hug the text it ends. An asterisk that does not qualify
+		// is ordinary prose, so keep looking rather than abandoning the run.
+		if offset > index+1 && !isSpace(escaped[offset-1]) {
+			return offset - index - 1
+		}
+	}
+	return 0
+}
+
+func isSpace(character byte) bool {
+	return character == ' ' || character == '\t' || character == '\n' || character == '\r'
 }
 
 // LatexBoldNumbers escapes a string and wraps every standalone number in

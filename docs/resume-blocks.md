@@ -120,6 +120,55 @@ The `⋯` menu holds the rest: rename a résumé (its display name and page budg
 the id and PDF path stay fixed so existing links keep working), duplicate one
 — including its hand-edited LaTeX, if it has any — and author a new block.
 
+## The font is load-bearing (do not "modernise" it)
+
+The document loads Latin Modern as **Type 1** via `lmodern` + `[T1]{fontenc}`,
+not as OpenType via `fontspec`. That looks dated; it is deliberate.
+
+`fontspec` with `.otf` makes XeTeX embed the text as CID-keyed `CIDFontType0C`
+with Identity-H encoding. Measured on this résumé, a text extractor recovered
+**7 alphabetic characters** from the two-page PDF — the name included — against
+**5067** from the Type 1 build. The PDF looked perfect and pasted as garbage, so
+applicant tracking systems and Google Docs were reading a blank résumé, silently.
+`\XeTeXgenerateactualtext` did not rescue it.
+
+`internal/render.TestDocumentUsesExtractableFonts` fails the build if `fontspec`
+or `\setmainfont` comes back. To check a PDF by hand:
+
+```bash
+pdftotext public/resume/Sankalp-Jha-Resume.pdf - | head
+```
+
+Readable text means it is fine; blank or punctuation-only means it is broken
+again.
+
+## Bold and italic
+
+Block content takes two inline markers, anywhere text is edited — a field, a
+bullet, a skills group, a record row:
+
+```text
+**bold**      ->  bold
+*italic*      ->  italic
+```
+
+They nest (`**a *b* c**`), and numbers already bold themselves in prose fields, so
+`hit **10** Gbps` and `hit 10 Gbps` come out the same.
+
+Italic uses the asterisk rather than the underscore on purpose: résumé content is
+full of identifiers like `x86_64` and `snake_case`, and pairing those into italics
+would corrupt real text. An asterisk meant literally is left alone unless it hugs
+the text on both sides, so `5 * 3` and `char *argv` stay as written. If a literal
+asterisk ever does get read as markup, the live preview shows it immediately.
+
+## Editing structured blocks
+
+Some blocks hold records rather than sentences — a skills group, an education
+row, a leadership entry, a certificates row. The editor renders each record as
+its own numbered row with a field per key, and rows can be added or removed. This
+is the same three-way save as everything else, so a skills tweak can land on one
+résumé, on a named variant (`ai`, `backend`, …), or on the block itself.
+
 ## Adding a block from the builder
 
 **New block…** writes a new file into the library under its kind, with
@@ -131,6 +180,10 @@ The kinds offered are the ones a library grows by — `project`, `experience`,
 `contribution`, `publication`. The others (`education`, `skills`, `header`,
 `leadership`, `certificates`) are single blocks that already exist and are
 edited in place rather than duplicated.
+
+The `✕` on a palette card deletes a block from the library. A block any résumé
+still lists is refused, naming the résumés that use it — otherwise the manifest
+would keep pointing at a block that is gone and every build of it would fail.
 
 ## Why a merged pull request isn't on the résumé
 

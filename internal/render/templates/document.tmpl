@@ -5,19 +5,24 @@
 \usepackage{enumitem}
 \usepackage{hyperref}
 \usepackage{xcolor,colortbl}
-\usepackage{fontspec}
+% Latin Modern is loaded as Type 1 through lmodern, NOT as OpenType through
+% fontspec. This is deliberate and load-bearing: do not "modernise" it back.
+%
+% fontspec + .otf under XeTeX embeds the text as CID-keyed CIDFontType0C with
+% Identity-H encoding. Some readers can reconstruct that; many cannot. Measured
+% on this very document, a text extractor recovered 7 alphabetic characters from
+% the two-page PDF — the name included — against 5067 from the Type 1 build.
+% Applicant tracking systems and Google Docs sit on the wrong side of that line,
+% so the résumé looked blank to exactly the software that reads it first, and
+% failed silently. \XeTeXgenerateactualtext did not rescue it.
+%
+% Type 1 copies cleanly everywhere, so the text is selectable and machine
+% readable. internal/render.TestDocumentUsesExtractableFonts locks this in.
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
 \usepackage{multicol}
 
 \definecolor{ResumeLink}{RGB}{0,70,140}
-\setmainfont{lmroman9-regular.otf}[
-  BoldFont=lmroman9-bold.otf,
-  ItalicFont=lmroman9-italic.otf,
-  BoldItalicFont=lmroman10-bolditalic.otf,
-  Ligatures=NoCommon
-]
-\ifdefined\XeTeXgenerateactualtext
-  \XeTeXgenerateactualtext=1
-\fi
 \hypersetup{
   colorlinks=true,
   urlcolor=ResumeLink,
