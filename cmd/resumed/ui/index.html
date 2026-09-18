@@ -1532,7 +1532,10 @@ async function applyEdit() {
   const resolved = { ...source.content, ...activeVariant };
 
   const fields = {};
-  document.querySelectorAll('#edFields textarea').forEach(area => {
+  // Only the flat fields, which carry data-key. The record editors below put
+  // their textareas in the same sheet under data-field, and picking those up
+  // here wrote their last value into a field literally named "undefined".
+  document.querySelectorAll('#edFields textarea[data-key]').forEach(area => {
     const original = resolved[area.dataset.key];
     const value = area.dataset.list === 'true'
       ? area.value.split('\n').map(s => s.trim()).filter(Boolean)

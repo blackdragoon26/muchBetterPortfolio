@@ -13,6 +13,11 @@ sections:
         variant: recent
   - heading: Experience
     blocks:
+      - block: experience:job
+        override:
+          bullets:
+            - '**Retrieval Pipeline:** Built a RAG layer over vibration reports with FastAPI and LangChain.'
+            - '**Capture Client:** Shipped Flutter and iOS apps with locked exposure, focus and frame timing.'
       - block: experience:gsoc-2025
         variant: tight
   - heading: Open Source Contributions
@@ -28,12 +33,29 @@ sections:
       - block: project:cutable
       - block: project:dmie
       - block: project:moodish
+        override:
+          objective: Cross-platform food recommendation app with personal and group-order flows.
+          approach:
+            - Flutter Android and iOS clients across 6 tagged releases, with Google OAuth deep-linking and a live group-order lobby; Deterministic scoring over craving, budget and dietary constraints with an
+            - inspectable recommendation trace.
+          impact: Produces safer, inspectable food recommendations using Swiggy MCP
+          stack: JavaScript, Node.js, OpenAI API, Swiggy MCP
       - block: project:myprod
         variant: tight
   - heading: Technical Skills
     blocks:
       - block: skills:main
         variant: ai
+        override:
+          groups:
+            - items: Python, Go, TypeScript, JavaScript, C++, Dart, Swift
+              label: 'Languages:'
+            - items: OpenRouter, Azure OpenAI, MCP, E2B, LLM tool-calling, vector search, Sklearn
+              label: 'AI & Orchestration:'
+            - items: FastAPI, NodeJS, gRPC, Protobufs, WebSockets, PostgreSQL, Redis, MongoDB
+              label: 'Backend & Data:'
+            - items: Docker, Nomad, CI/CD, Next.js, React, Linux, Kubernetes, eBPF, P4, Linux
+              label: 'Tools / Platforms:'
   - heading: Positions of Leadership
     blocks:
       - block: leadership:main
