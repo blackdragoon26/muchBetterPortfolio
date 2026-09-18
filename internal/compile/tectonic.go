@@ -4,8 +4,9 @@
 //
 // tectonic is used rather than a TeX Live installation because it is a single
 // binary that fetches only the packages a document actually needs, so a fresh
-// machine can build the résumé without installing a distribution. The document's
-// fontspec preamble requires a Unicode engine, which tectonic provides via XeTeX.
+// machine can build the résumé without installing a distribution. It typesets
+// with XeTeX; the document loads Latin Modern as Type 1 rather than through
+// fontspec, so its text stays extractable (see the document template).
 package compile
 
 import (

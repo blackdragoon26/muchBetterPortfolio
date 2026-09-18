@@ -153,6 +153,18 @@
   .menu button.danger { color: var(--bad); }
   .menu hr { border: 0; border-top: 1px solid var(--hairline-soft); margin: 4px 2px; }
 
+  /* Structured content — a skills group, an education row, a leadership entry —
+     is a list of records rather than a line of text, so it gets a row per record
+     instead of being silently left out of the editor. */
+  .rows { border: 1px solid var(--hairline-soft); border-radius: 10px;
+          padding: 6px; margin-top: 4px; }
+  .rowcard { border: 1px solid var(--hairline-soft); border-radius: 8px;
+             padding: 4px 9px 9px; margin-bottom: 6px; background: rgba(255,255,255,.02); }
+  .rowhead { display: flex; justify-content: space-between; align-items: center;
+             color: var(--muted); font-size: 10.5px; }
+  .rowcard textarea { min-height: 38px; }
+  .rows > .btn { width: 100%; }
+
   /* The pull-request picker: which merged PRs this contribution block shows. */
   .prs { margin-top: 4px; max-height: 270px; overflow-y: auto;
          border: 1px solid var(--hairline-soft); border-radius: 10px; padding: 4px; }
@@ -698,6 +710,11 @@ function drawPalette() {
       const identifier = el('span', 'id');
       identifier.textContent = source.id;
       row.appendChild(identifier);
+      const remove = el('span', 'icon danger');
+      remove.textContent = '✕';
+      remove.title = 'Delete this block from the library';
+      remove.onclick = event => { event.stopPropagation(); deleteBlock(source.id); };
+      row.appendChild(remove);
       node.appendChild(row);
       node.appendChild(kindNode(source, { tags: true }));
       host.appendChild(node);
@@ -1212,6 +1229,28 @@ function drawBlockFields() {
   });
 }
 
+// Deleting a block removes it from the library for every résumé. The server
+// refuses while any résumé still lists it, so this cannot leave a manifest
+// pointing at a block that is gone.
+async function deleteBlock(id) {
+  if (!confirm(`Delete "${id}" from the block library?\n\n` +
+    'It disappears from every résumé’s palette and the deletion is committed. ' +
+    'A block that a résumé still uses cannot be deleted.')) return;
+  try {
+    const result = await api('/api/block/' + encodeURIComponent(id), { method: 'DELETE' });
+    const picked = current ? current.id : null;
+    const draft = current ? structuredClone(current) : null;
+    state = await api('/api/state');
+    if (draft) current = draft;
+    drawLegend();
+    fillPicker(picked);
+    if (current) drawPalette();
+    setStatus('ok', `deleted ${id}`, result.committed ? 'committed' : (result.gitError || ''));
+  } catch (err) {
+    setStatus('bad', err.message);
+  }
+}
+
 async function createBlock() {
   const kind = document.getElementById('blockKind').value;
   const id = document.getElementById('blockId').value.trim().toLowerCase();
@@ -1338,8 +1377,81 @@ function openEditor(blockId, sectionIndex, entryIndex) {
     host.appendChild(area);
   });
 
+  // Structured content (skills groups, education rows, leadership entries) is a
+  // list of records. The loop above only renders text, so without this these
+  // blocks opened with nothing editable in them at all.
+  editing.structured = {};
+  Object.keys(merged).sort().forEach(key => {
+    const value = merged[key];
+    if (!isRecordList(value)) return;
+    // A contribution block's entries belong to the pull request picker below.
+    if (key === 'entries' && ((source.machine || {}).pullRequests || []).length) return;
+    drawRecordList(host, key, value);
+    editing.structured[key] = JSON.stringify(value);
+  });
+
   drawPullRequests(host, source, merged);
   sheet('editor', true);
+}
+
+// A list of records whose every value is a string or a list of strings — the
+// shape skills, education, certificates and leadership all use.
+const isRecordList = value =>
+  Array.isArray(value) && value.length > 0 &&
+  value.every(item => item && typeof item === 'object' && !Array.isArray(item) &&
+    Object.values(item).every(leaf =>
+      typeof leaf === 'string' ||
+      (Array.isArray(leaf) && leaf.every(one => typeof one === 'string'))));
+
+function drawRecordList(host, key, records) {
+  host.appendChild(Object.assign(el('label'), { textContent: key }));
+
+  // Take the field set and each field's shape from the records that exist, so a
+  // row added here matches the ones already there.
+  const fields = [...new Set(records.flatMap(record => Object.keys(record)))];
+  const isList = {};
+  records.forEach(record => Object.entries(record).forEach(([field, value]) => {
+    if (!(field in isList)) isList[field] = Array.isArray(value);
+  }));
+
+  const wrap = el('div', 'rows');
+  wrap.dataset.key = key;
+  records.forEach((record, index) => wrap.appendChild(recordCard(fields, isList, record, index)));
+
+  const add = el('button', 'btn');
+  add.type = 'button';
+  add.textContent = '+ add';
+  add.onclick = () => {
+    wrap.insertBefore(recordCard(fields, isList, {}, wrap.querySelectorAll('.rowcard').length), add);
+  };
+  wrap.appendChild(add);
+  host.appendChild(wrap);
+}
+
+function recordCard(fields, isList, record, index) {
+  const card = el('div', 'rowcard');
+  const head = el('div', 'rowhead');
+  const position = el('span');
+  position.textContent = String(index + 1);
+  const remove = el('span', 'icon danger');
+  remove.textContent = '✕';
+  remove.title = 'Remove this row';
+  remove.onclick = () => card.remove();
+  head.appendChild(position);
+  head.appendChild(remove);
+  card.appendChild(head);
+
+  fields.forEach(field => {
+    const value = record[field];
+    card.appendChild(Object.assign(el('label'), { textContent: field }));
+    const area = el('textarea');
+    area.dataset.field = field;
+    area.dataset.list = isList[field] ? 'true' : 'false';
+    area.value = Array.isArray(value) ? value.join('\n') : (value || '');
+    if (isList[field]) area.placeholder = 'one item per line';
+    card.appendChild(area);
+  });
+  return card;
 }
 
 // normalizeEntries puts a pull-request selection into one canonical shape — the
@@ -1429,6 +1541,24 @@ async function applyEdit() {
       ? JSON.stringify(original) === JSON.stringify(value) : original === value;
     const alreadyOverridden = entry.override && area.dataset.key in entry.override;
     if (!unchanged || alreadyOverridden) fields[area.dataset.key] = value;
+  });
+
+  // Structured records, read back row by row. Like the picker below, they are
+  // sent only when they actually changed, so promoting some other field to the
+  // block or a variant cannot drag a résumé's override along with it.
+  document.querySelectorAll('#edFields .rows').forEach(wrap => {
+    const records = [...wrap.querySelectorAll('.rowcard')].map(card => {
+      const record = {};
+      card.querySelectorAll('[data-field]').forEach(area => {
+        record[area.dataset.field] = area.dataset.list === 'true'
+          ? area.value.split('\n').map(line => line.trim()).filter(Boolean)
+          : area.value;
+      });
+      return record;
+    });
+    if (JSON.stringify(records) !== editing.structured[wrap.dataset.key]) {
+      fields[wrap.dataset.key] = records;
+    }
   });
 
   // The pull request picker, when this block has one.
