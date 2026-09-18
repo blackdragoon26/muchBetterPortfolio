@@ -2,7 +2,7 @@
 <<- /* The entries layout renders prose bullets; every other layout uses the
        objective/approach/impact table that the existing résumé established. */ ->>
 <<- if eq (printf "%s" .Layout) "entries" >>
-\noindent\textbf{<< tex (str $c "title") >>}<< if has $c "stack" >> $|$ \textit{\fontsize{8.5}{9.5}\selectfont << tex (str $c "stack") >>}<< end >>
+\noindent\textbf{<< mk (str $c "title") >>}<< if has $c "stack" >> $|$ \textit{\fontsize{8.5}{9.5}\selectfont << mk (str $c "stack") >>}<< end >>
 \begin{itemize}[labelindent=10pt, leftmargin=25pt, labelsep=5pt, topsep=0pt, itemsep=0pt]
 <<- range strAt $c "bullets" >>
   \item << mkn . >>
@@ -13,7 +13,7 @@
 \end{itemize}%
 <<- else >>
 \noindent\begin{minipage}{\linewidth}
-\entryhead{<< tex (str $c "title") >>}{<< tex (str $c "stack") >>}{\href{<< href (str $c "link") >>}{Project Link}}%
+\entryhead{<< mk (str $c "title") >>}{<< mk (str $c "stack") >>}{\href{<< href (str $c "link") >>}{Project Link}}%
 \noindent\begin{tabular}{|p{\dimexpr\linewidth-2\tabcolsep-2\arrayrulewidth\relax}|}
 \hline
 \textbf{Objective:}\enspace << mkn (str $c "objective") >> \\[1.5pt]

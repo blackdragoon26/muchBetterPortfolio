@@ -142,6 +142,25 @@ pdftotext public/resume/Sankalp-Jha-Resume.pdf - | head
 Readable text means it is fine; blank or punctuation-only means it is broken
 again.
 
+## Bold and italic
+
+Block content takes two inline markers, anywhere text is edited — a field, a
+bullet, a skills group, a record row:
+
+```text
+**bold**      ->  bold
+*italic*      ->  italic
+```
+
+They nest (`**a *b* c**`), and numbers already bold themselves in prose fields, so
+`hit **10** Gbps` and `hit 10 Gbps` come out the same.
+
+Italic uses the asterisk rather than the underscore on purpose: résumé content is
+full of identifiers like `x86_64` and `snake_case`, and pairing those into italics
+would corrupt real text. An asterisk meant literally is left alone unless it hugs
+the text on both sides, so `5 * 3` and `char *argv` stay as written. If a literal
+asterisk ever does get read as markup, the live preview shows it immediately.
+
 ## Editing structured blocks
 
 Some blocks hold records rather than sentences — a skills group, an education
