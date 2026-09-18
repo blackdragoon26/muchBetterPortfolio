@@ -111,16 +111,58 @@ Drag blocks between sections, pick variants, edit content with the three-way
 save, live PDF preview. Deployment notes are in
 [myprod-handoff.md](myprod-handoff.md).
 
+Blocks in the palette are colour-coded by kind, and any block the importer does
+not own — anything authored by hand rather than synced from GitHub or the
+profile README — is marked `custom`, so it is obvious which ones a nightly sync
+will rewrite and which are yours.
+
+The `⋯` menu holds the rest: rename a résumé (its display name and page budget;
+the id and PDF path stay fixed so existing links keep working), duplicate one
+— including its hand-edited LaTeX, if it has any — and author a new block.
+
+## Adding a block from the builder
+
+**New block…** writes a new file into the library under its kind, with
+`source: manual` so the importer leaves it alone for good. It is a library
+addition, not a résumé one: the moment it is created it appears in *Available
+blocks* for **every** résumé, ready to drag in.
+
+The kinds offered are the ones a library grows by — `project`, `experience`,
+`contribution`, `publication`. The others (`education`, `skills`, `header`,
+`leadership`, `certificates`) are single blocks that already exist and are
+edited in place rather than duplicated.
+
+## Why a merged pull request isn't on the résumé
+
+Two different lists are at work, and this trips people up:
+
+- `machine.pullRequests` — **every** merged PR for a repository, refreshed by the
+  nightly importer.
+- `content.entries` — the ones this résumé actually prints.
+
+The importer deliberately never adds to the second. Which PRs are worth showing
+is an editorial call, and a nightly job silently lengthening every résumé would
+be worse than useless. So a freshly merged PR lands in the block file but stays
+off the page until it is chosen — the importer (`go run ./cmd/importer`) prints
+the ones waiting.
+
+Choose them in the builder: open a contribution block with ✎ and every imported
+PR is listed with a tick box, newest first, with the merge date and a summary
+field (leave it blank to use the PR title). Ticking one writes it into
+`content.entries` through the same three-way save, so it can apply to one résumé,
+to a named variant, or to every résumé at once.
+
 ## Raw LaTeX résumés
 
 Sometimes a version needs a tweak the blocks cannot express — a bespoke command,
 hand-tuned spacing, a one-off layout. Any résumé can be switched to a hand-edited
 LaTeX document instead of a selection of blocks.
 
-In the builder, the **TeX** button converts the open résumé: the LaTeX generated
-from its current blocks becomes the starting point, the middle column turns into
-a source editor, and the preview compiles exactly what you type. **Save** writes
-the source to a sidecar file beside the manifest and marks the manifest raw:
+In the builder, the **Edit LaTeX** button converts the open résumé: the LaTeX
+generated from its current blocks becomes the starting point, the middle column
+turns into a source editor, and the preview compiles exactly what you type.
+**Save** writes the source to a sidecar file beside the manifest and marks the
+manifest raw:
 
 ```text
 resumes/<id>.yaml     raw: true
@@ -137,6 +179,13 @@ it is committed, a discarded sidecar is still recoverable from git history.)
 
 `resumekit build` compiles a raw résumé straight from its sidecar; everything
 downstream (page-budget check, PDF output path) is unchanged.
+
+**Edit LaTeX is not the same as the LaTeX source button.** *LaTeX source* is a
+read-only export: it shows the generated document so it can be copied into
+Overleaf or filed next to the PDF, and anything done to that copy happens outside
+this repository and never reaches the built résumé. *Edit LaTeX* changes what the
+résumé compiles from — the source is stored, committed, rebuilt by CI, and
+becomes the PDF the site serves.
 
 ### What raw LaTeX may not do
 
