@@ -232,6 +232,7 @@ func (s *server) routes() http.Handler {
 	mux.Handle("DELETE /api/resume/{id}/tex", s.authed(s.handleRevertResumeTex))
 	mux.Handle("POST /api/resume/{id}/featured", s.authed(s.handleSetFeatured))
 	mux.Handle("POST /api/refresh", s.authed(s.handleRefresh))
+	mux.Handle("POST /api/block", s.authed(s.handleCreateBlock))
 	mux.Handle("POST /api/block/{id}", s.authed(s.handleSaveBlock))
 
 	mux.HandleFunc("GET /favicon.ico", func(w http.ResponseWriter, r *http.Request) {
@@ -460,8 +461,14 @@ func (s *server) handlePasskeyRemove(w http.ResponseWriter, r *http.Request) {
 
 // blockSummary is the shape the editor needs to draw the block palette.
 type blockSummary struct {
-	ID       string   `json:"id"`
-	Kind     string   `json:"kind"`
+	ID   string `json:"id"`
+	Kind string `json:"kind"`
+
+	// Source tells the palette whether a block is synced from GitHub or the
+	// profile README, or authored by hand — which is what lets the editor mark
+	// the custom ones a nightly import will never rewrite.
+	Source string `json:"source,omitempty"`
+
 	Tags     []string `json:"tags"`
 	Variants []string `json:"variants"`
 
@@ -491,6 +498,7 @@ func (s *server) handleState(w http.ResponseWriter, r *http.Request) {
 		blocks = append(blocks, blockSummary{
 			ID:          current.ID,
 			Kind:        string(current.Kind),
+			Source:      string(current.Source),
 			Tags:        current.Tags,
 			Variants:    current.VariantNames(),
 			Content:     current.Content,
@@ -1180,6 +1188,98 @@ func (s *server) handleSaveBlock(w http.ResponseWriter, r *http.Request) {
 func fileExists(path string) bool {
 	info, err := os.Stat(path)
 	return err == nil && info.Mode().IsRegular()
+}
+
+// createBlockRequest is a block authored in the builder rather than imported.
+type createBlockRequest struct {
+	ID      string         `json:"id"`
+	Kind    string         `json:"kind"`
+	Tags    []string       `json:"tags"`
+	Content map[string]any `json:"content"`
+}
+
+// handleCreateBlock adds a block to the shared library. It is filed under its
+// kind like every other block, so once created it is available to every résumé
+// from the palette, not just to the one that happened to be open.
+func (s *server) handleCreateBlock(w http.ResponseWriter, r *http.Request) {
+	var body createBlockRequest
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+		return
+	}
+
+	id := strings.TrimSpace(body.ID)
+	kind := block.Kind(strings.TrimSpace(body.Kind))
+	if !kind.Valid() {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "unknown block kind"})
+		return
+	}
+	// Ids in the library read "<kind>:<slug>", which is what makes a block's kind
+	// obvious wherever the id is shown. Requiring it keeps new blocks consistent
+	// with the imported ones.
+	if !strings.HasPrefix(id, string(kind)+":") || !validBlockID(id) {
+		writeJSON(w, http.StatusBadRequest, map[string]string{
+			"error": fmt.Sprintf("id must look like %s:<name>, using lowercase letters, numbers, dash, dot or underscore", kind)})
+		return
+	}
+	if len(body.Content) == 0 {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "a block needs some content"})
+		return
+	}
+
+	s.writeMu.Lock()
+	defer s.writeMu.Unlock()
+
+	store, err := block.Load(s.blocksRoot)
+	if err != nil {
+		writeJSON(w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
+		return
+	}
+	if _, exists := store.Get(id); exists {
+		writeJSON(w, http.StatusConflict, map[string]string{"error": "a block with that id already exists"})
+		return
+	}
+
+	created := &block.Block{
+		ID:   id,
+		Kind: kind,
+		// Authored here, so the importer must leave it alone for good.
+		Source:  block.SourceManual,
+		Tags:    body.Tags,
+		Content: body.Content,
+	}
+	if err := store.Save(created); err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+		return
+	}
+
+	committed, err := s.git.Commit(r.Context(), fmt.Sprintf("blocks(%s): create", id), store.Path(id))
+	response := map[string]any{"status": "created", "id": id, "committed": committed}
+	if err != nil {
+		response["gitError"] = err.Error()
+	}
+	writeJSON(w, http.StatusOK, response)
+}
+
+// validBlockID accepts the "<kind>:<slug>" shape the library uses. The slug is
+// kept conservative because it is also collapsed into the block's filename.
+func validBlockID(id string) bool {
+	if len(id) > 96 {
+		return false
+	}
+	kind, slug, found := strings.Cut(id, ":")
+	if !found || kind == "" || slug == "" {
+		return false
+	}
+	for _, symbol := range slug {
+		switch {
+		case symbol >= 'a' && symbol <= 'z', symbol >= '0' && symbol <= '9',
+			symbol == '-', symbol == '_', symbol == '.':
+		default:
+			return false
+		}
+	}
+	return true
 }
 
 // safeID refuses anything that could escape the manifest directory.

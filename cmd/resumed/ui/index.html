@@ -92,6 +92,9 @@
     border: 1px solid var(--hairline); border-radius: 9px; appearance: none;
   }
   .bar select { flex: 1; }
+  /* The résumé's name matters more than the buttons beside it, so it takes a row
+     of its own rather than being squeezed down to a few characters. */
+  #resumePicker { flex: 1 1 100%; }
   /* The filter is a direct child of the flex column, so it must be pinned to
      its own height or it stretches to fill the whole panel. */
   #filter { flex: 0 0 auto; width: 100%; margin-bottom: 10px; }
@@ -121,6 +124,48 @@
   .icon { color: var(--muted); cursor: pointer; padding: 0 3px; font-size: 12px; }
   .icon:hover { color: var(--ink); }
   .icon.danger:hover { color: var(--bad); }
+  /* Every block kind carries a colour, so the palette reads at a glance: what is
+     upstream PR work, what is a project, what was written by hand. */
+  .card { border-left: 3px solid var(--kind, transparent); }
+  .dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block;
+         background: var(--kind, var(--muted)); margin-right: 5px; }
+  .chip { font-size: 9px; text-transform: uppercase; letter-spacing: .05em;
+          padding: 1px 5px; border-radius: 5px; margin-left: 5px;
+          background: rgba(255,255,255,.1); color: var(--muted); }
+  .chip.custom { background: rgba(255,214,10,.16); color: #ffd60a; }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 3px 8px; margin-bottom: 9px;
+            font-size: 10px; color: var(--muted); }
+  .legend span { display: inline-flex; align-items: center; }
+
+  /* Secondary actions live behind one button so the toolbar stays readable. */
+  .menuwrap { position: relative; }
+  .menu { position: absolute; right: 0; top: calc(100% + 5px); z-index: 30;
+          min-width: 218px; padding: 5px; display: none;
+          background: rgba(28,28,30,.96);
+          -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur);
+          border: 1px solid var(--hairline); border-radius: 11px;
+          box-shadow: 0 12px 34px rgba(0,0,0,.5); }
+  .menu.on { display: block; }
+  .menu button { display: block; width: 100%; text-align: left; padding: 7px 9px;
+                 background: none; border: 0; border-radius: 7px; cursor: pointer; font-size: 12.5px; }
+  .menu button:hover { background: rgba(255,255,255,.09); }
+  .menu button.danger { color: var(--bad); }
+  .menu hr { border: 0; border-top: 1px solid var(--hairline-soft); margin: 4px 2px; }
+
+  /* The pull-request picker: which merged PRs this contribution block shows. */
+  .prs { margin-top: 4px; max-height: 270px; overflow-y: auto;
+         border: 1px solid var(--hairline-soft); border-radius: 10px; padding: 4px; }
+  .pr { display: flex; gap: 8px; align-items: flex-start; padding: 6px; border-radius: 8px; }
+  .pr:hover { background: rgba(255,255,255,.04); }
+  .pr input[type=checkbox] { margin-top: 3px; }
+  .pr .meta { flex: 1; min-width: 0; }
+  .pr .num { font-family: ui-monospace, monospace; font-size: 11px; color: var(--accent); }
+  .pr .when { font-size: 10.5px; color: var(--muted); }
+  .pr input[type=text] { width: 100%; margin-top: 4px; padding: 5px 7px; font-size: 11.5px;
+      background: rgba(0,0,0,.45); border: 1px solid var(--hairline-soft);
+      border-radius: 7px; color: inherit; }
+
   .card.overridden { box-shadow: inset 2px 0 0 var(--warn); }
   /* Where the block will land. Without this the only feedback was the whole
      section highlighting, which could not express a position. */
@@ -208,6 +253,7 @@
 <div id="app">
   <div class="col glass">
     <h2>Available blocks</h2>
+    <div class="legend" id="legend"></div>
     <input id="filter" placeholder="Filter blocks…">
     <div class="scroll"><div id="palette"></div></div>
   </div>
@@ -218,12 +264,20 @@
       <button class="btn" id="featuredBtn" onclick="toggleFeatured()"
               title="Feature this résumé on the portfolio home page">☆</button>
       <button class="btn" id="modeBtn" onclick="toggleRawMode()"
-              title="Edit this résumé as raw LaTeX">TeX</button>
-      <button class="btn" onclick="refreshRepo()" id="refreshBtn"
-              title="Pull blocks committed since this server started">↻</button>
-      <button class="btn" onclick="newResume()" title="New résumé">+</button>
-      <button class="btn" onclick="deleteResume()" title="Delete this résumé">🗑</button>
-      <button class="btn" onclick="enrolPasskey()" title="Enrol Touch ID on this device">☝</button>
+              title="Hand-edit this résumé's LaTeX and save it as this version's source">Edit LaTeX</button>
+      <div class="menuwrap">
+        <button class="btn" id="moreBtn" onclick="toggleMenu(event)" title="More actions">⋯</button>
+        <div class="menu" id="moreMenu">
+          <button onclick="renameResume()">Rename / page budget…</button>
+          <button onclick="duplicateResume()">Duplicate this résumé…</button>
+          <hr>
+          <button onclick="newBlock()">New block…</button>
+          <button onclick="refreshRepo()" id="refreshBtn">Pull latest blocks</button>
+          <hr>
+          <button onclick="enrolPasskey()">Enrol Touch ID on this device</button>
+          <button class="danger" onclick="deleteResume()">Delete this résumé</button>
+        </div>
+      </div>
       <button class="btn primary" id="saveBtn" onclick="saveResume()">Save</button>
     </div>
     <div class="scroll"><div id="layout"></div></div>
@@ -274,7 +328,10 @@
 <div id="texSheet" class="sheet">
   <div class="box">
     <h3>LaTeX source</h3>
-    <div class="hint">The generated document for the résumé currently open.</div>
+    <div class="hint">A read-only export of the document for the résumé currently open —
+      copy it into Overleaf, or keep it beside the PDF. Edits made to a copy live
+      outside this repository and will not reach the built résumé; to hand-edit the
+      source this version actually compiles from, use <strong>Edit LaTeX</strong>.</div>
     <pre class="tex" id="texBody">…</pre>
     <p class="engine" id="texEngine"></p>
     <div class="actions">
@@ -285,20 +342,60 @@
   </div>
 </div>
 
+<div id="renameSheet" class="sheet">
+  <div class="box">
+    <h3>Résumé settings</h3>
+    <div class="hint">The display name is what the picker and the home page show. The
+      identifier and the PDF path stay fixed, so links to the built résumé keep working.</div>
+    <label>Display name</label>
+    <input type="text" id="renameLabel" placeholder="e.g. AI Engineer - Agentic Systems">
+    <label>Page budget</label>
+    <input type="text" id="renamePages" value="1">
+    <div class="err" id="renameErr"></div>
+    <div class="actions">
+      <button class="btn" onclick="closeSheet('renameSheet')">Cancel</button>
+      <button class="btn primary" onclick="applyRename()">Save</button>
+    </div>
+  </div>
+</div>
+
+<div id="blockSheet" class="sheet">
+  <div class="box">
+    <h3>New block</h3>
+    <div class="hint">A block is written once and reused. Once created it appears in
+      Available blocks for every résumé, not just this one.</div>
+    <label>Kind</label>
+    <select id="blockKind" onchange="drawBlockFields()"
+            style="width:100%;padding:9px 11px;background:rgba(0,0,0,.5);border:1px solid var(--hairline);border-radius:9px"></select>
+    <label>Identifier</label>
+    <input type="text" id="blockId" placeholder="project:my-thing" autocomplete="off">
+    <label>Tags <span style="text-transform:none;letter-spacing:0">(space separated, used by the filter)</span></label>
+    <input type="text" id="blockTags" placeholder="backend systems" autocomplete="off">
+    <div id="blockFields"></div>
+    <div class="err" id="blockErr"></div>
+    <div class="actions">
+      <button class="btn" onclick="closeSheet('blockSheet')">Cancel</button>
+      <button class="btn primary" onclick="createBlock()">Create block</button>
+    </div>
+  </div>
+</div>
+
 <div id="newSheet" class="sheet">
   <div class="box">
-    <h3>New résumé</h3>
-    <div class="hint">Starts as a copy of the résumé currently open, so it compiles from the first preview and can be trimmed down.</div>
+    <h3>Duplicate résumé</h3>
+    <div class="hint">Copies the résumé currently open — its blocks, variants and any
+      hand-edited LaTeX — into a new version, so it compiles from the first preview and
+      can be changed without touching the original.</div>
     <label>Identifier</label>
     <input type="text" id="newId" placeholder="e.g. embedded" autocomplete="off">
-    <label>Label</label>
+    <label>Display name</label>
     <input type="text" id="newLabel" placeholder="e.g. Embedded Systems Engineer">
     <label>Page budget</label>
     <input type="text" id="newPages" value="1">
     <div class="err" id="newErr"></div>
     <div class="actions">
       <button class="btn" onclick="closeSheet('newSheet')">Cancel</button>
-      <button class="btn primary" onclick="createResume()">Create</button>
+      <button class="btn primary" onclick="createResume()">Duplicate</button>
     </div>
   </div>
 </div>
@@ -320,6 +417,54 @@ const byId = id => state.blocks.find(b => b.id === id);
 const el = (t, c) => { const n = document.createElement(t); if (c) n.className = c; return n; };
 const sheet = (id, on) => document.getElementById(id).classList.toggle('on', on);
 const closeSheet = id => sheet(id, false);
+
+/* block kinds, colour-coded so the library is scannable */
+
+const KIND_COLOR = {
+  contribution: '#0a84ff', // upstream pull request work
+  project:      '#30d158',
+  experience:   '#bf5af2',
+  education:    '#ff9f0a',
+  skills:       '#64d2ff',
+  leadership:   '#ff375f',
+  publication:  '#5e5ce6',
+  certificates: '#ffd60a',
+  header:       '#8e8e93',
+  spacer:       '#48484a',
+};
+const kindColor = kind => KIND_COLOR[kind] || '#8e8e93';
+
+// A block the importer owns (github / readme) has its machine facts rewritten on
+// every sync; one authored by hand does not. Marking the difference answers
+// "which of these are mine, and which will a nightly job touch".
+const isCustom = source =>
+  !!source && !!source.source && source.source !== 'github' && source.source !== 'readme';
+
+function kindLine(source, { extra = '', tags = false } = {}) {
+  const chip = isCustom(source) ? '<span class="chip custom">custom</span>' : '';
+  const parts = [];
+  if (extra) parts.push(extra);
+  if (tags && (source.tags || []).length) parts.push(source.tags.join(' '));
+  return `<span class="dot"></span>${source.kind}${chip}` +
+    (parts.length ? ` · ${parts.join(' · ')}` : '');
+}
+
+function drawLegend() {
+  const host = document.getElementById('legend');
+  const kinds = [...new Set(state.blocks.map(b => b.kind))].sort();
+  host.innerHTML = kinds.map(kind =>
+    `<span><i class="dot" style="--kind:${kindColor(kind)}"></i>${kind}</span>`).join('') +
+    '<span><i class="chip custom" style="margin-left:0">custom</i></span>';
+}
+
+function toggleMenu(event) {
+  event.stopPropagation();
+  document.getElementById('moreMenu').classList.toggle('on');
+}
+// Any click elsewhere — including on a menu item, which runs first and then
+// bubbles — puts the menu away.
+document.addEventListener('click', () =>
+  document.getElementById('moreMenu').classList.remove('on'));
 
 async function api(path, options = {}) {
   const response = await fetch(path, {
@@ -362,6 +507,7 @@ function fillPicker(selected) {
 async function boot() {
   setLoading(true, 'Loading blocks…');
   state = await api('/api/state');
+  drawLegend();
   fillPicker();
   pickResume(state.resumes[0]?.id);
 }
@@ -498,8 +644,9 @@ function card(entry, sectionIndex, entryIndex) {
 
   node.appendChild(row);
   if (source) {
+    node.style.setProperty('--kind', kindColor(source.kind));
     const kind = el('div', 'kind');
-    kind.textContent = source.kind + (entry.override ? ' · overridden here' : '');
+    kind.innerHTML = kindLine(source, { extra: entry.override ? 'overridden here' : '' });
     node.appendChild(kind);
   }
   return node;
@@ -518,11 +665,12 @@ function drawPalette() {
     .filter(b => !filter || b.id.includes(filter) || (b.tags || []).some(t => t.includes(filter)))
     .forEach(source => {
       const node = el('div', 'card');
+      node.style.setProperty('--kind', kindColor(source.kind));
       node.draggable = true;
       node.ondragstart = event =>
         event.dataTransfer.setData('text/plain', JSON.stringify({ from: 'palette', id: source.id }));
       node.innerHTML = `<div class="row"><span class="id">${source.id}</span></div>
-        <div class="kind">${source.kind} · ${(source.tags || []).join(' ')}</div>`;
+        <div class="kind">${kindLine(source, { tags: true })}</div>`;
       host.appendChild(node);
     });
 }
@@ -613,10 +761,10 @@ function updateModeBar() {
 
   const mode = document.getElementById('modeBtn');
   const raw = !!(current && current.raw);
-  mode.textContent = raw ? 'Blocks' : 'TeX';
+  mode.textContent = raw ? 'Use blocks' : 'Edit LaTeX';
   mode.title = raw
-    ? 'Discard the raw LaTeX and go back to the block layout'
-    : 'Convert this résumé to a hand-edited LaTeX document';
+    ? 'Discard the hand-written LaTeX and go back to the block layout'
+    : 'Hand-edit this résumé’s LaTeX and save it as this version’s source (the LaTeX source button is a read-only export)';
 }
 
 function drawRawEditor(host) {
@@ -925,15 +1073,126 @@ async function deleteResume() {
   }
 }
 
-/* custom résumés */
+/* renaming, duplicating and authoring blocks */
+
+// Only the display name and the page budget are editable. The id is the file
+// name and the output path is the URL the site links to, so renaming those would
+// break a link someone already has.
+function renameResume() {
+  if (!current) return;
+  document.getElementById('renameLabel').value = current.label || '';
+  document.getElementById('renamePages').value = String(current.maxPages || 1);
+  document.getElementById('renameErr').textContent = '';
+  sheet('renameSheet', true);
+}
+
+async function applyRename() {
+  const label = document.getElementById('renameLabel').value.trim();
+  const pages = parseInt(document.getElementById('renamePages').value, 10);
+  const err = document.getElementById('renameErr');
+  err.textContent = '';
+  if (!label) { err.textContent = 'A display name is required.'; return; }
+
+  current.label = label;
+  if (Number.isFinite(pages) && pages > 0) current.maxPages = pages;
+  closeSheet('renameSheet');
+  await saveResume();
+  fillPicker(current.id);
+  // The budget feeds the pass/fail pill, so re-check it against the new one.
+  schedulePreview();
+}
+
+function duplicateResume() { newResume(); }
 
 function newResume() {
   if (!current) return;
   document.getElementById('newId').value = '';
-  document.getElementById('newLabel').value = '';
+  document.getElementById('newLabel').value = current.label ? `${current.label} (copy)` : '';
   document.getElementById('newPages').value = String(current.maxPages || 1);
   document.getElementById('newErr').textContent = '';
   sheet('newSheet', true);
+}
+
+// The content shape each kind's template reads. Only the kinds a library grows
+// by are offered: education, skills, header and the rest are single blocks that
+// already exist and are edited in place.
+const BLOCK_SKELETONS = {
+  project:      { title: '', stack: '', link: '', objective: '', approach: [], impact: '' },
+  experience:   { role: '', organization: '', project: '', projectUrl: '', dates: '', stack: '', bullets: [] },
+  contribution: { label: '', summaryLine: '' },
+  publication:  { title: '', authors: '', venue: '', place: '', date: '', doi: '', doiUrl: '' },
+};
+
+function newBlock() {
+  const picker = document.getElementById('blockKind');
+  picker.innerHTML = '';
+  Object.keys(BLOCK_SKELETONS).forEach(kind => {
+    const option = el('option');
+    option.value = kind;
+    option.textContent = kind;
+    picker.appendChild(option);
+  });
+  document.getElementById('blockId').value = '';
+  document.getElementById('blockTags').value = '';
+  document.getElementById('blockErr').textContent = '';
+  drawBlockFields();
+  sheet('blockSheet', true);
+}
+
+function drawBlockFields() {
+  const kind = document.getElementById('blockKind').value;
+  const host = document.getElementById('blockFields');
+  host.innerHTML = '';
+
+  const identifier = document.getElementById('blockId');
+  // Ids read "<kind>:<slug>"; prefill the prefix but leave a typed slug alone.
+  if (!identifier.value || /^[a-z]*:?$/.test(identifier.value)) identifier.value = kind + ':';
+  identifier.placeholder = kind + ':my-thing';
+
+  Object.entries(BLOCK_SKELETONS[kind] || {}).forEach(([key, value]) => {
+    host.appendChild(Object.assign(el('label'), { textContent: key }));
+    const area = el('textarea');
+    area.dataset.key = key;
+    area.dataset.list = Array.isArray(value) ? 'true' : 'false';
+    if (Array.isArray(value)) area.placeholder = 'one item per line';
+    host.appendChild(area);
+  });
+}
+
+async function createBlock() {
+  const kind = document.getElementById('blockKind').value;
+  const id = document.getElementById('blockId').value.trim().toLowerCase();
+  const tags = document.getElementById('blockTags').value.trim().split(/[\s,]+/).filter(Boolean);
+  const err = document.getElementById('blockErr');
+  err.textContent = '';
+
+  const content = {};
+  document.querySelectorAll('#blockFields textarea').forEach(area => {
+    const value = area.dataset.list === 'true'
+      ? area.value.split('\n').map(s => s.trim()).filter(Boolean)
+      : area.value.trim();
+    if (Array.isArray(value) ? value.length : value) content[area.dataset.key] = value;
+  });
+  if (!Object.keys(content).length) {
+    err.textContent = 'Fill in at least one field.';
+    return;
+  }
+
+  try {
+    await api('/api/block', { method: 'POST', body: JSON.stringify({ id, kind, tags, content }) });
+    closeSheet('blockSheet');
+    // Reload the library without losing unsaved layout edits on the open résumé.
+    const picked = current ? current.id : null;
+    const draft = current ? structuredClone(current) : null;
+    state = await api('/api/state');
+    if (draft) current = draft;
+    drawLegend();
+    fillPicker(picked);
+    if (current) drawPalette();
+    setStatus('ok', `created ${id}`, 'available to every résumé from the palette');
+  } catch (failure) {
+    err.textContent = failure.message;
+  }
 }
 
 async function createResume() {
@@ -959,15 +1218,23 @@ async function createResume() {
   draft.label = label || id;
   draft.maxPages = Number.isFinite(pages) && pages > 0 ? pages : 1;
   draft.output = `public/resume/${id}.pdf`;
-  // A new résumé starts block-based and unfeatured, even when copied from a raw
-  // or featured one: there is no sidecar for the new id, and featured is a
-  // single-holder flag that must be moved deliberately, not inherited.
-  delete draft.raw;
+  // featured is a single-holder flag that has to be moved deliberately, so a
+  // copy never inherits it.
   delete draft.featured;
   const body = stripClient(draft);
 
   try {
-    await api('/api/resume/' + encodeURIComponent(id), { method: 'POST', body: JSON.stringify(body) });
+    if (current.raw && current._tex) {
+      // Duplicating a hand-edited résumé copies its LaTeX too, otherwise the
+      // copy would claim to be raw with no source behind it.
+      await api('/api/resume/' + encodeURIComponent(id) + '/tex', {
+        method: 'POST',
+        body: JSON.stringify({ manifest: { ...body, raw: true }, tex: current._tex }),
+      });
+    } else {
+      delete body.raw;
+      await api('/api/resume/' + encodeURIComponent(id), { method: 'POST', body: JSON.stringify(body) });
+    }
     closeSheet('newSheet');
     state = await api('/api/state');
     fillPicker(id);
@@ -995,6 +1262,7 @@ function openEditor(blockId, sectionIndex, entryIndex) {
   const activeVariant = entry.variant && entry.variant !== 'full'
     ? ((source.variantData || {})[entry.variant] || {}) : {};
   const merged = { ...source.content, ...activeVariant, ...(entry.override || {}) };
+  editing.entries = Array.isArray(merged.entries) ? merged.entries : [];
 
   Object.keys(merged).sort().forEach(key => {
     const value = merged[key];
@@ -1009,7 +1277,60 @@ function openEditor(blockId, sectionIndex, entryIndex) {
     if (Array.isArray(value)) area.placeholder = 'one item per line';
     host.appendChild(area);
   });
+
+  drawPullRequests(host, source, merged);
   sheet('editor', true);
+}
+
+// Which merged pull requests a contribution block shows is an editorial choice
+// kept in content.entries, while the list of merged PRs is imported nightly into
+// the machine map. The importer deliberately never adds to the rendered list, so
+// without this picker a newly merged PR stays invisible — present in the block
+// file, absent from every résumé, and uneditable from here because entries are
+// objects rather than plain text.
+function drawPullRequests(host, source, merged) {
+  const imported = (source.machine || {}).pullRequests || [];
+  if (!imported.length) return;
+
+  host.appendChild(Object.assign(el('label'), { textContent: 'pull requests shown' }));
+  const note = el('div', 'hint');
+  note.style.margin = '0 0 4px';
+  note.textContent = 'Every merged PR imported for this repository. Tick the ones this résumé should list; leave a summary blank to use the PR title.';
+  host.appendChild(note);
+
+  const chosen = new Map((Array.isArray(merged.entries) ? merged.entries : [])
+    .filter(item => item && typeof item === 'object')
+    .map(item => [Number(item.number), item.summary || '']));
+
+  const list = el('div', 'prs');
+  [...imported]
+    .sort((a, b) => String(b.mergedAt || '').localeCompare(String(a.mergedAt || '')))
+    .forEach(pull => {
+      const number = Number(pull.number);
+      const row = el('div', 'pr');
+
+      const box = el('input');
+      box.type = 'checkbox';
+      box.dataset.number = String(number);
+      box.checked = chosen.has(number);
+
+      const meta = el('div', 'meta');
+      const when = pull.mergedAt ? new Date(pull.mergedAt).toLocaleDateString() : '';
+      meta.innerHTML = `<span class="num">#${number}</span> ${pull.title || ''}` +
+        (when ? `<div class="when">merged ${when}</div>` : '');
+
+      const summary = el('input');
+      summary.type = 'text';
+      summary.dataset.number = String(number);
+      summary.placeholder = pull.title || 'summary shown on the résumé';
+      summary.value = chosen.get(number) || '';
+      meta.appendChild(summary);
+
+      row.appendChild(box);
+      row.appendChild(meta);
+      list.appendChild(row);
+    });
+  host.appendChild(list);
 }
 
 async function applyEdit() {
@@ -1031,6 +1352,32 @@ async function applyEdit() {
     const alreadyOverridden = entry.override && area.dataset.key in entry.override;
     if (!unchanged || alreadyOverridden) fields[area.dataset.key] = value;
   });
+
+  // The pull request picker, when this block has one.
+  const boxes = [...document.querySelectorAll('#edFields .pr input[type=checkbox]')];
+  if (boxes.length) {
+    const summaries = new Map([...document.querySelectorAll('#edFields .pr input[type=text]')]
+      .map(input => [Number(input.dataset.number), input.value.trim()]));
+    const ticked = boxes.filter(box => box.checked).map(box => Number(box.dataset.number));
+
+    // Keep the order the résumé already had for PRs that stay, then append newly
+    // ticked ones newest-first, so adding one never reshuffles the others.
+    const kept = editing.entries
+      .map(item => Number(item.number))
+      .filter(number => ticked.includes(number));
+    const added = ticked.filter(number => !kept.includes(number));
+    const entries = [...kept, ...added].map(number => {
+      const summary = summaries.get(number) || '';
+      return summary ? { number, summary } : { number };
+    });
+
+    const before = Array.isArray(resolved.entries) ? resolved.entries : [];
+    const alreadyOverridden = entry.override && 'entries' in entry.override;
+    if (JSON.stringify(entries) !== JSON.stringify(before) || alreadyOverridden) {
+      fields.entries = entries;
+    }
+  }
+
   if (!Object.keys(fields).length) { closeSheet('editor'); return; }
 
   try {
