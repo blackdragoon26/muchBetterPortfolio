@@ -14,7 +14,7 @@ machine:
       number: 369
       title: '--thermal: Return data instead of only printing it'
   repository: FrameworkComputer/framework-system
-  stars: 124
+  stars: 125
 content:
   entries:
     - number: 369
