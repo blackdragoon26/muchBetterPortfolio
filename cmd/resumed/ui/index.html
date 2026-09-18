@@ -440,21 +440,43 @@ const kindColor = kind => KIND_COLOR[kind] || '#8e8e93';
 const isCustom = source =>
   !!source && !!source.source && source.source !== 'github' && source.source !== 'readme';
 
-function kindLine(source, { extra = '', tags = false } = {}) {
-  const chip = isCustom(source) ? '<span class="chip custom">custom</span>' : '';
+// Block ids, tags and pull-request titles are repository data, not markup: a tag
+// or an upstream PR title carrying angle brackets would otherwise be parsed as
+// HTML in an authenticated page that sets no CSP. Everything dynamic is built
+// with DOM nodes and assigned through textContent.
+function kindNode(source, { extra = '', tags = false } = {}) {
+  const line = el('div', 'kind');
+  line.appendChild(el('span', 'dot'));
+  line.appendChild(document.createTextNode(source.kind));
+  if (isCustom(source)) {
+    const chip = el('span', 'chip custom');
+    chip.textContent = 'custom';
+    line.appendChild(chip);
+  }
   const parts = [];
   if (extra) parts.push(extra);
   if (tags && (source.tags || []).length) parts.push(source.tags.join(' '));
-  return `<span class="dot"></span>${source.kind}${chip}` +
-    (parts.length ? ` · ${parts.join(' · ')}` : '');
+  if (parts.length) line.appendChild(document.createTextNode(' · ' + parts.join(' · ')));
+  return line;
 }
 
 function drawLegend() {
   const host = document.getElementById('legend');
-  const kinds = [...new Set(state.blocks.map(b => b.kind))].sort();
-  host.innerHTML = kinds.map(kind =>
-    `<span><i class="dot" style="--kind:${kindColor(kind)}"></i>${kind}</span>`).join('') +
-    '<span><i class="chip custom" style="margin-left:0">custom</i></span>';
+  host.innerHTML = '';
+  [...new Set(state.blocks.map(b => b.kind))].sort().forEach(kind => {
+    const item = el('span');
+    const dot = el('i', 'dot');
+    dot.style.setProperty('--kind', kindColor(kind));
+    item.appendChild(dot);
+    item.appendChild(document.createTextNode(kind));
+    host.appendChild(item);
+  });
+  const custom = el('span');
+  const chip = el('i', 'chip custom');
+  chip.style.marginLeft = '0';
+  chip.textContent = 'custom';
+  custom.appendChild(chip);
+  host.appendChild(custom);
 }
 
 function toggleMenu(event) {
@@ -563,7 +585,12 @@ function draw() {
   current.sections.forEach((section, sectionIndex) => {
     const wrap = el('div', 'section');
     const header = el('header');
-    header.innerHTML = `<span>${section.heading || '(masthead)'}</span><span>${section.layout || 'plain'}</span>`;
+    const heading = el('span');
+    heading.textContent = section.heading || '(masthead)';
+    const layout = el('span');
+    layout.textContent = section.layout || 'plain';
+    header.appendChild(heading);
+    header.appendChild(layout);
     wrap.appendChild(header);
 
     const drop = el('div', 'drop');
@@ -645,9 +672,7 @@ function card(entry, sectionIndex, entryIndex) {
   node.appendChild(row);
   if (source) {
     node.style.setProperty('--kind', kindColor(source.kind));
-    const kind = el('div', 'kind');
-    kind.innerHTML = kindLine(source, { extra: entry.override ? 'overridden here' : '' });
-    node.appendChild(kind);
+    node.appendChild(kindNode(source, { extra: entry.override ? 'overridden here' : '' }));
   }
   return node;
 }
@@ -669,8 +694,12 @@ function drawPalette() {
       node.draggable = true;
       node.ondragstart = event =>
         event.dataTransfer.setData('text/plain', JSON.stringify({ from: 'palette', id: source.id }));
-      node.innerHTML = `<div class="row"><span class="id">${source.id}</span></div>
-        <div class="kind">${kindLine(source, { tags: true })}</div>`;
+      const row = el('div', 'row');
+      const identifier = el('span', 'id');
+      identifier.textContent = source.id;
+      row.appendChild(identifier);
+      node.appendChild(row);
+      node.appendChild(kindNode(source, { tags: true }));
       host.appendChild(node);
     });
 }
@@ -952,9 +981,19 @@ async function runPreview() {
   }
 }
 
+// text is often an error straight from the compiler or the API, so it is written
+// as text rather than markup.
 function setStatus(kind, text, extra) {
-  document.getElementById('status').innerHTML =
-    `<span class="pill ${kind}">${text}</span>` + (extra ? `<span>${extra}</span>` : '');
+  const host = document.getElementById('status');
+  host.innerHTML = '';
+  const pill = el('span', 'pill ' + kind);
+  pill.textContent = text;
+  host.appendChild(pill);
+  if (extra) {
+    const detail = el('span');
+    detail.textContent = extra;
+    host.appendChild(detail);
+  }
 }
 
 function drawAdvice(savings) {
@@ -964,9 +1003,17 @@ function drawAdvice(savings) {
   host.appendChild(Object.assign(el('h2'), { textContent: 'Shorter variants available' }));
   savings.slice(0, 8).forEach(item => {
     const row = el('div', 'line');
-    row.innerHTML = `<span class="n">-${item.chars}</span>
-      <span style="flex:1">${item.block}</span><a>${item.from} → ${item.to}</a>`;
-    row.querySelector('a').onclick = () => {
+    const saved = el('span', 'n');
+    saved.textContent = '-' + item.chars;
+    const name = el('span');
+    name.style.flex = '1';
+    name.textContent = item.block;
+    const swap = el('a');
+    swap.textContent = `${item.from} → ${item.to}`;
+    row.appendChild(saved);
+    row.appendChild(name);
+    row.appendChild(swap);
+    swap.onclick = () => {
       for (const section of current.sections)
         for (const entry of (section.blocks || []))
           if (entry.block === item.block) entry.variant = item.to === 'full' ? undefined : item.to;
@@ -1088,13 +1135,19 @@ function renameResume() {
 
 async function applyRename() {
   const label = document.getElementById('renameLabel').value.trim();
-  const pages = parseInt(document.getElementById('renamePages').value, 10);
+  const budget = document.getElementById('renamePages').value.trim();
   const err = document.getElementById('renameErr');
   err.textContent = '';
   if (!label) { err.textContent = 'A display name is required.'; return; }
+  // parseInt would quietly accept "1.5" and "1abc" as 1, and let "abc" through
+  // as a no-op while still saving the rest, so check the raw value instead.
+  if (!/^\d+$/.test(budget) || Number(budget) < 1) {
+    err.textContent = 'Page budget must be a whole number of at least 1.';
+    return;
+  }
 
   current.label = label;
-  if (Number.isFinite(pages) && pages > 0) current.maxPages = pages;
+  current.maxPages = Number(budget);
   closeSheet('renameSheet');
   await saveResume();
   fillPicker(current.id);
@@ -1198,12 +1251,16 @@ async function createBlock() {
 async function createResume() {
   const id = document.getElementById('newId').value.trim().toLowerCase();
   const label = document.getElementById('newLabel').value.trim();
-  const pages = parseInt(document.getElementById('newPages').value, 10);
+  const budget = document.getElementById('newPages').value.trim();
   const err = document.getElementById('newErr');
   err.textContent = '';
 
   if (!/^[a-z0-9_-]{1,64}$/.test(id)) {
     err.textContent = 'Identifier may use lowercase letters, numbers, dash and underscore.';
+    return;
+  }
+  if (!/^\d+$/.test(budget) || Number(budget) < 1) {
+    err.textContent = 'Page budget must be a whole number of at least 1.';
     return;
   }
   if (state.resumes.some(r => r.id === id)) {
@@ -1216,7 +1273,7 @@ async function createResume() {
   const draft = structuredClone(current);
   draft.id = id;
   draft.label = label || id;
-  draft.maxPages = Number.isFinite(pages) && pages > 0 ? pages : 1;
+  draft.maxPages = Number(budget);
   draft.output = `public/resume/${id}.pdf`;
   // featured is a single-holder flag that has to be moved deliberately, so a
   // copy never inherits it.
@@ -1263,6 +1320,9 @@ function openEditor(blockId, sectionIndex, entryIndex) {
     ? ((source.variantData || {})[entry.variant] || {}) : {};
   const merged = { ...source.content, ...activeVariant, ...(entry.override || {}) };
   editing.entries = Array.isArray(merged.entries) ? merged.entries : [];
+  // The state the picker opened in, in the same shape applyEdit rebuilds, so the
+  // two can be compared to tell a real edit from an untouched list.
+  editing.entriesKey = JSON.stringify(normalizeEntries(editing.entries));
 
   Object.keys(merged).sort().forEach(key => {
     const value = merged[key];
@@ -1281,6 +1341,17 @@ function openEditor(blockId, sectionIndex, entryIndex) {
   drawPullRequests(host, source, merged);
   sheet('editor', true);
 }
+
+// normalizeEntries puts a pull-request selection into one canonical shape — the
+// one applyEdit rebuilds — so a stored list and a freshly read picker can be
+// compared without a blank summary or a string number reading as a change.
+const normalizeEntries = list => (Array.isArray(list) ? list : [])
+  .filter(item => item && typeof item === 'object')
+  .map(item => {
+    const number = Number(item.number);
+    const summary = (item.summary || '').trim();
+    return summary ? { number, summary } : { number };
+  });
 
 // Which merged pull requests a contribution block shows is an editorial choice
 // kept in content.entries, while the list of merged PRs is imported nightly into
@@ -1316,8 +1387,15 @@ function drawPullRequests(host, source, merged) {
 
       const meta = el('div', 'meta');
       const when = pull.mergedAt ? new Date(pull.mergedAt).toLocaleDateString() : '';
-      meta.innerHTML = `<span class="num">#${number}</span> ${pull.title || ''}` +
-        (when ? `<div class="when">merged ${when}</div>` : '');
+      const label = el('span', 'num');
+      label.textContent = '#' + number;
+      meta.appendChild(label);
+      meta.appendChild(document.createTextNode(' ' + (pull.title || '')));
+      if (when) {
+        const merged = el('div', 'when');
+        merged.textContent = 'merged ' + when;
+        meta.appendChild(merged);
+      }
 
       const summary = el('input');
       summary.type = 'text';
@@ -1371,9 +1449,13 @@ async function applyEdit() {
       return summary ? { number, summary } : { number };
     });
 
-    const before = Array.isArray(resolved.entries) ? resolved.entries : [];
-    const alreadyOverridden = entry.override && 'entries' in entry.override;
-    if (JSON.stringify(entries) !== JSON.stringify(before) || alreadyOverridden) {
+    // Send the selection only when the picker actually changed. The boxes are
+    // drawn from the effective content — base, variant and this résumé's
+    // override merged — so comparing against the base or variant layer instead
+    // would report a difference that is really just the override, and a "save
+    // everywhere" made while editing some other field would quietly push one
+    // résumé's PR selection into the shared block.
+    if (JSON.stringify(entries) !== editing.entriesKey) {
       fields.entries = entries;
     }
   }

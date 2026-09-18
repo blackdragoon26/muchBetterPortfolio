@@ -143,7 +143,8 @@ Two different lists are at work, and this trips people up:
 The importer deliberately never adds to the second. Which PRs are worth showing
 is an editorial call, and a nightly job silently lengthening every résumé would
 be worse than useless. So a freshly merged PR lands in the block file but stays
-off the page until it is chosen — `resumekit importer` prints the ones waiting.
+off the page until it is chosen — the importer (`go run ./cmd/importer`) prints
+the ones waiting.
 
 Choose them in the builder: open a contribution block with ✎ and every imported
 PR is listed with a tick box, newest first, with the merge date and a summary
