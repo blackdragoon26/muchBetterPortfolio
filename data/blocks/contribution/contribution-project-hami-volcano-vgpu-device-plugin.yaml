@@ -1,0 +1,21 @@
+id: contribution:project-hami-volcano-vgpu-device-plugin
+kind: contribution
+source: github
+tags:
+  - opensource
+machine:
+  pullRequests:
+    - additions: 122
+      changedFiles: 5
+      deletions: 0
+      href: https://github.com/Project-HAMi/volcano-vgpu-device-plugin/pull/148
+      mergedAt: "2026-09-21T04:26:06Z"
+      number: 148
+      title: 'docs: add volcano vGPU contribution templates'
+  repository: Project-HAMi/volcano-vgpu-device-plugin
+  stars: 172
+content:
+  entries:
+    - number: 148
+      summary: ""
+  label: Project-HAMi/volcano-vgpu-device-plugin
