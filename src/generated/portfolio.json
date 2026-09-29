@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-29T11:25:13.761Z",
+  "generatedAt": "2026-09-29T12:19:48.116Z",
   "filter": {
     "minimumRepositoryStars": 100,
     "maximumPullRequests": 999
@@ -379,6 +379,41 @@
           "Added staged fault injection, KFENCE and sparse qualification, reproducible QEMU/HVF automation, Wireshark-compatible captures, a W5500 SPI driver path, and an rte_ethdev L2 forwarder"
         ],
         "impact": "Qualified 10,100 RX and TX ring wraps across 646,400 packets at zero loss, 1,000 interface cycles, 100 driver rebinds, and 100 reset-under-traffic cycles; validated DPDK partial-TX cleanup and signal-safe shutdown with the net_pcap virtual PMD."
+      }
+    },
+    {
+      "id": "proofinfer",
+      "title": "proofinfer",
+      "description": "A Llama inference engine written in Rust with zero external crates, built around proving it actually computes the right thing. It is differentially tested against the PyTorch reference from karpathy/llama2.c across 6 configurations (every logit at every position), produces byte-identical greedy output against `run.c`, has mutation testing on both the harness and the Rust test suite so neither can silently fail to fail, and carries a machine-checked Verus proof of KV-cache index safety. Limits are documented honestly, including where the proof stops and where `run.c -Ofast` is still faster. · Technical docs",
+      "href": "https://proofinfer.vercel.app/",
+      "liveUrl": "https://proofinfer.vercel.app/",
+      "repository": "blackdragoon26/proofinfer",
+      "repositoryUrl": "https://github.com/blackdragoon26/proofinfer",
+      "technologies": [
+        "Rust",
+        "Verus",
+        "Python",
+        "PyTorch",
+        "C",
+        "llama2.c",
+        "Differential Testing",
+        "Mutation Testing",
+        "Formal Verification",
+        "GitHub Actions",
+        "Vercel"
+      ],
+      "screenshot": "auto",
+      "screenshotWaitSeconds": 7,
+      "stars": 1,
+      "image": "/generated/projects/proofinfer.jpg",
+      "resume": {
+        "include": false,
+        "objective": "Build a dependency-free Llama inference engine whose correctness is backed by independent evidence rather than claimed.",
+        "approach": [
+          "Implemented Llama inference in pure Rust with an 8-lane dot product and no external crates",
+          "Verified it through PyTorch differential testing, byte-identical comparison against run.c, mutation testing of both harness and tests, and a Verus proof of KV-cache index safety"
+        ],
+        "impact": "Passed 6/6 differential configurations at max error 1.0e-5 and 200/200 top-1 on real stories15M weights; caught 10/10 harness and 21/21 test-suite mutants; 24 Verus obligations verified with 0 errors; 835 tok/s single-threaded, 5.4x over the naive dot product."
       }
     }
   ],

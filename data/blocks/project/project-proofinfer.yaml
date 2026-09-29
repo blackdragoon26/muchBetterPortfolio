@@ -1,0 +1,32 @@
+id: project:proofinfer
+kind: project
+source: readme
+tags:
+  - systems
+machine:
+  description: A Llama inference engine written in Rust with zero external crates, built around proving it actually computes the right thing. It is differentially tested against the PyTorch reference from karpathy/llama2.c across 6 configurations (every logit at every position), produces byte-identical greedy output against `run.c`, has mutation testing on both the harness and the Rust test suite so neither can silently fail to fail, and carries a machine-checked Verus proof of KV-cache index safety. Limits are documented honestly, including where the proof stops and where `run.c -Ofast` is still faster. · Technical docs
+  liveUrl: https://proofinfer.vercel.app/
+  repository: blackdragoon26/proofinfer
+  repositoryUrl: https://github.com/blackdragoon26/proofinfer
+  stars: 1
+  technologies:
+    - Rust
+    - Verus
+    - Python
+    - PyTorch
+    - C
+    - llama2.c
+    - Differential Testing
+    - Mutation Testing
+    - Formal Verification
+    - GitHub Actions
+    - Vercel
+content:
+  approach:
+    - Implemented Llama inference in pure Rust with an 8-lane dot product and no external crates
+    - Verified it through PyTorch differential testing, byte-identical comparison against run.c, mutation testing of both harness and tests, and a Verus proof of KV-cache index safety
+  impact: Passed 6/6 differential configurations at max error 1.0e-5 and 200/200 top-1 on real stories15M weights; caught 10/10 harness and 21/21 test-suite mutants; 24 Verus obligations verified with 0 errors; 835 tok/s single-threaded, 5.4x over the naive dot product.
+  link: https://proofinfer.vercel.app/
+  objective: Build a dependency-free Llama inference engine whose correctness is backed by independent evidence rather than claimed.
+  stack: Rust, Verus, Python, PyTorch, C, llama2.c, Differential Testing, Mutation Testing, Formal Verification, GitHub Actions, Vercel
+  title: proofinfer
