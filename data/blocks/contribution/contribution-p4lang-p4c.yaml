@@ -1,0 +1,24 @@
+id: contribution:p4lang-p4c
+kind: contribution
+source: github
+tags:
+  - hardware
+  - networking
+  - systems
+  - opensource
+machine:
+  pullRequests:
+    - additions: 119
+      changedFiles: 8
+      deletions: 6
+      href: https://github.com/p4lang/p4c/pull/5756
+      mergedAt: "2026-09-29T01:58:38Z"
+      number: 5756
+      title: 'frontends: preserve type when folding struct casts'
+  repository: p4lang/p4c
+  stars: 841
+content:
+  entries:
+    - number: 5756
+      summary: ""
+  label: p4lang/p4c
