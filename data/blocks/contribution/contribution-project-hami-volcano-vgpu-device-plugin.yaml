@@ -13,7 +13,7 @@ machine:
       number: 148
       title: 'docs: add volcano vGPU contribution templates'
   repository: Project-HAMi/volcano-vgpu-device-plugin
-  stars: 173
+  stars: 174
 content:
   entries:
     - number: 148
