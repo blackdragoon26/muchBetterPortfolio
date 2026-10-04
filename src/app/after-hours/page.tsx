@@ -12,6 +12,7 @@ import {
   useState,
 } from "react";
 import styles from "./after-hours.module.css";
+import NightStation, { type StationId } from "./night-station";
 
 const LANDMARKS = [
   { id: "memory", label: "memory line", index: "01", copy: "Photos, tickets and tiny stories — fed into the line slowly, never as a normal gallery.", position: { left: "34%", top: "59%" } },
@@ -318,9 +319,15 @@ export default function AfterHoursPage() {
   const renderedOffsetRef = useRef<Offset>({ x: 0, y: 0 });
   const [offset, setOffset] = useState<Offset>({ x: 0, y: 0 });
   const [activeLandmark, setActiveLandmark] = useState<string>("");
+  const [station, setStation] = useState<StationId | null>(null);
+  const closeStation = useCallback(() => setStation(null), []);
   const [spotlightIndex, setSpotlightIndex] = useState(0);
   const [galleryIndex, setGalleryIndex] = useState(0);
   const [galleryOpen, setGalleryOpen] = useState(false);
+  const openStationArchive = useCallback(() => {
+    setGalleryIndex(spotlightIndex);
+    setGalleryOpen(true);
+  }, [spotlightIndex]);
   const [clock, setClock] = useState("--:--:--");
 
   const startFactoryFeed = useCallback(() => {
@@ -501,11 +508,10 @@ export default function AfterHoursPage() {
             {LANDMARKS.map((landmark) => {
               const isActive = activeLandmark === landmark.id;
               return (
-                <button key={landmark.id} type="button" className={`${styles.landmark} ${isActive ? styles.landmarkActive : ""}`} style={landmark.position} aria-pressed={isActive} onClick={() => setActiveLandmark(landmark.id)}>
+                <button key={landmark.id} type="button" className={`${styles.landmark} ${isActive ? styles.landmarkActive : ""}`} style={landmark.position} aria-pressed={isActive} onClick={() => { setActiveLandmark(landmark.id); setStation(landmark.id); }}>
                   <span className={styles.landmarkIndex}>{landmark.index}</span>
                   <span className={styles.landmarkBeacon} aria-hidden="true" />
                   <strong>{landmark.label}</strong>
-                  {isActive ? <span className={styles.landmarkCopy}>{landmark.copy}</span> : null}
                 </button>
               );
             })}
@@ -528,6 +534,9 @@ export default function AfterHoursPage() {
           </aside>
         </div>
       </div>
+
+      {station && !galleryOpen ? <NightStation station={station} onChange={setStation} onClose={closeStation} onArchive={openStationArchive} /> : null}
+      <button type="button" className={styles.dispatchButton} aria-expanded={station !== null} onClick={() => setStation((value) => value ? null : "memory")}><span aria-hidden="true">▦</span> Night dispatch <small>04 stops</small></button>
 
       {galleryOpen ? (
         <section className={styles.galleryOverlay} role="dialog" aria-modal="true" aria-label="Visual brain gallery">

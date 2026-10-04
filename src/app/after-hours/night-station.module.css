@@ -1,0 +1,53 @@
+.station { position: fixed; z-index: 24; top: 84px; left: 28px; width: min(430px, calc(100vw - 56px)); max-height: calc(100dvh - 118px); overflow: auto; color: #e9e5d8; background: linear-gradient(140deg, rgba(255,255,255,.1), transparent 50%), rgba(14,22,21,.86); border: 1px solid #ffffff38; border-radius: 18px 18px 2px 2px; backdrop-filter: blur(24px); box-shadow: 0 24px 90px #0009, inset 0 1px #ffffff25; font-family: monospace; animation: arrive .45s cubic-bezier(.2,.8,.2,1) both; scrollbar-width: thin; scrollbar-color: #a8b9ad #18221d; }
+.topline { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px 10px; font-size: 10px; letter-spacing: .16em; color: #bdccbe; }
+.topline span { display: flex; gap: 8px; align-items: center; }
+.topline span i { width: 5px; height: 5px; background: #d9dca5; box-shadow: 0 0 10px #d9dca570; border-radius: 50%; }
+.topline button { width: 34px; height: 34px; background: transparent; border: 1px solid #ffffff25; color: inherit; font: 24px monospace; border-radius: 50%; }
+.route { display: grid; grid-template-columns: repeat(4, 1fr); padding: 0 12px; }
+.route button { position: relative; display: flex; flex-direction: column; gap: 7px; align-items: flex-start; padding: 12px 7px; min-height: 66px; background: transparent; border: 0; border-bottom: 1px solid #ffffff29; color: #a3ada5; text-align: left; }
+.route button[aria-pressed=true] { color: #e9e6ce; border-color: #e9e6ce; background: #e9e6ce0a; }
+.route span { font: 14px "Silkscreen", monospace; }
+.route small { font-size: 9px; }
+.route i { position: absolute; right: 4px; top: 12px; font: normal 10px monospace; color: #c4d5a5; }
+.body { padding: 22px; }
+.kicker { color: #a9b4a9; font-size: 9px; letter-spacing: .18em; margin: 0 0 9px; }
+.body h2 { font: 400 22px/1.2 "Silkscreen", monospace; margin: 0; letter-spacing: -.08em; }
+.subtitle { color: #c0c6bb; font-size: 12px; margin: 10px 0 20px; line-height: 1.5; }
+.print { padding: 10px 10px 15px; color: #282921; background: #e5e1d3; transform: rotate(-2deg); box-shadow: 2px 8px 20px #0006; filter: grayscale(1) contrast(.9); transition: filter .8s, transform .8s; }
+.printed { filter: none; transform: rotate(1deg); animation: develop 1.2s ease both; }
+.photo { position: relative; height: 190px; background: #1a211e; }
+.photo img { object-fit: cover; }
+.print > span { display: flex; justify-content: space-between; margin-top: 13px; font-size: 9px; }
+.print b { font-weight: 400; }
+.controls { display: flex; gap: 10px; align-items: center; justify-content: space-between; margin-top: 22px; }
+.controls button, .score button { padding: 10px 12px; min-height: 40px; font: 11px monospace; color: #eee9d4; background: linear-gradient(#444c44, #222b26); border: 1px solid #84908270; border-bottom: 3px solid #101915; border-radius: 4px; box-shadow: 0 3px 4px #0005, inset 0 1px #ffffff18; }
+.controls button:active, .score button:active { transform: translateY(2px); box-shadow: inset 0 2px 5px #0008; border-bottom-width: 1px; }
+.controls button:disabled { opacity: .55; }
+.textButton { padding: 18px 0 0; background: transparent; border: 0; color: #bbc8b7; font: 11px monospace; text-decoration: underline; text-underline-offset: 4px; }
+.lightTable { position: relative; height: 250px; overflow: hidden; border: 1px solid #ffffff25; background: #000; }
+.lightTable img { object-fit: cover; transition: filter .2s; }
+.lightTable span { position: absolute; bottom: 10px; left: 10px; padding: 7px; font-size: 10px; color: #eee9db; background: #0008; }
+.exposure { display: flex; align-items: center; gap: 12px; margin: 22px 0 0; font-size: 11px; }
+.exposure input { width: 100%; min-width: 0; flex: 1; }
+.station input { accent-color: #d7d9ae; }
+.hint { color: #a8b4a9; font-size: 11px; line-height: 1.6; margin: 16px 0 0; }
+.sequence { padding: 15px 12px; background: #07130e; border: 1px solid #83978055; box-shadow: inset 0 0 25px #0008; }
+.sequenceRow { display: grid; grid-template-columns: 15px repeat(8, 1fr); gap: 6px; margin: 7px 0; align-items: center; }
+.sequenceRow span { font-size: 10px; color: #80917d; }
+.sequenceRow button { aspect-ratio: 1; min-height: 24px; border-radius: 50% 50% 5px 50%; background: #23362a; border: 1px solid #44533e; box-shadow: inset 1px 1px #ffffff10; transition: background .15s, box-shadow .15s; }
+.sequenceRow button[aria-pressed=true] { background: #b0c27b; border-color: #d8e6a6; }
+.sequenceRow button[data-lit=true] { box-shadow: 0 0 14px #bed18b80; border-color: #f1f8cc; }
+.controls label { display: flex; align-items: center; gap: 7px; font-size: 10px; }
+.controls input { width: 65px; }
+.court { display: block; width: 100%; height: auto; border: 1px solid #ffffff30; touch-action: none; image-rendering: pixelated; border-radius: 3px; }
+.score { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 17px; font-size: 10px; text-transform: uppercase; }
+.score b { display: block; font: 22px "Silkscreen", monospace; color: #e5d9a8; }
+.ticket { position: relative; border-top: 1px dashed #718071; margin: 0 12px; padding: 17px 10px 14px; display: flex; flex-direction: column; gap: 6px; color: #b9c5ad; background: #d6ddc005; font-size: 8px; letter-spacing: .07em; }
+.ticket b { font-weight: 400; font-size: 10px; }
+.ticket div { position: absolute; right: 8px; bottom: 15px; opacity: .4; font-size: 22px; letter-spacing: -4px; }
+.station button:focus-visible, .station input:focus-visible, .court:focus-visible { outline: 2px solid #e0e5b9; outline-offset: 3px; }
+@keyframes arrive { from { opacity: 0; transform: translateY(18px) rotate(-1deg); } to { opacity: 1; transform: none; } }
+@keyframes develop { from { filter: grayscale(1) brightness(1.7); } to { filter: none; } }
+@media(max-width: 1000px) { .station { max-height: calc(100dvh - 350px); } }
+@media(max-width: 700px) { .station { top: 62px; left: 10px; width: calc(100vw - 20px); max-height: calc(100dvh - 314px); border-radius: 14px 14px 2px 2px; } .body { padding: 17px; } .body h2 { font-size: 20px; } .photo { height: 170px; } .lightTable { height: 190px; } .ticket div { display: none; } }
+@media(prefers-reduced-motion: reduce) { .station, .printed { animation: none; } .print, .lightTable img, .sequenceRow button { transition: none; } }
