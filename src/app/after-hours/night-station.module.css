@@ -1,10 +1,11 @@
 .station { position: fixed; z-index: 24; top: 84px; left: 28px; width: min(430px, calc(100vw - 56px)); max-height: calc(100dvh - 118px); overflow: auto; color: #e9e5d8; background: linear-gradient(140deg, rgba(255,255,255,.1), transparent 50%), rgba(14,22,21,.86); border: 1px solid #ffffff38; border-radius: 18px 18px 2px 2px; backdrop-filter: blur(24px); box-shadow: 0 24px 90px #0009, inset 0 1px #ffffff25; font-family: monospace; animation: arrive .45s cubic-bezier(.2,.8,.2,1) both; scrollbar-width: thin; scrollbar-color: #a8b9ad #18221d; }
-.topline { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px 10px; font-size: 10px; letter-spacing: .16em; color: #bdccbe; }
+.topline { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; justify-content: space-between; padding: 14px 18px 10px; font-size: 10px; letter-spacing: .16em; color: #bdccbe; background: #1b2622e8; backdrop-filter: blur(12px); }
+.stopSelect { display: none; }
 .topline span { display: flex; gap: 8px; align-items: center; }
 .topline span i { width: 5px; height: 5px; background: #d9dca5; box-shadow: 0 0 10px #d9dca570; border-radius: 50%; }
 .topline button { width: 34px; height: 34px; background: transparent; border: 1px solid #ffffff25; color: inherit; font: 24px monospace; border-radius: 50%; }
-.route { display: grid; grid-template-columns: repeat(4, 1fr); padding: 0 12px; }
-.route button { position: relative; display: flex; flex-direction: column; gap: 7px; align-items: flex-start; padding: 12px 7px; min-height: 66px; background: transparent; border: 0; border-bottom: 1px solid #ffffff29; color: #a3ada5; text-align: left; }
+.route { display: grid; grid-template-columns: repeat(3, 1fr); padding: 0 12px; }
+.route button { position: relative; display: flex; flex-direction: row; gap: 7px; align-items: center; padding: 10px 7px; min-height: 44px; background: transparent; border: 0; border-bottom: 1px solid #ffffff29; color: #a3ada5; text-align: left; }
 .route button[aria-pressed=true] { color: #e9e6ce; border-color: #e9e6ce; background: #e9e6ce0a; }
 .route span { font: 14px "Silkscreen", monospace; }
 .route small { font-size: 9px; }
@@ -45,9 +46,10 @@
 .ticket { position: relative; border-top: 1px dashed #718071; margin: 0 12px; padding: 17px 10px 14px; display: flex; flex-direction: column; gap: 6px; color: #b9c5ad; background: #d6ddc005; font-size: 8px; letter-spacing: .07em; }
 .ticket b { font-weight: 400; font-size: 10px; }
 .ticket div { position: absolute; right: 8px; bottom: 15px; opacity: .4; font-size: 22px; letter-spacing: -4px; }
-.station button:focus-visible, .station input:focus-visible, .court:focus-visible { outline: 2px solid #e0e5b9; outline-offset: 3px; }
+.station button:focus-visible, .station input:focus-visible, .station select:focus-visible, .court:focus-visible { outline: 2px solid #e0e5b9; outline-offset: 3px; }
 @keyframes arrive { from { opacity: 0; transform: translateY(18px) rotate(-1deg); } to { opacity: 1; transform: none; } }
 @keyframes develop { from { filter: grayscale(1) brightness(1.7); } to { filter: none; } }
 @media(max-width: 1000px) { .station { max-height: calc(100dvh - 350px); } }
 @media(max-width: 700px) { .station { top: 62px; left: 10px; width: calc(100vw - 20px); max-height: calc(100dvh - 314px); border-radius: 14px 14px 2px 2px; } .body { padding: 17px; } .body h2 { font-size: 20px; } .photo { height: 170px; } .lightTable { height: 190px; } .ticket div { display: none; } }
+@media(max-width: 700px) { .topline { padding: 10px 12px; gap: 10px; } .topline > span, .route { display: none; } .stopSelect { display: block; width: calc(100% - 46px); min-height: 36px; padding: 7px; border: 1px solid #a3b08a55; color: #e1dfc6; background: #1f2a22; font: 11px monospace; } }
 @media(prefers-reduced-motion: reduce) { .station, .printed { animation: none; } .print, .lightTable img, .sequenceRow button { transition: none; } }

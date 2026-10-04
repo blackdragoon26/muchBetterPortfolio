@@ -3,13 +3,19 @@
 import Image from "next/image";
 import { memo, useEffect, useRef, useState } from "react";
 import styles from "./night-station.module.css";
+import { beginNightSession, FactoryPercussion, logNightActivity, NightDelivery, PirateRadio, PocketFurnace, WastedReceipt } from "./night-toys";
 
-export type StationId = "memory" | "drive" | "signal" | "match";
+export type StationId = "memory" | "drive" | "signal" | "match" | "furnace" | "radio" | "percussion" | "delivery" | "receipt";
 const STATIONS: { id: StationId; name: string; subtitle: string }[] = [
   { id: "memory", name: "Print room", subtitle: "Small things deserve a physical copy." },
   { id: "drive", name: "Light table", subtitle: "Find the hour between day and night." },
   { id: "signal", name: "Signal garden", subtitle: "Plant a pattern. Let it repeat." },
   { id: "match", name: "One more game", subtitle: "You said that three games ago." },
+  { id: "furnace", name: "Pocket furnace", subtitle: "A small vessel for very bad experiments." },
+  { id: "radio", name: "Pirate radio", subtitle: "Some messages only arrive after midnight." },
+  { id: "percussion", name: "Factory percussion", subtitle: "Make the machinery work for your rhythm." },
+  { id: "delivery", name: "Night delivery", subtitle: "Important cargo. Unimportant deadlines." },
+  { id: "receipt", name: "Your receipt", subtitle: "A paper trail of completely worthwhile distractions." },
 ];
 const PRINTS = ["sony-night-reference.png", "nsx-reference.png", "japanese-editorial-reference.png", "dark-fantasy-reference.png"];
 
@@ -59,7 +65,7 @@ function SignalGarden() {
     <div className={styles.sequence} aria-label="Eight step musical sequencer">
       {[4, 3, 2, 1, 0].map((note) => <div className={styles.sequenceRow} key={note}>
         <span>{["A", "C", "D", "E", "G"][note]}</span>
-        {pattern.map((value, index) => <button key={index} type="button" aria-label={`Step ${index + 1}, note ${["A", "C", "D", "E", "G"][note]}`} aria-pressed={value === note} data-lit={step === index} onClick={() => setPattern((current) => current.map((n, i) => i === index ? n === note ? -1 : note : n))} />)}
+        {pattern.map((value, index) => <button key={index} type="button" aria-label={`Step ${index + 1}, note ${["A", "C", "D", "E", "G"][note]}`} aria-pressed={value === note} data-lit={step === index} onClick={() => { setPattern((current) => current.map((n, i) => i === index ? n === note ? -1 : note : n)); logNightActivity("seeds planted"); }} />)}
       </div>)}
     </div>
     <div className={styles.controls}><button type="button" onClick={() => void toggle()}>{running ? "Stop loop" : "Start loop"}</button><label>Tempo <input aria-label="Loop tempo" type="range" min="60" max="140" value={tempo} onChange={(e) => setTempo(Number(e.target.value))} /><output>{tempo}</output></label></div>
@@ -88,9 +94,9 @@ function PocketMatch() {
         if (vy > 0 && y >= 194 && y <= 208 && Math.abs(x - paddle.current) < 38) {
           y = 193; vy = -Math.min(320, Math.abs(vy) + 12);
           vx = (x - paddle.current) * 5;
-          hits++; setScore(hits); setBest((value) => Math.max(value, hits));
+          hits++; setScore(hits); setBest((value) => Math.max(value, hits)); logNightActivity("rallies returned");
         }
-        if (y > 230) { setRunning(false); setEnded(true); return; }
+        if (y > 230) { setRunning(false); setEnded(true); logNightActivity("rallies lost"); return; }
       }
       context.fillStyle = "#102c27"; context.fillRect(0, 0, 320, 230);
       context.strokeStyle = "#739489"; context.lineWidth = 1;
@@ -116,8 +122,11 @@ export default memo(function NightStation({ station, onChange, onClose, onArchiv
   const [printed, setPrinted] = useState(false);
   const [exposure, setExposure] = useState(50);
   const close = useRef<HTMLButtonElement>(null);
+  const panel = useRef<HTMLElement>(null);
   const current = STATIONS.find((item) => item.id === station)!;
+  useEffect(() => { beginNightSession(); }, []);
   useEffect(() => { setVisited((values) => values.includes(station) ? values : [...values, station]); }, [station]);
+  useEffect(() => { panel.current?.scrollTo({ top: 0 }); }, [station]);
   useEffect(() => {
     const previous = document.activeElement as HTMLElement | null;
     close.current?.focus();
@@ -125,14 +134,19 @@ export default memo(function NightStation({ station, onChange, onClose, onArchiv
     window.addEventListener("keydown", escape);
     return () => { window.removeEventListener("keydown", escape); previous?.focus(); };
   }, [onClose]);
-  return <aside className={styles.station} aria-label="Night dispatch station">
-    <div className={styles.topline}><span><i /> NIGHT DISPATCH</span><button ref={close} type="button" aria-label="Close night station" onClick={onClose}>×</button></div>
+  return <aside ref={panel} className={styles.station} aria-label="Night dispatch station">
+    <div className={styles.topline}><span><i /> NIGHT DISPATCH</span><select className={styles.stopSelect} aria-label="Choose night stop" value={station} onChange={(e) => onChange(e.target.value as StationId)}>{STATIONS.map((item, index) => <option key={item.id} value={item.id}>{String(index + 1).padStart(2, "0")} / {item.name}</option>)}</select><button ref={close} type="button" aria-label="Close night station" onClick={onClose}>×</button></div>
     <nav className={styles.route} aria-label="Night station stops">{STATIONS.map((item, index) => <button type="button" key={item.id} aria-label={item.name} aria-pressed={station === item.id} onClick={() => onChange(item.id)}><span>{String(index + 1).padStart(2, "0")}</span><small>{item.name}</small>{visited.includes(item.id) && <i aria-label="Visited">✓</i>}</button>)}</nav>
-    <div className={styles.body}><p className={styles.kicker}>STOP {STATIONS.findIndex((item) => item.id === station) + 1} / 04</p><h2>{current.name}</h2><p className={styles.subtitle}>{current.subtitle}</p>
-      {station === "memory" && <><div key={`${print}-${printed}`} className={`${styles.print} ${printed ? styles.printed : ""}`}><div className={styles.photo}><Image src={`/after-hours/${PRINTS[print]}`} alt="Selected reference from the visual archive" fill sizes="350px" /></div><span>FIELD NOTE / {String(print + 1).padStart(2, "0")} <b>{printed ? "FILED ✓" : "UNDEVELOPED"}</b></span></div><div className={styles.controls}><button type="button" onClick={() => { setPrint((value) => (value + 1) % PRINTS.length); setPrinted(false); }}>Next negative</button><button type="button" disabled={printed} onClick={() => setPrinted(true)}>{printed ? "In the drawer" : "Make a print"}</button></div><button className={styles.textButton} type="button" onClick={onArchive}>Browse the full archive ↗</button></>}
+    <div className={styles.body}><p className={styles.kicker}>STOP {STATIONS.findIndex((item) => item.id === station) + 1} / 09</p><h2>{current.name}</h2><p className={styles.subtitle}>{current.subtitle}</p>
+      {station === "memory" && <><div key={`${print}-${printed}`} className={`${styles.print} ${printed ? styles.printed : ""}`}><div className={styles.photo}><Image src={`/after-hours/${PRINTS[print]}`} alt="Selected reference from the visual archive" fill sizes="350px" /></div><span>FIELD NOTE / {String(print + 1).padStart(2, "0")} <b>{printed ? "FILED ✓" : "UNDEVELOPED"}</b></span></div><div className={styles.controls}><button type="button" onClick={() => { setPrint((value) => (value + 1) % PRINTS.length); setPrinted(false); }}>Next negative</button><button type="button" disabled={printed} onClick={() => { setPrinted(true); logNightActivity("prints developed"); }}>{printed ? "In the drawer" : "Make a print"}</button></div><button className={styles.textButton} type="button" onClick={onArchive}>Browse the full archive ↗</button></>}
       {station === "drive" && <><div className={styles.lightTable}><Image src="/after-hours/nsx-reference.png" alt="Japanese sports car at sunset on an adjustable light table" fill sizes="350px" style={{ filter: `brightness(${.45 + exposure / 90}) saturate(${.6 + exposure / 100})` }} /><span>{exposure < 35 ? "02:13 / NIGHT RUN" : exposure > 70 ? "17:42 / GOLDEN HOUR" : "19:06 / BLUE HOUR"}</span></div><label className={styles.exposure}>Turn the light <input type="range" min="0" max="100" value={exposure} aria-label="Light table exposure" onChange={(e) => setExposure(Number(e.target.value))} /><output>{exposure}%</output></label><p className={styles.hint}>A tiny darkroom for the machines that keep you up at night.</p></>}
       {station === "signal" && <SignalGarden />}
       {station === "match" && <PocketMatch />}
-    </div><footer className={styles.ticket}><span>PERSONAL TRANSMISSION</span><b>{visited.length === 4 ? "ALL STOPS / NIGHT WELL SPENT" : `${visited.length} OF 4 STOPS STAMPED`}</b><div aria-hidden="true">▎▏▍▎▏▍▏▎▍▏▎▏▍▎▏▍▏▎▍▏</div></footer>
+      {station === "furnace" && <PocketFurnace />}
+      {station === "radio" && <PirateRadio />}
+      {station === "percussion" && <FactoryPercussion />}
+      {station === "delivery" && <NightDelivery />}
+      {station === "receipt" && <WastedReceipt />}
+    </div><footer className={styles.ticket}><span>PERSONAL TRANSMISSION</span><b>{visited.length === STATIONS.length ? "ALL STOPS / NIGHT WELL SPENT" : `${visited.length} OF ${STATIONS.length} STOPS STAMPED`}</b><div aria-hidden="true">▎▏▍▎▏▍▏▎▍▏▎▏▍▎▏▍▏▎▍▏</div></footer>
   </aside>;
 });

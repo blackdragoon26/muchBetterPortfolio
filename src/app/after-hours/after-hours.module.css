@@ -342,6 +342,11 @@
   box-shadow: 0 0 0 3px rgba(41,72,58,.3);
 }
 .landmark:nth-child(4) strong { color: #f8dda0; background: rgba(37, 68, 53, .92); border-top: 2px solid #f4cf62; border-radius: 1px 9px 1px 9px; }
+.landmark:nth-child(5) strong { color: #ffe1b7; background: #623920d9; border: 1px solid #ffb55d66; }
+.landmark:nth-child(6) strong { color: #dbe6b6; background: #202c21d9; border-bottom: 3px solid #b9c483; }
+.landmark:nth-child(7) strong { color: #e7d5ed; background: #34253ed9; border: 1px dashed #d1b4e16b; }
+.landmark:nth-child(8) strong { color: #19221d; background: #cec091eb; border-radius: 8px 2px 8px 2px; }
+.landmark:nth-child(9) strong { color: #ddd7bd; background: #2c3229dc; border-bottom: 1px dashed #ddd7bd; }
 
 .landmark:nth-child(1) .landmarkCopy { border-color: rgba(232,221,194,.4); }
 .landmark:nth-child(2) .landmarkCopy { border-color: rgba(230,91,64,.6); }
@@ -1204,6 +1209,8 @@
   .landmark:nth-child(3) { top: 55% !important; }
   .landmark:nth-child(4) { top: 63% !important; }
   .landmarkIndex { display: none; }
+  /* Small screens keep the four primary landmarks; all toys live in dispatch. */
+  .landmark:nth-child(n+5) { display: none; }
   .landmarkBeacon { width: 12px; height: 12px; }
   .landmark strong { display: inline-flex; align-items: center; min-height: 32px; padding: 7px 8px 6px; font-size: 8px; }
   .landmarkCopy {
