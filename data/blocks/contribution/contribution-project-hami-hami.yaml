@@ -6,6 +6,20 @@ tags:
   - opensource
 machine:
   pullRequests:
+    - additions: 1
+      changedFiles: 1
+      deletions: 0
+      href: https://github.com/Project-HAMi/HAMi/pull/3158
+      mergedAt: "2026-10-04T08:52:26Z"
+      number: 3158
+      title: 'chore(chart): add admission.k8s.io/v1 to webhook admissionReviewVersions'
+    - additions: 0
+      changedFiles: 1
+      deletions: 4
+      href: https://github.com/Project-HAMi/HAMi/pull/3157
+      mergedAt: "2026-10-04T08:52:13Z"
+      number: 3157
+      title: 'fix(chart): drop unused pods and nodes verbs from the device-plugin ClusterRole'
     - additions: 51
       changedFiles: 2
       deletions: 9
@@ -77,7 +91,7 @@ machine:
       number: 2221
       title: 'fix(workflow): skip non-translatable issue comments'
   repository: Project-HAMi/HAMi
-  stars: 4705
+  stars: 4707
 content:
   entries:
     - number: 2292
