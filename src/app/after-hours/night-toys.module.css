@@ -1,0 +1,44 @@
+.hint { color: #a8b4a9; font: 11px/1.7 monospace; margin: 16px 0 0; }
+.controls, .materials { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; margin: 16px 0; font: 10px monospace; }
+.controls button, .materials button, .dpad button { min-height: 42px; padding: 10px 12px; border: 1px solid #9fac8b60; border-bottom: 3px solid #101915; border-radius: 4px; box-shadow: 0 3px 5px #0006, inset 0 1px #ffffff18; background: linear-gradient(#424c40, #232c25); color: #e9e4cd; font: 11px monospace; }
+.controls button:active, .materials button:active, .dpad button:active { transform: translateY(2px); box-shadow: inset 0 2px 5px #0008; }
+.controls button:disabled { opacity: .45; }
+.materials { margin-top: 0; }
+.materials button[aria-pressed=true] { background: #c9b886; color: #1b261e; }
+.furnace, .delivery { display: block; width: 100%; height: auto; image-rendering: pixelated; border: 1px solid #a9b29855; border-radius: 4px; touch-action: none; background: #101b19; }
+.radio { padding: 20px 14px 10px; background: #111912; border: 1px solid #8d9b674d; box-shadow: inset 0 0 30px #0008; text-align: center; color: #d7daac; }
+.radio > span { font: 8px monospace; letter-spacing: .12em; }
+.radio output { display: block; margin: 20px 0; font: 36px "Silkscreen", monospace; text-shadow: 0 0 18px #cfda6e45; }
+.radio output small { font: 10px monospace; padding-left: 8px; }
+.scale { padding: 14px 0 10px; border-top: 16px solid transparent; border-image: repeating-linear-gradient(90deg, #919b62 0 1px, transparent 1px 10px) 16; font: 8px monospace; }
+.radio input { width: 100%; accent-color: #d7c17e; }
+.radio p { font: 9px monospace; letter-spacing: .1em; }
+.transmission { margin-top: 15px; padding: 18px; border-left: 2px solid #b9b980; background: #cfce9c09; min-height: 155px; }
+.transmission small { font-size: 9px; color: #b5b9a0; }
+.transmission h3 { font: 14px/1.4 "Silkscreen", monospace; margin: 12px 0; }
+.transmission p { font: 12px/1.8 monospace; color: #c8ccbf; }
+.pulseStage { position: relative; display: grid; place-items: center; height: 175px; background: repeating-linear-gradient(0deg, transparent 0 17px, #a0a98b0b 17px 18px), #111b18; overflow: hidden; border: 1px solid #ffffff25; }
+.pulseStage span { position: absolute; bottom: 13px; font: 8px monospace; letter-spacing: .13em; color: #b9c4ab; }
+.pulse { font: 110px monospace; color: #d9c897; }
+.pulseStage[data-active=true] .pulse { animation: strike .25s ease-out both; }
+.pads { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 14px; }
+.pads button { min-height: 75px; border: 1px solid #adbc9e55; border-bottom: 5px solid #0e1711; border-radius: 7px; background: linear-gradient(#56604d, #29352a); color: #e3dec4; font: 10px monospace; box-shadow: inset 0 1px #e2eac226, 0 4px 8px #0005; }
+.pads b { display: block; margin-bottom: 12px; font: 18px "Silkscreen", monospace; opacity: .55; }
+.pads button[data-active=true] { background: #c9b57f; color: #212b21; transform: translateY(3px); border-bottom-width: 2px; }
+.deliveryLabel { display: flex; flex-direction: column; gap: 9px; margin-bottom: 16px; }
+.deliveryLabel small { font: 10px/1.5 monospace; color: #bbc2b0; }
+.deliveryLabel b { font: 14px "Silkscreen", monospace; }
+.deliveryLabel span { font: 10px monospace; color: #a4b294; }
+.dpad { display: flex; gap: 8px; margin-top: 13px; }
+.dpad button { flex: 1; min-height: 49px; touch-action: none; user-select: none; }
+.receipt { padding: 25px 21px; background: #ddd9c9; color: #292d24; transform: rotate(-1deg); box-shadow: 3px 9px 20px #0007; clip-path: polygon(0 0, 100% 0, 100% 98%, 97% 100%, 94% 98%, 91% 100%, 88% 98%, 85% 100%, 82% 98%, 79% 100%, 76% 98%, 73% 100%, 70% 98%, 67% 100%, 64% 98%, 61% 100%, 58% 98%, 55% 100%, 52% 98%, 49% 100%, 46% 98%, 43% 100%, 40% 98%, 37% 100%, 34% 98%, 31% 100%, 28% 98%, 25% 100%, 22% 98%, 19% 100%, 16% 98%, 13% 100%, 10% 98%, 7% 100%, 4% 98%, 0 100%); }
+.receipt > small { font: 9px monospace; }
+.receipt h3 { font: 23px/1.1 "Silkscreen", monospace; letter-spacing: -.07em; margin: 20px 0 12px; }
+.receipt p { font: 10px/1.8 monospace; }
+.receipt hr { border: 0; border-top: 1px dashed #666a5555; margin: 17px 0; }
+.receipt > div { display: flex; justify-content: space-between; gap: 10px; font: 11px/2 monospace; }
+.receipt b { font-weight: 400; }
+.receipt footer { font: 35px monospace; letter-spacing: -5px; margin: 15px 0; overflow: hidden; }
+.controls button:focus-visible, .materials button:focus-visible, .pads button:focus-visible, .dpad button:focus-visible, .furnace:focus-visible, .delivery:focus-visible, .radio input:focus-visible { outline: 2px solid #e7e7b5; outline-offset: 3px; }
+@keyframes strike { from { transform: scale(.4) rotate(-15deg); opacity: .3; } to { transform: scale(1) rotate(0); opacity: 1; } }
+@media(prefers-reduced-motion: reduce) { .pulseStage[data-active=true] .pulse { animation: none; } }

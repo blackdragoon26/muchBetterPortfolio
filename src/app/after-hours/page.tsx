@@ -19,6 +19,11 @@ const LANDMARKS = [
   { id: "drive", label: "midnight drive", index: "02", copy: "Old Japanese adverts, beautiful machines and the quiet part of the city after midnight.", position: { left: "54%", top: "43%" } },
   { id: "signal", label: "signal room", index: "03", copy: "The permanent soundtrack. The radio stays put while the rest of the map moves under it.", position: { left: "66%", top: "56%" } },
   { id: "match", label: "match point", index: "04", copy: "Table tennis, scorecards and one more game after saying the previous one was the last.", position: { left: "48%", top: "76%" } },
+  { id: "furnace", label: "pocket furnace", index: "05", position: { left: "62%", top: "35%" } },
+  { id: "radio", label: "pirate frequency", index: "06", position: { left: "28%", top: "40%" } },
+  { id: "percussion", label: "machine rhythm", index: "07", position: { left: "75%", top: "70%" } },
+  { id: "delivery", label: "night deliveries", index: "08", position: { left: "27%", top: "78%" } },
+  { id: "receipt", label: "time well wasted", index: "09", position: { left: "56%", top: "66%" } },
 ] as const;
 
 const REFERENCES = [
@@ -536,7 +541,7 @@ export default function AfterHoursPage() {
       </div>
 
       {station && !galleryOpen ? <NightStation station={station} onChange={setStation} onClose={closeStation} onArchive={openStationArchive} /> : null}
-      <button type="button" className={styles.dispatchButton} aria-expanded={station !== null} onClick={() => setStation((value) => value ? null : "memory")}><span aria-hidden="true">▦</span> Night dispatch <small>04 stops</small></button>
+      <button type="button" className={styles.dispatchButton} aria-expanded={station !== null} onClick={() => setStation((value) => value ? null : "memory")}><span aria-hidden="true">▦</span> Night dispatch <small>09 stops</small></button>
 
       {galleryOpen ? (
         <section className={styles.galleryOverlay} role="dialog" aria-modal="true" aria-label="Visual brain gallery">
