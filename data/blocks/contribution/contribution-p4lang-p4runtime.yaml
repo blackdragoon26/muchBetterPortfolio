@@ -5,6 +5,13 @@ tags:
   - opensource
 machine:
   pullRequests:
+    - additions: 7
+      changedFiles: 1
+      deletions: 0
+      href: https://github.com/p4lang/p4runtime/pull/635
+      mergedAt: "2026-10-09T17:29:41Z"
+      number: 635
+      title: 'docs: clarify MeterConfig units'
     - additions: 5
       changedFiles: 1
       deletions: 0
