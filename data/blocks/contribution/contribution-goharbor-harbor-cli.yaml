@@ -13,7 +13,7 @@ machine:
       number: 529
       title: Update README.md
   repository: goharbor/harbor-cli
-  stars: 164
+  stars: 165
 content:
   entries:
     - number: 529
