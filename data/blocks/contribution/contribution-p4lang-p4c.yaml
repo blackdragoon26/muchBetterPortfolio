@@ -16,7 +16,7 @@ machine:
       number: 5756
       title: 'frontends: preserve type when folding struct casts'
   repository: p4lang/p4c
-  stars: 846
+  stars: 847
 content:
   entries:
     - number: 5756
