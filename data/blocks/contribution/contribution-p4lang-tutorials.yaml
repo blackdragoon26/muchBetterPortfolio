@@ -13,7 +13,7 @@ machine:
       number: 681
       title: 'Update README.md in reference to #680'
   repository: p4lang/tutorials
-  stars: 1601
+  stars: 1602
 content:
   entries:
     - number: 681
