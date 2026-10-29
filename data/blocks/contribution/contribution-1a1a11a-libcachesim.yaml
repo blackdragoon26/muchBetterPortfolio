@@ -1,0 +1,40 @@
+id: contribution:1a1a11a-libcachesim
+kind: contribution
+source: github
+tags:
+  - systems
+  - opensource
+machine:
+  pullRequests:
+    - additions: 7
+      changedFiles: 1
+      deletions: 3
+      href: https://github.com/1a1a11a/libCacheSim/pull/345
+      mergedAt: "2026-10-29T02:25:15Z"
+      number: 345
+      title: 'fix(hooks): support Bash 3.2 on macOS'
+    - additions: 116
+      changedFiles: 2
+      deletions: 13
+      href: https://github.com/1a1a11a/libCacheSim/pull/346
+      mergedAt: "2026-10-29T02:24:57Z"
+      number: 346
+      title: 'fix(cli): validate numeric arguments without truncation'
+    - additions: 1046
+      changedFiles: 18
+      deletions: 132
+      href: https://github.com/1a1a11a/libCacheSim/pull/347
+      mergedAt: "2026-10-29T02:24:30Z"
+      number: 347
+      title: 'feat(reader): add native uniform and Zipf traces'
+  repository: 1a1a11a/libCacheSim
+  stars: 358
+content:
+  entries:
+    - number: 345
+      summary: ""
+    - number: 346
+      summary: ""
+    - number: 347
+      summary: ""
+  label: 1a1a11a/libCacheSim

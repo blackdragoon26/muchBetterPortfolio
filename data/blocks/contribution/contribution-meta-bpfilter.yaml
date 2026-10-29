@@ -1,0 +1,31 @@
+id: contribution:meta-bpfilter
+kind: contribution
+source: github
+tags:
+  - systems
+  - opensource
+machine:
+  pullRequests:
+    - additions: 601
+      changedFiles: 20
+      deletions: 74
+      href: https://github.com/meta/bpfilter/pull/578
+      mergedAt: "2026-09-08T12:50:05Z"
+      number: 578
+      title: 'lib: log: support packet 5-tuple logging'
+    - additions: 7
+      changedFiles: 4
+      deletions: 4
+      href: https://github.com/meta/bpfilter/pull/507
+      mergedAt: "2026-04-24T10:52:56Z"
+      number: 507
+      title: 'build: update clang-tidy brace config, fix opts.c/set.c, and NOLINT dump.c'
+  repository: meta/bpfilter
+  stars: 362
+content:
+  entries:
+    - number: 578
+      summary: ""
+    - number: 507
+      summary: ""
+  label: meta/bpfilter
