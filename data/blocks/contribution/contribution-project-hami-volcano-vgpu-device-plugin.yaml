@@ -5,6 +5,13 @@ tags:
   - opensource
 machine:
   pullRequests:
+    - additions: 31
+      changedFiles: 3
+      deletions: 33
+      href: https://github.com/Project-HAMi/volcano-vgpu-device-plugin/pull/205
+      mergedAt: "2026-10-31T19:19:52Z"
+      number: 205
+      title: 'chore(deps): update Go, Kubernetes and NFD'
     - additions: 122
       changedFiles: 5
       deletions: 0
@@ -13,7 +20,7 @@ machine:
       number: 148
       title: 'docs: add volcano vGPU contribution templates'
   repository: Project-HAMi/volcano-vgpu-device-plugin
-  stars: 175
+  stars: 176
 content:
   entries:
     - number: 148

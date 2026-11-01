@@ -28,7 +28,7 @@ machine:
       number: 347
       title: 'feat(reader): add native uniform and Zipf traces'
   repository: 1a1a11a/libCacheSim
-  stars: 358
+  stars: 359
 content:
   entries:
     - number: 345
