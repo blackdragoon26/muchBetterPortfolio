@@ -5,6 +5,20 @@ tags:
   - opensource
 machine:
   pullRequests:
+    - additions: 677
+      changedFiles: 9
+      deletions: 53
+      href: https://github.com/Project-HAMi/volcano-vgpu-device-plugin/pull/216
+      mergedAt: "2026-11-02T05:24:02Z"
+      number: 216
+      title: 'fix(plugin): retain health state across stream reconnects'
+    - additions: 200
+      changedFiles: 3
+      deletions: 2
+      href: https://github.com/Project-HAMi/volcano-vgpu-device-plugin/pull/214
+      mergedAt: "2026-11-01T18:18:37Z"
+      number: 214
+      title: 'fix(plugin): return health update send errors'
     - additions: 31
       changedFiles: 3
       deletions: 33
