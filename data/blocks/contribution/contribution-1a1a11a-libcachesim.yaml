@@ -6,6 +6,20 @@ tags:
   - opensource
 machine:
   pullRequests:
+    - additions: 60
+      changedFiles: 2
+      deletions: 13
+      href: https://github.com/1a1a11a/libCacheSim/pull/358
+      mergedAt: "2026-11-02T22:52:08Z"
+      number: 358
+      title: 'fix(wtinylfu): validate eviction parameters'
+    - additions: 43
+      changedFiles: 2
+      deletions: 1
+      href: https://github.com/1a1a11a/libCacheSim/pull/359
+      mergedAt: "2026-11-02T22:51:55Z"
+      number: 359
+      title: 'fix(reader): honor TTL support in binary traces'
     - additions: 7
       changedFiles: 1
       deletions: 3
@@ -28,7 +42,7 @@ machine:
       number: 347
       title: 'feat(reader): add native uniform and Zipf traces'
   repository: 1a1a11a/libCacheSim
-  stars: 359
+  stars: 360
 content:
   entries:
     - number: 345
