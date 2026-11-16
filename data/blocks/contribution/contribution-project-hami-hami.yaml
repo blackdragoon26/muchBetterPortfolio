@@ -6,6 +6,13 @@ tags:
   - opensource
 machine:
   pullRequests:
+    - additions: 580
+      changedFiles: 5
+      deletions: 21
+      href: https://github.com/Project-HAMi/HAMi/pull/3422
+      mergedAt: "2026-11-15T14:07:15Z"
+      number: 3422
+      title: 'feat(scheduler): add offline configuration validation'
     - additions: 1
       changedFiles: 1
       deletions: 0
@@ -91,7 +98,7 @@ machine:
       number: 2221
       title: 'fix(workflow): skip non-translatable issue comments'
   repository: Project-HAMi/HAMi
-  stars: 5012
+  stars: 5015
 content:
   entries:
     - number: 2292
