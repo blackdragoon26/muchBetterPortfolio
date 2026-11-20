@@ -98,7 +98,7 @@ machine:
       number: 2221
       title: 'fix(workflow): skip non-translatable issue comments'
   repository: Project-HAMi/HAMi
-  stars: 5035
+  stars: 5041
 content:
   entries:
     - number: 2292
