@@ -116,17 +116,13 @@ function PocketMatch() {
   </>;
 }
 
-export default memo(function NightStation({ station, onChange, onClose, onArchive }: { station: StationId; onChange: (id: StationId) => void; onClose: () => void; onArchive: () => void }) {
-  const [visited, setVisited] = useState<StationId[]>([station]);
+export default memo(function NightStation({ station, onClose, onArchive }: { station: StationId; onClose: () => void; onArchive: () => void }) {
   const [print, setPrint] = useState(0);
   const [printed, setPrinted] = useState(false);
   const [exposure, setExposure] = useState(50);
   const close = useRef<HTMLButtonElement>(null);
-  const panel = useRef<HTMLElement>(null);
   const current = STATIONS.find((item) => item.id === station)!;
   useEffect(() => { beginNightSession(); }, []);
-  useEffect(() => { setVisited((values) => values.includes(station) ? values : [...values, station]); }, [station]);
-  useEffect(() => { panel.current?.scrollTo({ top: 0 }); }, [station]);
   useEffect(() => {
     const previous = document.activeElement as HTMLElement | null;
     close.current?.focus();
@@ -134,10 +130,13 @@ export default memo(function NightStation({ station, onChange, onClose, onArchiv
     window.addEventListener("keydown", escape);
     return () => { window.removeEventListener("keydown", escape); previous?.focus(); };
   }, [onClose]);
-  return <aside ref={panel} className={styles.station} aria-label="Night dispatch station">
-    <div className={styles.topline}><span><i /> NIGHT DISPATCH</span><select className={styles.stopSelect} aria-label="Choose night stop" value={station} onChange={(e) => onChange(e.target.value as StationId)}>{STATIONS.map((item, index) => <option key={item.id} value={item.id}>{String(index + 1).padStart(2, "0")} / {item.name}</option>)}</select><button ref={close} type="button" aria-label="Close night station" onClick={onClose}>×</button></div>
-    <nav className={styles.route} aria-label="Night station stops">{STATIONS.map((item, index) => <button type="button" key={item.id} aria-label={item.name} aria-pressed={station === item.id} onClick={() => onChange(item.id)}><span>{String(index + 1).padStart(2, "0")}</span><small>{item.name}</small>{visited.includes(item.id) && <i aria-label="Visited">✓</i>}</button>)}</nav>
-    <div className={styles.body}><p className={styles.kicker}>STOP {STATIONS.findIndex((item) => item.id === station) + 1} / 09</p><h2>{current.name}</h2><p className={styles.subtitle}>{current.subtitle}</p>
+  return <aside className={styles.station} aria-label={current.name}>
+    <div className={styles.topline}>
+      <h2>{current.name}</h2>
+      <button ref={close} type="button" aria-label="Close game" onClick={onClose}>×</button>
+    </div>
+    <div className={styles.body}>
+      <p className={styles.subtitle}>{current.subtitle}</p>
       {station === "memory" && <><div key={`${print}-${printed}`} className={`${styles.print} ${printed ? styles.printed : ""}`}><div className={styles.photo}><Image src={`/after-hours/${PRINTS[print]}`} alt="Selected reference from the visual archive" fill sizes="350px" /></div><span>FIELD NOTE / {String(print + 1).padStart(2, "0")} <b>{printed ? "FILED ✓" : "UNDEVELOPED"}</b></span></div><div className={styles.controls}><button type="button" onClick={() => { setPrint((value) => (value + 1) % PRINTS.length); setPrinted(false); }}>Next negative</button><button type="button" disabled={printed} onClick={() => { setPrinted(true); logNightActivity("prints developed"); }}>{printed ? "In the drawer" : "Make a print"}</button></div><button className={styles.textButton} type="button" onClick={onArchive}>Browse the full archive ↗</button></>}
       {station === "drive" && <><div className={styles.lightTable}><Image src="/after-hours/nsx-reference.png" alt="Japanese sports car at sunset on an adjustable light table" fill sizes="350px" style={{ filter: `brightness(${.45 + exposure / 90}) saturate(${.6 + exposure / 100})` }} /><span>{exposure < 35 ? "02:13 / NIGHT RUN" : exposure > 70 ? "17:42 / GOLDEN HOUR" : "19:06 / BLUE HOUR"}</span></div><label className={styles.exposure}>Turn the light <input type="range" min="0" max="100" value={exposure} aria-label="Light table exposure" onChange={(e) => setExposure(Number(e.target.value))} /><output>{exposure}%</output></label><p className={styles.hint}>A tiny darkroom for the machines that keep you up at night.</p></>}
       {station === "signal" && <SignalGarden />}
@@ -147,6 +146,6 @@ export default memo(function NightStation({ station, onChange, onClose, onArchiv
       {station === "percussion" && <FactoryPercussion />}
       {station === "delivery" && <NightDelivery />}
       {station === "receipt" && <WastedReceipt />}
-    </div><footer className={styles.ticket}><span>PERSONAL TRANSMISSION</span><b>{visited.length === STATIONS.length ? "ALL STOPS / NIGHT WELL SPENT" : `${visited.length} OF ${STATIONS.length} STOPS STAMPED`}</b><div aria-hidden="true">▎▏▍▎▏▍▏▎▍▏▎▏▍▎▏▍▏▎▍▏</div></footer>
+    </div>
   </aside>;
 });

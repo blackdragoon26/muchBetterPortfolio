@@ -1,6 +1,8 @@
 "use client";
 
 import { HackathonCard } from "@/components/hackathon-card";
+import { MovableClock } from "@/components/movable-clock";
+import { OpenSourceStrip } from "@/components/open-source-strip";
 import { ContributionCard } from "@/components/contribution-card";
 import BlurFade from "@/components/magicui/blur-fade";
 import BlurFadeText from "@/components/magicui/blur-fade-text";
@@ -16,7 +18,7 @@ import portfolio from "@/generated/portfolio.json";
 import { ExternalLink, Github } from "lucide-react";
 import Link from "next/link";
 import Markdown from "react-markdown";
-import { useEffect, useState } from "react";
+import { type RefObject, useEffect, useRef, useState } from "react";
 
 const BLUR_FADE_DELAY = 0.04;
 
@@ -32,7 +34,7 @@ const PAGE_SECTIONS = [
   { id: "contact", label: "Contact" },
 ] as const;
 
-function HeadingNavigator() {
+function HeadingNavigator({ clockDock }: { clockDock: RefObject<HTMLSpanElement> }) {
   const [activeSection, setActiveSection] = useState<
     (typeof PAGE_SECTIONS)[number]["id"]
   >(PAGE_SECTIONS[0].id);
@@ -92,6 +94,7 @@ function HeadingNavigator() {
       aria-label="On this page"
       className="fixed left-5 top-1/2 z-40 hidden -translate-y-1/2 flex-col gap-1.5 lg:flex"
     >
+      <span ref={clockDock} aria-hidden="true" className="pointer-events-none absolute left-full top-1/2 ml-2 size-[136px] -translate-y-1/2 xl:ml-4 xl:size-[148px]" />
       {PAGE_SECTIONS.map((section) => {
         const isActive = activeSection === section.id;
 
@@ -128,9 +131,11 @@ function HeadingNavigator() {
 export default function Page() {
   const [showOtherStuff, setShowOtherStuff] = useState(false);
 
+  const clockDock = useRef<HTMLSpanElement>(null);
+
   return (
     <main id="page-wrap" className="flex flex-col min-h-[100dvh] space-y-10">
-      <HeadingNavigator />
+      <HeadingNavigator clockDock={clockDock} />
       <section id="hero">
         <div className="mx-auto w-full max-w-2xl space-y-8">
           <div className="flex flex-col-reverse gap-5 sm:flex-row sm:items-start sm:justify-between sm:gap-2">
@@ -149,15 +154,22 @@ export default function Page() {
                 </p>
               </BlurFade>
             </div>
-            <BlurFade delay={BLUR_FADE_DELAY}>
-              <Avatar className="size-24 border sm:size-32">
-                <AvatarImage alt={DATA.name} src={DATA.avatarUrl} />
-                <AvatarFallback>{DATA.initials}</AvatarFallback>
-              </Avatar>
-            </BlurFade>
+            <div className="relative w-fit shrink-0 sm:max-lg:mb-[124px]">
+              <BlurFade delay={BLUR_FADE_DELAY} yOffset={0}>
+                <Avatar className="size-24 border sm:size-32">
+                  <AvatarImage alt={DATA.name} src={DATA.avatarUrl} />
+                  <AvatarFallback>{DATA.initials}</AvatarFallback>
+                </Avatar>
+              </BlurFade>
+              <MovableClock
+                dockRef={clockDock}
+                className="absolute left-full -top-2 ml-4 [--space-clock-size:112px] sm:max-lg:left-auto sm:max-lg:right-0 sm:max-lg:top-full sm:max-lg:ml-0 sm:max-lg:mt-3 lg:-top-3 lg:[--space-clock-size:152px]"
+              />
+            </div>
           </div>
         </div>
       </section>
+      <OpenSourceStrip />
       <section id="about">
         <BlurFade delay={BLUR_FADE_DELAY * 3}>
           <h2 className="text-xl font-bold"></h2>
@@ -270,21 +282,18 @@ export default function Page() {
           <BlurFade delay={BLUR_FADE_DELAY * 13}>
             <div className="flex flex-col items-center justify-center space-y-4 text-center">
               <div className="space-y-2">
-                <div className="inline-block rounded-lg bg-foreground px-3 py-1 text-sm text-background">
-                  Open Source
-                </div>
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
-                  PRs I like to show
+                  Upstream contributions
                 </h2>
                 <p className="text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  Merged upstream work, automatically selected from repositories with at least {portfolio.filter.minimumRepositoryStars.toLocaleString("en-US")} stars.
+                  Selected pull requests merged upstream.
                 </p>
               </div>
             </div>
           </BlurFade>
-          <div className="mx-auto grid max-w-[800px] grid-cols-1 gap-3 sm:grid-cols-2">
+          <div className="mx-auto grid max-w-[800px] grid-cols-1 gap-4 sm:grid-cols-2">
             {portfolio.pullRequests.map((pullRequest, id) => (
-              <BlurFade key={pullRequest.id} delay={BLUR_FADE_DELAY * 14 + id * 0.05}>
+              <BlurFade key={pullRequest.id} className="min-w-0" delay={BLUR_FADE_DELAY * 14 + id * 0.05}>
                 <ContributionCard {...pullRequest} />
               </BlurFade>
             ))}

@@ -1,0 +1,21 @@
+.section { min-width: 0; }
+.heading { margin-bottom: 8px; font-size: .875rem; font-weight: 600; }
+.mark a:hover { text-decoration: underline; text-underline-offset: .3em; }
+.viewport { overflow: hidden; border-block: 1px solid hsl(var(--border)); }
+.track { display: flex; width: max-content; animation: marquee 95s linear infinite; }
+.group { display: flex; align-items: center; gap: 30px; padding: 13px 30px 13px 0; }
+.mark { white-space: nowrap; font-size: .9rem; font-weight: 600; }
+.mark > * { display: inline-flex; align-items: center; gap: 8px; }
+.mark img { flex: 0 0 26px; border-radius: 4px; object-fit: contain; }
+.mark a:focus-visible { outline: 2px solid currentColor; outline-offset: 3px; }
+.viewport:hover .track { animation-play-state: paused; }
+.viewport:has(a:focus-visible) { overflow-x: auto; }
+.viewport:has(a:focus-visible) .track { animation: none; }
+.viewport:has(a:focus-visible) .copy { display: none; }
+
+@keyframes marquee { to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce), (hover: none) {
+  .viewport { overflow-x: auto; }
+  .track { animation: none; }
+  .copy { display: none; }
+}

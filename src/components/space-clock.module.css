@@ -1,0 +1,134 @@
+.navigation {
+  --watch-gold: #9a5d18;
+  --watch-minute: #173e61;
+  --watch-second: #087340;
+  --watch-gear: #984638;
+  width: var(--space-clock-size, 112px);
+  flex: 0 0 auto;
+}
+
+@media (min-width: 640px) {
+  .navigation { width: var(--space-clock-size, 136px); }
+}
+
+:global(.dark) .navigation,
+:global([data-after-hours]) .navigation {
+  --watch-gold: #e8b465;
+  --watch-minute: #bed8ff;
+  --watch-second: #72e8a0;
+  --watch-gear: #ec9174;
+}
+
+.dial {
+  position: relative;
+  aspect-ratio: 1;
+  container-type: inline-size;
+}
+
+.asciiWatch {
+  position: absolute;
+  inset: 0;
+  color: hsl(var(--foreground));
+}
+
+.asciiWatch pre {
+  position: absolute;
+  inset: 0;
+  overflow: clip;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  font: 700 3.5cqw/4.3478cqw ui-monospace, "DejaVu Sans Mono", monospace;
+  font-variant-ligatures: none;
+  text-align: center;
+  white-space: pre;
+  user-select: none;
+}
+
+.flight {
+  position: absolute;
+  top: -60px;
+  left: -60px;
+  width: calc(100% + 120px);
+  height: calc(100% + 120px);
+  max-width: none;
+  display: none;
+  pointer-events: none;
+}
+
+.asciiWatch[data-fracturing] pre,
+.asciiWatch[data-fracturing] .indices { visibility: hidden; }
+.asciiWatch[data-fracturing] .flight { display: block; }
+
+.asciiWatch .face { color: hsl(var(--foreground) / .76); }
+.asciiWatch .hour, .asciiWatch .minute, .asciiWatch .second {
+  font-size: 2.32cqw;
+  line-height: 2.85714cqw;
+  text-shadow: 0 0 .35px currentColor;
+}
+.asciiWatch .hour { color: hsl(var(--foreground)); }
+.asciiWatch .minute { color: var(--watch-minute); }
+.asciiWatch .second { color: var(--watch-second); }
+.asciiWatch .movement { color: var(--watch-gear); }
+.asciiWatch .accent { color: var(--watch-gold); }
+.dial:has(a:hover, a:focus-visible) .accent { filter: brightness(1.35); }
+
+.indices {
+  position: absolute;
+  inset: 0;
+  font: 700 5.4cqw/1 ui-monospace, "DejaVu Sans Mono", monospace;
+  pointer-events: none;
+}
+
+.indices span { position: absolute; translate: -50% -50%; }
+.indices span:nth-child(1) { top: 15%; left: 50%; }
+.indices span:nth-child(2) { top: 50%; left: 83%; }
+.indices span:nth-child(3) { top: 85%; left: 50%; }
+.indices span:nth-child(4) { top: 50%; left: 17%; }
+
+.sector {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  touch-action: manipulation;
+  cursor: pointer;
+}
+
+.move {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: max(28%, 44px);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  cursor: move;
+  touch-action: manipulation;
+}
+.move:hover { background: hsl(var(--foreground) / .08); }
+.dial:has(.asciiWatch[data-fracturing]) .time { visibility: hidden; }
+
+.day { clip-path: polygon(50% 50%, 0 50%, 0 0, 100% 0, 100% 100%, 78.87% 100%); }
+.night { clip-path: polygon(50% 50%, 78.87% 100%, 0 100%, 0 50%); }
+.sector:hover, .sector:focus-visible { background: color-mix(in srgb, var(--watch-gold) 15%, transparent); }
+.dial:has(:focus-visible) { outline: 2px solid var(--watch-gold); outline-offset: 3px; border-radius: 50%; }
+
+.time {
+  position: absolute;
+  z-index: 5;
+  top: calc(100% + 5px);
+  right: 0;
+  width: max-content;
+  padding: 4px 7px;
+  border: 1px solid hsl(var(--border));
+  border-radius: 3px;
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font: 600 .7rem/1.5 ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+:global([data-after-hours]) .time { background: #141813; }
+.dial:hover .time, .dial:focus-within .time { visibility: visible; }

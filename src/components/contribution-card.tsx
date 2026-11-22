@@ -34,7 +34,7 @@ export function ContributionCard({
   technologies,
 }: ContributionCardProps) {
   return (
-    <Card className="group flex h-full min-h-64 flex-col overflow-hidden transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg">
+    <Card className="group flex h-full min-w-0 flex-col border border-border bg-muted/20 transition-colors hover:border-foreground/30">
       <CardHeader className="space-y-4 p-4 pb-2">
         <div className="flex items-center justify-between gap-3">
           <Link href={repositoryUrl} target="_blank" className="flex min-w-0 items-center gap-2.5 hover:underline">
@@ -59,8 +59,8 @@ export function ContributionCard({
             <time>{new Date(mergedAt).toLocaleDateString("en-US", { month: "short", year: "numeric" })}</time>
           </div>
           <CardTitle className="text-base leading-snug">
-            <Link href={href} target="_blank" className="inline-flex items-start gap-1.5 hover:underline">
-              {title}
+            <Link href={href} target="_blank" className="flex min-w-0 items-start gap-1.5 hover:underline">
+              <span className="min-w-0 [overflow-wrap:anywhere]">{title}</span>
               <ArrowUpRight className="mt-0.5 size-4 shrink-0 opacity-0 transition-opacity group-hover:opacity-100" />
             </Link>
           </CardTitle>
@@ -79,14 +79,20 @@ export function ContributionCard({
         </div>
       </CardContent>
 
-      <CardFooter className="flex items-center justify-between border-t px-4 py-3 text-[11px] text-muted-foreground">
-        <span className="inline-flex items-center gap-1">
-          <FileCode2 className="size-3" /> {changedFiles} {changedFiles === 1 ? "file" : "files"}
+      <CardFooter className="flex flex-wrap items-center justify-between gap-x-2 gap-y-2 px-4 pb-4 pt-1 text-xs text-muted-foreground">
+        <span className="inline-flex items-center gap-1 whitespace-nowrap">
+          <FileCode2 className="size-3.5" aria-hidden="true" /> {changedFiles} {changedFiles === 1 ? "file" : "files"}
         </span>
-        <span className="font-mono">
-          <span className="text-emerald-600">+{additions}</span>{" "}
-          <span className="text-red-500">-{deletions}</span>
-        </span>
+        <Link
+          href={`${href}/files`}
+          target="_blank"
+          aria-label={`View PR #${number} diff: ${additions} lines added, ${deletions} removed`}
+          className="flex shrink-0 items-center gap-2 rounded-md border px-2 py-1 font-mono text-xs font-semibold tabular-nums hover:border-foreground/40"
+        >
+          <span className="text-emerald-700 dark:text-emerald-400">+{additions.toLocaleString("en-US")}</span>
+          <span className="text-red-700 dark:text-red-400">−{deletions.toLocaleString("en-US")}</span>
+          <span aria-hidden="true" className="text-[10px] font-normal text-muted-foreground">lines</span>
+        </Link>
       </CardFooter>
     </Card>
   );

@@ -1,7 +1,8 @@
 "use client";
 
+import { MovableClock } from "@/components/movable-clock";
+import dynamic from "next/dynamic";
 import Image from "next/image";
-import Link from "next/link";
 import { ChevronLeft, ChevronRight, LocateFixed, Pause, Play, RotateCcw, X } from "lucide-react";
 import {
   type PointerEvent as ReactPointerEvent,
@@ -12,7 +13,9 @@ import {
   useState,
 } from "react";
 import styles from "./after-hours.module.css";
-import NightStation, { type StationId } from "./night-station";
+import type { StationId } from "./night-station";
+
+const NightStation = dynamic(() => import("./night-station"));
 
 const LANDMARKS = [
   { id: "memory", label: "memory line", index: "01", copy: "Photos, tickets and tiny stories — fed into the line slowly, never as a normal gallery.", position: { left: "34%", top: "59%" } },
@@ -27,11 +30,62 @@ const LANDMARKS = [
 ] as const;
 
 const REFERENCES = [
-  { src: "/after-hours/sony-night-reference.png", alt: "Night city reference with vintage illuminated signage", label: "night signal" },
-  { src: "/after-hours/nsx-reference.png", alt: "Japanese sports car reference photographed at sunset", label: "machine crush" },
-  { src: "/after-hours/japanese-editorial-reference.png", alt: "Colourful Japanese editorial illustration reference", label: "print energy" },
-  { src: "/after-hours/dark-fantasy-reference.png", alt: "Dark fantasy line-art reference", label: "myth file" },
+  { src: "/after-hours/sony-night-reference.png", alt: "Night city reference with vintage illuminated signage" },
+  { src: "/after-hours/nsx-reference.png", alt: "Japanese sports car reference photographed at sunset" },
+  { src: "/after-hours/japanese-editorial-reference.png", alt: "Colourful Japanese editorial illustration reference" },
+  { src: "/after-hours/dark-fantasy-reference.png", alt: "Dark fantasy line-art reference" },
 ] as const;
+
+const SKY_PHOTOS = [
+  [1, "Pink clouds behind a row of buildings at dusk"],
+  [2, "A thin orange sunset below a deep blue sky"],
+  [3, "Sunset between dark columns and overhead wires"],
+  [4, "A park path framed by trees at dusk"],
+  [5, "A panoramic view across a city under an overcast sky"],
+  [6, "Mountain ridges beneath a bright blue sky"],
+  [7, "Low sun reflecting on wet ground"],
+  [8, "Green fields and a single tree beneath scattered clouds"],
+  [9, "A silhouetted arch and trees against a blue evening sky"],
+  [10, "Moonlight filtering through dark clouds"],
+  [11, "A domed pavilion and trees in silhouette"],
+  [12, "Clouds above distant mountains and scrubland"],
+  [13, "Sunrise at the end of a road lined with bare trees"],
+  [14, "A bright light above a red structure at night"],
+  [15, "A bright light shining through trees at night"],
+  [16, "Rocks on a mountaintop under a clear blue sky"],
+  [17, "Two people fist-bumping on a mountain overlook"],
+  [18, "A valley below a blue twilight sky"],
+  [19, "A city lit up below a dark hillside"],
+  [20, "An orange sunset reflected in a side mirror"],
+  [21, "Purple storm clouds above city traffic"],
+  [22, "A strip of orange dusk beneath thick clouds"],
+  [23, "Branches silhouetted against a bright evening sky"],
+  [24, "A decorated camel on a beach"],
+  [25, "Sunrise over waves with people along the shoreline"],
+  [26, "A low sun reflecting across the beach"],
+  [27, "An ornate stone ceiling lit in amber"],
+  [29, "A tall stone interior in warm light and shadow"],
+  [30, "Nested doorways in an amber-lit stone corridor"],
+  [31, "A symmetrical stone hall framed by carved columns"],
+  [32, "A lake and distant buildings beneath a muted dusk sky"],
+  [41, "A lit bridge and streetlamps under a blue night sky"],
+  [34, "A pool lit blue at night"],
+  [36, "Orange clouds above dark trees and rooftops"],
+  [37, "A sunset reflected in calm water"],
+  [38, "A grassy landscape and a lone pole at dusk"],
+  [39, "Trees and streetlights against a red evening sky"],
+  [42, "A laptop and headphones on a warmly lit café table"],
+  [43, "A laptop in front of a warmly lit café counter"],
+  [44, "A wall of photographs in a room illuminated red"],
+  [45, "Glowing oil lamps arranged among orange flower petals"],
+  [40, "A tree canopy silhouetted against a pale sunset"],
+].map(([number, alt]) => ({
+  src: `/after-hours/sky/${String(number).padStart(2, "0")}.webp`,
+  alt: String(alt),
+}));
+const SKY_COVER = SKY_PHOTOS.find((photo) => photo.src.endsWith("/31.webp")) ?? SKY_PHOTOS[0];
+
+type GalleryCollection = "sky" | "references";
 
 type Offset = { x: number; y: number };
 
@@ -319,170 +373,176 @@ function DashboardStereo() {
 export default function AfterHoursPage() {
   const viewportRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<HTMLDivElement>(null);
-  const factoryVideoRef = useRef<HTMLVideoElement>(null);
   const targetOffsetRef = useRef<Offset>({ x: 0, y: 0 });
   const renderedOffsetRef = useRef<Offset>({ x: 0, y: 0 });
-  const [offset, setOffset] = useState<Offset>({ x: 0, y: 0 });
-  const [activeLandmark, setActiveLandmark] = useState<string>("");
+  const panFrame = useRef<number | null>(null);
+  const [motionAllowed, setMotionAllowed] = useState(false);
   const [station, setStation] = useState<StationId | null>(null);
-  const closeStation = useCallback(() => setStation(null), []);
-  const [spotlightIndex, setSpotlightIndex] = useState(0);
+  const [dispatchOpen, setDispatchOpen] = useState(false);
+  const dispatchButton = useRef<HTMLButtonElement>(null);
+  const openedFromDispatch = useRef(false);
+  const closeStation = useCallback(() => {
+    setStation(null);
+    if (openedFromDispatch.current) dispatchButton.current?.focus();
+    openedFromDispatch.current = false;
+  }, []);
   const [galleryIndex, setGalleryIndex] = useState(0);
   const [galleryOpen, setGalleryOpen] = useState(false);
+  const [collection, setCollection] = useState<GalleryCollection>("sky");
+  const [slideshowPlaying, setSlideshowPlaying] = useState(false);
+  const galleryDialog = useRef<HTMLDialogElement>(null);
+  const closeGalleryButton = useRef<HTMLButtonElement>(null);
+  const galleryPhotos = collection === "sky" ? SKY_PHOTOS : REFERENCES;
+  const galleryPhoto = galleryPhotos[galleryIndex];
+
+  const selectCollection = useCallback((next: GalleryCollection) => {
+    setCollection(next);
+    setGalleryIndex(0);
+    setSlideshowPlaying(next === "sky" && !window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  }, []);
+
   const openStationArchive = useCallback(() => {
-    setGalleryIndex(spotlightIndex);
+    selectCollection("references");
     setGalleryOpen(true);
-  }, [spotlightIndex]);
-  const [clock, setClock] = useState("--:--:--");
+  }, [selectCollection]);
 
-  const startFactoryFeed = useCallback(() => {
-    const video = factoryVideoRef.current;
-    if (!video) return;
-    video.defaultMuted = true;
-    video.muted = true;
-    const playback = video.play();
-    if (playback) void playback.catch(() => undefined);
+  const openSky = () => {
+    selectCollection("sky");
+    setGalleryOpen(true);
+  };
+
+  const stepGallery = useCallback((direction: number) => {
+    setGalleryIndex((index) => (index + direction + galleryPhotos.length) % galleryPhotos.length);
+  }, [galleryPhotos.length]);
+
+  useEffect(() => {
+    const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const syncMotion = () => setMotionAllowed(!preference.matches);
+    syncMotion();
+    preference.addEventListener("change", syncMotion);
+    return () => preference.removeEventListener("change", syncMotion);
+  }, []);
+
+  const moveMap = useCallback((target: Offset) => {
+    targetOffsetRef.current = target;
+    if (panFrame.current !== null) return;
+
+    function glide() {
+      const current = renderedOffsetRef.current;
+      const destination = targetOffsetRef.current;
+      const dx = destination.x - current.x;
+      const dy = destination.y - current.y;
+      const settled = Math.abs(dx) < .25 && Math.abs(dy) < .25;
+      const next = settled ? destination : { x: current.x + dx * .12, y: current.y + dy * .12 };
+      renderedOffsetRef.current = next;
+      viewportRef.current?.style.setProperty("--map-x", `${next.x}px`);
+      viewportRef.current?.style.setProperty("--map-y", `${next.y}px`);
+      panFrame.current = settled ? null : window.requestAnimationFrame(glide);
+    }
+
+    panFrame.current = window.requestAnimationFrame(glide);
   }, []);
 
   useEffect(() => {
-    const root = document.documentElement;
-    const body = document.body;
-    root.classList.add("after-hours-active");
-    body.classList.add("after-hours-active");
-
+    if (!motionAllowed) moveMap({ x: 0, y: 0 });
     return () => {
-      root.classList.remove("after-hours-active");
-      body.classList.remove("after-hours-active");
+      if (panFrame.current !== null) window.cancelAnimationFrame(panFrame.current);
+      panFrame.current = null;
     };
-  }, []);
+  }, [motionAllowed, moveMap]);
 
   useEffect(() => {
-    const updateClock = () => {
-      setClock(new Intl.DateTimeFormat(undefined, {
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: false,
-        timeZone: "Asia/Kolkata",
-      }).format(new Date()));
+    if (!dispatchOpen) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setDispatchOpen(false);
+        dispatchButton.current?.focus();
+      }
     };
-    updateClock();
-    const interval = window.setInterval(updateClock, 1000);
-    return () => window.clearInterval(interval);
-  }, []);
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [dispatchOpen]);
 
   useEffect(() => {
-    const frame = window.requestAnimationFrame(startFactoryFeed);
-    const resumeWhenVisible = () => {
-      if (document.visibilityState === "visible") startFactoryFeed();
-    };
-    window.addEventListener("pageshow", startFactoryFeed);
-    window.addEventListener("focus", startFactoryFeed);
-    document.addEventListener("visibilitychange", resumeWhenVisible);
+    const dialog = galleryDialog.current;
+    if (!galleryOpen || !dialog) return;
+    const previous = document.activeElement;
+    if (!dialog.open) dialog.showModal();
+    closeGalleryButton.current?.focus();
     return () => {
-      window.cancelAnimationFrame(frame);
-      window.removeEventListener("pageshow", startFactoryFeed);
-      window.removeEventListener("focus", startFactoryFeed);
-      document.removeEventListener("visibilitychange", resumeWhenVisible);
+      if (dialog.open) dialog.close();
+      if (previous instanceof HTMLElement) previous.focus();
     };
-  }, [startFactoryFeed]);
-
-  useEffect(() => {
-    let frame = 0;
-    const glide = () => {
-      setOffset((current) => {
-        const target = targetOffsetRef.current;
-        const x = current.x + (target.x - current.x) * 0.045;
-        const y = current.y + (target.y - current.y) * 0.045;
-        const next = Math.abs(target.x - x) < 0.08 && Math.abs(target.y - y) < 0.08 ? target : { x, y };
-        renderedOffsetRef.current = next;
-        return next;
-      });
-      frame = window.requestAnimationFrame(glide);
-    };
-    frame = window.requestAnimationFrame(glide);
-    return () => window.cancelAnimationFrame(frame);
-  }, []);
-
-  useEffect(() => {
-    if (galleryOpen) return;
-    const interval = window.setInterval(() => {
-      setSpotlightIndex((current) => {
-        if (REFERENCES.length < 2) return current;
-        const jump = 1 + Math.floor(Math.random() * (REFERENCES.length - 1));
-        return (current + jump) % REFERENCES.length;
-      });
-    }, 5200);
-    return () => window.clearInterval(interval);
   }, [galleryOpen]);
 
   useEffect(() => {
     if (!galleryOpen) return;
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setGalleryOpen(false);
-      if (event.key === "ArrowLeft") setGalleryIndex((current) => (current - 1 + REFERENCES.length) % REFERENCES.length);
-      if (event.key === "ArrowRight") setGalleryIndex((current) => (current + 1) % REFERENCES.length);
+      if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+      event.preventDefault();
+      stepGallery(event.key === "ArrowLeft" ? -1 : 1);
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [galleryOpen]);
+  }, [galleryOpen, stepGallery]);
 
-  const clampOffset = (next: Offset): Offset => {
-    const viewport = viewportRef.current;
-    const map = mapRef.current;
-    if (!viewport || !map) return next;
-    const maxX = Math.max(0, (map.clientWidth - viewport.clientWidth) / 2);
-    const maxY = Math.max(0, (map.clientHeight - viewport.clientHeight) / 2);
-    return {
-      x: Math.max(-maxX, Math.min(maxX, next.x)),
-      y: Math.max(-maxY, Math.min(maxY, next.y)),
-    };
+  useEffect(() => {
+    if (!galleryOpen || !slideshowPlaying) return;
+    const interval = window.setInterval(() => {
+      if (!document.hidden) stepGallery(1);
+    }, 5200);
+    return () => window.clearInterval(interval);
+  }, [galleryIndex, galleryOpen, slideshowPlaying, stepGallery]);
+
+  const openStation = (id: StationId, fromDispatch = false) => {
+    openedFromDispatch.current = fromDispatch;
+    setDispatchOpen(false);
+    setStation(id);
   };
 
   const handlePointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
-    if (event.pointerType === "touch") return;
+    if (!motionAllowed || event.pointerType === "touch" || window.innerWidth <= 700) return;
+    if (document.documentElement.hasAttribute("data-clock-placing")) return;
     const target = event.target as HTMLElement;
-    if (target.closest("button, a, [role='dialog']")) {
+    if (target.closest("button, a")) {
       targetOffsetRef.current = renderedOffsetRef.current;
       return;
     }
-    const rect = event.currentTarget.getBoundingClientRect();
-    const normalizedX = Math.max(-1, Math.min(1, ((event.clientX - rect.left) / rect.width - 0.5) * 2));
-    const normalizedY = Math.max(-1, Math.min(1, ((event.clientY - rect.top) / rect.height - 0.5) * 2));
-    const viewport = viewportRef.current;
+
     const map = mapRef.current;
-    if (!viewport || !map) return;
+    const viewport = event.currentTarget;
+    if (!map) return;
+    const rect = viewport.getBoundingClientRect();
+    const x = Math.max(-1, Math.min(1, ((event.clientX - rect.left) / rect.width - .5) * 2));
+    const y = Math.max(-1, Math.min(1, ((event.clientY - rect.top) / rect.height - .5) * 2));
     const maxX = Math.max(0, (map.clientWidth - viewport.clientWidth) / 2);
     const maxY = Math.max(0, (map.clientHeight - viewport.clientHeight) / 2);
-    targetOffsetRef.current = clampOffset({ x: -normalizedX * maxX * 0.82, y: -normalizedY * maxY * 0.82 });
+    moveMap({ x: -x * maxX * .54, y: -y * maxY * .54 });
   };
 
   return (
-    <main className={styles.world}>
+    <main data-after-hours className={styles.world}>
       <div
         ref={viewportRef}
         className={styles.mapViewport}
         onPointerMove={handlePointerMove}
         aria-label="Cursor-responsive personal factory map"
       >
-        <video
-          ref={factoryVideoRef}
-          className={styles.factoryVideo}
-          style={{ transform: `translate3d(${offset.x * 0.035}px, ${offset.y * 0.035}px, 0) scale(1.055)` }}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          poster="/after-hours/factory-feed-01.jpg"
-          onCanPlay={startFactoryFeed}
-          onLoadedData={startFactoryFeed}
-        >
-          <source src="/after-hours/factory-feed.mp4" type="video/mp4" />
-        </video>
+        {motionAllowed && (
+          <video
+            className={styles.factoryVideo}
+            src="/after-hours/factory-feed.mp4"
+            poster="/after-hours/factory-feed-01.jpg"
+            autoPlay
+            muted
+            loop
+            playsInline
+            aria-hidden="true"
+          />
+        )}
         <div className={styles.factoryGrade} aria-hidden="true" />
 
-        <div ref={mapRef} className={styles.mapCanvas} style={{ transform: `translate(-50%, -50%) translate3d(${offset.x}px, ${offset.y}px, 0)` }}>
+        <div ref={mapRef} className={styles.mapCanvas}>
           <section className={styles.introNote} aria-labelledby="after-hours-title">
             <svg className={styles.glassFilterDefs} aria-hidden="true">
               <defs>
@@ -498,23 +558,17 @@ export default function AfterHoursPage() {
                 </filter>
               </defs>
             </svg>
-            <p>FILE: THE OTHER SIDE</p>
             <h1 id="after-hours-title">
               <span className={styles.liquidTitle} data-text="I build systems for a living.">I build systems for a living.</span>
               <em>This is what I build for fun.</em>
             </h1>
-            <small>
-              <span className={styles.desktopInstruction}>Move your cursor. Let the factory follow. Find the live signals.</span>
-              <span className={styles.mobileInstruction}>Tap the signals. Open the archive. Keep the radio running.</span>
-            </small>
           </section>
 
           <nav className={styles.landmarks} aria-label="Factory landmarks">
             {LANDMARKS.map((landmark) => {
-              const isActive = activeLandmark === landmark.id;
+              const isActive = station === landmark.id;
               return (
-                <button key={landmark.id} type="button" className={`${styles.landmark} ${isActive ? styles.landmarkActive : ""}`} style={landmark.position} aria-pressed={isActive} onClick={() => { setActiveLandmark(landmark.id); setStation(landmark.id); }}>
-                  <span className={styles.landmarkIndex}>{landmark.index}</span>
+                <button key={landmark.id} type="button" className={`${styles.landmark} ${isActive ? styles.landmarkActive : ""}`} style={landmark.position} aria-pressed={isActive} onClick={() => openStation(landmark.id)}>
                   <span className={styles.landmarkBeacon} aria-hidden="true" />
                   <strong>{landmark.label}</strong>
                 </button>
@@ -522,52 +576,95 @@ export default function AfterHoursPage() {
             })}
           </nav>
 
-          <aside className={styles.referenceCluster} aria-labelledby="visual-brain-title">
-            <div className={styles.clusterLabel}><p id="visual-brain-title">visual brain</p><span>click to open archive</span></div>
-            <button
-              type="button"
-              className={styles.referenceSpotlight}
-              onClick={() => { setGalleryIndex(spotlightIndex); setGalleryOpen(true); }}
-              aria-label={`Open gallery at ${REFERENCES[spotlightIndex].label}`}
-            >
-              <span className={styles.referenceStack} aria-hidden="true" />
-              <span className={styles.spotlightImage}>
-                <Image key={REFERENCES[spotlightIndex].src} src={REFERENCES[spotlightIndex].src} alt={REFERENCES[spotlightIndex].alt} fill sizes="360px" />
-              </span>
-              <span className={styles.spotlightCaption}><b>0{spotlightIndex + 1}</b> {REFERENCES[spotlightIndex].label}<em>{spotlightIndex + 1} / {REFERENCES.length}</em></span>
-            </button>
-          </aside>
         </div>
+        <aside className={styles.referenceCluster} aria-labelledby="visual-brain-title">
+          <div className={styles.clusterLabel}><p id="visual-brain-title">visual brain</p></div>
+          <button
+            type="button"
+            className={styles.referenceSpotlight}
+            onClick={openSky}
+            aria-label="Open Sky photo album"
+          >
+            <span className={styles.referenceStack} aria-hidden="true" />
+            <span className={styles.spotlightImage}>
+              <Image src={SKY_COVER.src} alt="" fill sizes="(max-width: 700px) 176px, 330px" />
+            </span>
+            <span className={styles.spotlightCaption}><b>Sky</b><em>{SKY_PHOTOS.length} photos</em></span>
+          </button>
+        </aside>
       </div>
 
-      {station && !galleryOpen ? <NightStation station={station} onChange={setStation} onClose={closeStation} onArchive={openStationArchive} /> : null}
-      <button type="button" className={styles.dispatchButton} aria-expanded={station !== null} onClick={() => setStation((value) => value ? null : "memory")}><span aria-hidden="true">▦</span> Night dispatch <small>09 stops</small></button>
+      {station && !galleryOpen ? (
+        <NightStation key={station} station={station} onClose={closeStation} onArchive={openStationArchive} />
+      ) : null}
+      <div className={styles.dispatch}>
+        <button
+          ref={dispatchButton}
+          type="button"
+          className={styles.dispatchButton}
+          aria-expanded={dispatchOpen}
+          aria-controls="dispatch-games"
+          onClick={() => {
+            setStation(null);
+            setDispatchOpen((open) => !open);
+          }}
+        >Night dispatch</button>
+        {dispatchOpen && (
+          <nav id="dispatch-games" className={styles.dispatchGames} aria-label="Choose an experiment">
+            {LANDMARKS.map(({ id, label }) => (
+              <button key={id} type="button" onClick={() => openStation(id, true)}>{label}</button>
+            ))}
+          </nav>
+        )}
+      </div>
 
-      {galleryOpen ? (
-        <section className={styles.galleryOverlay} role="dialog" aria-modal="true" aria-label="Visual brain gallery">
-          <button type="button" className={styles.galleryBackdrop} onClick={() => setGalleryOpen(false)} aria-label="Close gallery" />
+      {galleryOpen && (
+        <dialog
+          ref={galleryDialog}
+          className={styles.galleryOverlay}
+          aria-label="Visual Brain slideshow"
+          onCancel={(event) => {
+            event.preventDefault();
+            setGalleryOpen(false);
+          }}
+        >
+          <button type="button" tabIndex={-1} className={styles.galleryBackdrop} onClick={() => setGalleryOpen(false)} aria-label="Close slideshow" />
           <div className={styles.galleryStage}>
-            <div className={styles.galleryTopline}><span>VISUAL BRAIN / 0{galleryIndex + 1}</span><button type="button" onClick={() => setGalleryOpen(false)} aria-label="Close gallery"><X size={16} /></button></div>
-            <div className={styles.galleryImage}><Image src={REFERENCES[galleryIndex].src} alt={REFERENCES[galleryIndex].alt} fill sizes="(max-width: 800px) 90vw, 60vw" /></div>
+            <div className={styles.galleryTopline}>
+              <div className={styles.galleryCollections} aria-label="Photo collections" role="group">
+                <button type="button" aria-pressed={collection === "sky"} onClick={() => selectCollection("sky")}>Sky</button>
+                <button type="button" aria-pressed={collection === "references"} onClick={() => selectCollection("references")}>References</button>
+              </div>
+              <button ref={closeGalleryButton} type="button" onClick={() => setGalleryOpen(false)} aria-label="Close gallery"><X size={17} /></button>
+            </div>
+            <div className={styles.galleryImage}>
+              <Image key={galleryPhoto.src} src={galleryPhoto.src} alt={galleryPhoto.alt} fill loading="eager" sizes="(max-width: 800px) 95vw, 1000px" />
+            </div>
             <div className={styles.galleryFooter}>
-              <button type="button" onClick={() => setGalleryIndex((current) => (current - 1 + REFERENCES.length) % REFERENCES.length)} aria-label="Previous image"><ChevronLeft size={18} /></button>
-              <p><strong>{REFERENCES[galleryIndex].label}</strong><span>{REFERENCES[galleryIndex].alt}</span></p>
-              <button type="button" onClick={() => setGalleryIndex((current) => (current + 1) % REFERENCES.length)} aria-label="Next image"><ChevronRight size={18} /></button>
+              <button type="button" onClick={() => stepGallery(-1)} aria-label="Previous photo"><ChevronLeft size={18} /></button>
+              <span>{galleryIndex + 1} / {galleryPhotos.length}</span>
+              <button
+                type="button"
+                onClick={() => setSlideshowPlaying((playing) => !playing)}
+                aria-label={slideshowPlaying ? "Pause slideshow" : "Play slideshow"}
+              >
+                {slideshowPlaying ? <Pause size={15} /> : <Play size={15} />}
+              </button>
+              <button type="button" onClick={() => stepGallery(1)} aria-label="Next photo"><ChevronRight size={18} /></button>
             </div>
           </div>
-        </section>
-      ) : null}
+        </dialog>
+      )}
 
       <header className={styles.hud}>
-        <time className={styles.identity} dateTime={clock} suppressHydrationWarning><span>{clock}</span><small>IST</small></time>
-        <Link href="/" className={styles.modeSwitch} aria-label="Return to work portfolio">
-          <span>work</span><span className={styles.switchTrack} aria-hidden="true"><span /></span><strong>after hours</strong>
-        </Link>
+        <MovableClock afterHours className={styles.watch} />
       </header>
 
-      <button type="button" className={styles.recenter} onClick={() => { targetOffsetRef.current = { x: 0, y: 0 }; }}>
-        <LocateFixed size={15} aria-hidden="true" /> recenter
-      </button>
+      {motionAllowed && (
+        <button type="button" className={styles.recenter} onClick={() => moveMap({ x: 0, y: 0 })}>
+          <LocateFixed size={15} aria-hidden="true" /> recenter
+        </button>
+      )}
 
       <DashboardStereo />
 

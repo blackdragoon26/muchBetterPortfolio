@@ -143,136 +143,26 @@ code[data-line-numbers-max-digits="3"] > [data-line]::before {
   width: 3rem;
 }
 
-.page-peel {
-  --peel-distance: 62px;
-  --peel-depth: 62px;
-  --peel-edge-length: 87.7px;
-  --peel-edge-angle: 45deg;
+html[data-clock-placing] * { cursor: crosshair !important; }
+
+.space-clock-peel {
   position: fixed;
   inset: 0;
   z-index: 70;
   pointer-events: none;
+  background: #151812 url("/after-hours/factory-feed-01.jpg") center / cover no-repeat;
+  animation: clock-peel 240ms cubic-bezier(.22, 1, .36, 1) both;
 }
 
-.page-peel-preview {
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(rgba(4, 5, 5, .26), rgba(4, 5, 5, .26)),
-    url("/after-hours/factory-feed-01.jpg") center / cover no-repeat;
-  filter: grayscale(.9) contrast(1.14) brightness(.92);
-  clip-path: polygon(calc(100% - var(--peel-distance)) 0, 100% 0, 100% var(--peel-depth));
-  transition: clip-path 360ms cubic-bezier(.22, 1, .36, 1), filter 360ms ease;
+@keyframes clock-peel {
+  from { clip-path: polygon(100% 0, 100% 0, 100% 0, 100% 0); }
+  to { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
 }
 
-.page-peel-edge {
-  position: absolute;
-  top: -1px;
-  left: calc(100% - var(--peel-distance));
-  width: var(--peel-edge-length);
-  height: 3px;
-  background: linear-gradient(to bottom,
-    color-mix(in srgb, hsl(var(--foreground)) 24%, hsl(var(--background))) 0 1px,
-    color-mix(in srgb, hsl(var(--foreground)) 58%, transparent) 1px 2px,
-    color-mix(in srgb, hsl(var(--background)) 42%, transparent) 2px 3px);
-  box-shadow:
-    0 2px 2px rgba(0, 0, 0, .34),
-    0 5px 9px rgba(0, 0, 0, .22);
-  transform: rotate(var(--peel-edge-angle));
-  transform-origin: left center;
-  pointer-events: none;
-  transition: left 360ms cubic-bezier(.22, 1, .36, 1), width 360ms cubic-bezier(.22, 1, .36, 1), transform 360ms cubic-bezier(.22, 1, .36, 1), opacity 180ms ease;
-}
+html:has([data-after-hours]) { overflow: hidden; }
 
-.dark .page-peel-edge {
-  background: linear-gradient(to bottom,
-    color-mix(in srgb, hsl(var(--foreground)) 46%, hsl(var(--background))) 0 1px,
-    color-mix(in srgb, hsl(var(--foreground)) 24%, transparent) 1px 2px,
-    rgba(0, 0, 0, .72) 2px 3px);
-}
-
-.page-peel-fold {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: var(--peel-distance);
-  height: var(--peel-depth);
-  background:
-    linear-gradient(135deg,
-      color-mix(in srgb, hsl(var(--background)) 76%, hsl(var(--foreground))) 0%,
-      color-mix(in srgb, hsl(var(--background)) 94%, hsl(var(--foreground))) 46%,
-      hsl(var(--background)) 100%);
-  clip-path: polygon(0 0, 100% 100%, 0 100%);
-  transition: width 360ms cubic-bezier(.22, 1, .36, 1), height 360ms cubic-bezier(.22, 1, .36, 1), filter 180ms ease, opacity 180ms ease;
-}
-
-.dark .page-peel-fold {
-  background: linear-gradient(135deg,
-    color-mix(in srgb, hsl(var(--background)) 70%, hsl(var(--foreground))) 0%,
-    color-mix(in srgb, hsl(var(--background)) 91%, hsl(var(--foreground))) 46%,
-    hsl(var(--background)) 100%);
-}
-
-.page-peel-trigger {
-  position: absolute;
-  top: max(0px, calc(var(--peel-depth) - 72px));
-  right: max(0px, calc(var(--peel-distance) - 72px));
-  width: 72px;
-  height: 72px;
+body:has([data-after-hours]) {
+  max-width: none;
   padding: 0;
-  background: transparent;
-  border: 0;
-  cursor: grab;
-  pointer-events: auto;
-  touch-action: none;
-  transition: top 360ms cubic-bezier(.22, 1, .36, 1), right 360ms cubic-bezier(.22, 1, .36, 1), opacity 180ms ease;
-}
-
-.page-peel:has(.page-peel-trigger:hover) .page-peel-fold,
-.page-peel:focus-within .page-peel-fold {
-  filter: brightness(1.08);
-}
-.page-peel-trigger:active,
-.page-peel-dragging .page-peel-trigger { cursor: grabbing; }
-.page-peel-trigger:focus-visible { outline: 2px solid color-mix(in srgb, hsl(var(--foreground)) 55%, transparent); outline-offset: -7px; }
-.page-peel-dragging .page-peel-preview,
-.page-peel-dragging .page-peel-edge,
-.page-peel-dragging .page-peel-fold,
-.page-peel-dragging .page-peel-trigger { transition: none; }
-
-.page-peel-committing .page-peel-preview {
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-  filter: grayscale(.18) contrast(1.05);
-  transition-duration: 420ms;
-}
-
-.page-peel-committing .page-peel-fold,
-.page-peel-committing .page-peel-edge,
-.page-peel-committing .page-peel-trigger { opacity: 0; }
-
-@media (max-width: 700px) {
-  .page-peel-trigger { width: 68px; height: 68px; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .page-peel-preview,
-  .page-peel-edge,
-  .page-peel-fold,
-  .page-peel-trigger { transition-duration: 1ms !important; }
-}
-
-html.after-hours-active,
-body.after-hours-active {
-  width: 100%;
-  height: 100%;
-  min-height: 100%;
-  overflow: hidden;
-  overscroll-behavior: none;
-  background: #090a08 !important;
-}
-
-body.after-hours-active {
-  max-width: none !important;
-  margin: 0 !important;
-  padding: 0 !important;
+  background: #121510;
 }
