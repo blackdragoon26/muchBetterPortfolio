@@ -4,8 +4,8 @@ source: readme
 tags:
   - ai
 machine:
-  description: A mood-based food planning app for Swiggy-style ordering, where user gives craving, budget and diet needs, and it gives ranked meal options with transparent AI summary, recommendation trace and safe cart preview.
-  liveUrl: https://moodish.onrender.com/
+  description: Mood-based meal planner on the Swiggy MCP taking cravings, budget, and diet constraints to return ranked meal options with a transparent AI summary, recommendation trace, and confirmation-gated cart preview.
+  liveUrl: https://moodish.sankalpjha.dev/
   repository: blackdragoon26/Moodish
   repositoryUrl: https://github.com/blackdragoon26/Moodish
   stars: 1

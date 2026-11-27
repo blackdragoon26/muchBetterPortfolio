@@ -2,7 +2,7 @@ id: project:open-claw-lab
 kind: project
 source: readme
 machine:
-  description: An Oracle Cloud-hosted, multi-agent career intelligence system that finds high-signal engineering opportunities, validates every lead through deterministic evidence gates and independent review, and delivers a verified Telegram digest without automatically contacting anyone.
+  description: Oracle Cloud-hosted multi-agent career intelligence pipeline that finds engineering roles, filters every lead through deterministic evidence gates and independent review, and sends a verified Telegram digest without automated outreach.
   liveUrl: ""
   repository: blackdragoon26/open-claw-lab
   repositoryUrl: https://github.com/blackdragoon26/open-claw-lab

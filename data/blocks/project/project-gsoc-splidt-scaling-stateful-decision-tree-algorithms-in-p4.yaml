@@ -7,7 +7,7 @@ tags:
   - networking
   - systems
 machine:
-  description: It is a switch-native compiler framework that enables stateful decision tree inference directly in programmable switches, bringing real-time machine learning into the network data plane. IT helps to compile high-performance decision tree models to enable detection and observability of security-significant flow behaviors across diverse traffic workloads on Intel Tofino ASICs. (Codebase Private due to Research nature of the project)
+  description: Switch-native compiler framework for stateful decision tree inference directly inside Intel Tofino programmable switches, bringing real-time ML classification into the network data plane (codebase private due to research paper).
   liveUrl: https://splidt-showcase.vercel.app/
   repository: p4lang/gsoc
   repositoryUrl: https://github.com/p4lang/gsoc

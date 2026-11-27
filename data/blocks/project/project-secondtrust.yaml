@@ -1,0 +1,28 @@
+id: project:secondtrust
+kind: project
+source: readme
+tags:
+  - systems
+machine:
+  description: One-command Windows, Linux, and macOS audit tool to verify a new or second-hand laptop before the return window closes. Checks invoice specs, Secure Boot/BIOS/MDM tampering, raw SSD power-on hours/TBW, battery wear, and CPU/RAM/VRAM stability under load.
+  liveUrl: https://secondtrust.sankalpjha.dev/
+  repository: blackdragoon26/stressTestIt_beforeReturnWindowCloses
+  repositoryUrl: https://github.com/blackdragoon26/stressTestIt_beforeReturnWindowCloses
+  stars: 1
+  technologies:
+    - PowerShell
+    - Bash
+    - Linux
+    - macOS
+    - Windows
+    - Firmware
+    - Hardware Diagnostics
+content:
+  approach:
+    - Built cross-platform PowerShell and shell audit scripts reading firmware, SMART/NVMe wear, MDM enrollment, and memory/CPU/VRAM stress checks
+    - Paired with an interactive web report viewer
+  impact: Gives buyers a single repeatable hardware and tamper check across Windows, Linux, and macOS.
+  link: https://secondtrust.sankalpjha.dev/
+  objective: Audit newly purchased or second-hand laptops for hardware authenticity, tampering, wear, and stability before the return window closes.
+  stack: PowerShell, Bash, Linux, macOS, Windows, Firmware, Hardware Diagnostics
+  title: SecondTrust

@@ -7,7 +7,7 @@ tags:
   - frontend
   - infra
 machine:
-  description: A production-oriented agentic software-engineering workspace that turns natural-language prompts and visual references into working React applications. Its Go orchestration backend streams planning, tool execution, code changes, builds, and live previews from isolated E2B sandboxes while preserving each user's projects for continued editing.
+  description: Agentic software-engineering workspace turning prompts and visual references into editable React apps. A Go backend streams planning, tool calls, builds, and live previews from isolated E2B sandboxes over WebSockets while persisting projects in PostgreSQL.
   liveUrl: https://cutable.sankalpjha.dev/
   repository: blackdragoon26/Cutable
   repositoryUrl: https://github.com/blackdragoon26/Cutable

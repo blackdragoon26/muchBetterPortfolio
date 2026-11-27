@@ -6,7 +6,7 @@ tags:
   - embedded
   - hardware
 machine:
-  description: A self-hosted binary (for Raspberry Pi, adv. routers, old phones), built in Go, running SSE/HTTP server, allowing simple synced notes/multimedia files across all devices connected to ur local home wifi.
+  description: Self-hosted Go binary (SSE/HTTP) for Raspberry Pi, routers, or spare phones, syncing notes, tasks, and media across every device on your local home Wi-Fi with zero cloud accounts.
   liveUrl: https://repo-tawny-iota.vercel.app/
   repository: blackdragoon26/Do-It
   repositoryUrl: https://github.com/blackdragoon26/Do-It

@@ -1,0 +1,25 @@
+id: project:localchat
+kind: project
+source: readme
+tags:
+  - backend
+machine:
+  description: Single-binary, zero-dependency Go web chat and Android APK for personal devices over Tailscale, built because scanning WhatsApp Web every day got old. Uses ~8.5 MB RAM open (0 MB idle after 5 min auto-shutdown), syncs offline queues across devices, and streams 250 MB uploads with HTTP `Range` media playback.
+  liveUrl: ""
+  repository: blackdragoon26/localchat
+  repositoryUrl: https://github.com/blackdragoon26/localchat
+  stars: 1
+  technologies:
+    - Go
+    - Tailscale
+    - HTTP
+    - Android
+    - Local-first
+content:
+  approach:
+    - Built a zero-dependency Go binary and Android wrapper with per-device local storage, explicit offline delivery queue, and streamed 250 MB uploads
+  impact: Replaces cloud self-messaging with an 8.5 MB active / 0 MB idle self-hosted chat tool across desktop and mobile.
+  link: https://github.com/blackdragoon26/localchat
+  objective: Sync personal messages, code snippets, and large files across personal devices over Tailscale without cloud accounts or background daemons.
+  stack: Go, Tailscale, HTTP, Android, Local-first
+  title: LocalChat

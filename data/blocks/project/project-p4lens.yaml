@@ -8,7 +8,7 @@ tags:
   - infra
   - networking
 machine:
-  description: An Interactive P4 Program Visualiser, which allows to Upload and visualise P4 programs with an intuitive and interactive pipeline flow diagram, to those who are beginning to learn P4Lang.
+  description: Interactive P4-14/P4-16 program visualizer that parses headers, parsers, controls, and deparsers into a React Flow pipeline diagram for learning and debugging P4Lang.
   liveUrl: https://p4lens.vercel.app/
   repository: openlabnetworks/p4Lens
   repositoryUrl: https://github.com/openlabnetworks/p4Lens

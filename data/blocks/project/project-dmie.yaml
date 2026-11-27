@@ -6,7 +6,7 @@ tags:
   - backend
   - frontend
 machine:
-  description: A simple solution to every person's question, does my idea already exists, and also get your idea's comparative analysis of existing competition as we scraped and built on 500,000 Indian Startups. Private Repo in Collab with a Cracked DevFriend of mine.
+  description: Checks if your startup idea already exists with competitor analysis built over 500,000+ scraped Indian startups. Private repo built in collab with a cracked dev friend of mine.
   liveUrl: https://www.doesmyideaexist.com/
   repository: ""
   repositoryUrl: ""

@@ -9,7 +9,7 @@ tags:
   - systems
   - web3
 machine:
-  description: A Decentralized Energy Grid on Stellar Ecosystem which will turn energy into Tokenized Assets, and Energy into Stable Income., a super cool residency project
+  description: Decentralized energy grid on Stellar turning solar power into tokenized assets and stable income (Go backend, 4 Soroban smart contracts, Raspberry Pi + ESP32 hardware mesh). Built during the Stellar McLeod Residency.
   liveUrl: https://los-tecnicos.vercel.app/
   repository: blackdragoon26/Los-Tecnicos
   repositoryUrl: https://github.com/blackdragoon26/Los-Tecnicos

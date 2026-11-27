@@ -1,338 +1,14 @@
 {
-  "generatedAt": "2026-11-27T15:16:12.885Z",
+  "generatedAt": "2026-11-27T21:00:38.348Z",
   "filter": {
     "minimumRepositoryStars": 100,
     "maximumPullRequests": 999
   },
   "projects": [
     {
-      "id": "cutable",
-      "title": "Cutable",
-      "description": "A production-oriented agentic software-engineering workspace that turns natural-language prompts and visual references into working React applications. Its Go orchestration backend streams planning, tool execution, code changes, builds, and live previews from isolated E2B sandboxes while preserving each user's projects for continued editing.",
-      "href": "https://cutable.sankalpjha.dev/",
-      "liveUrl": "https://cutable.sankalpjha.dev/",
-      "repository": "blackdragoon26/Cutable",
-      "repositoryUrl": "https://github.com/blackdragoon26/Cutable",
-      "technologies": [
-        "Go",
-        "Next.js",
-        "PostgreSQL",
-        "OpenRouter",
-        "E2B",
-        "WebSockets",
-        "Nomad"
-      ],
-      "screenshot": "auto",
-      "screenshotWaitSeconds": 7,
-      "stars": 0,
-      "image": "/generated/projects/cutable.jpg",
-      "resume": {
-        "include": true,
-        "objective": "Generate editable React applications from text and visual requirements.",
-        "approach": [
-          "Orchestrated OpenRouter tools and E2B sandboxes in Go",
-          "Streamed code and live previews to Next.js over WebSockets"
-        ],
-        "impact": "Ships multimodal BYOK generation, persistent projects, and health-gated deployments."
-      }
-    },
-    {
-      "id": "los-tecnicos",
-      "title": "Los-Tecnicos",
-      "description": "A Decentralized Energy Grid on Stellar Ecosystem which will turn energy into Tokenized Assets, and Energy into Stable Income., a super cool residency project",
-      "href": "https://los-tecnicos.vercel.app/",
-      "liveUrl": "https://los-tecnicos.vercel.app/",
-      "repository": "blackdragoon26/Los-Tecnicos",
-      "repositoryUrl": "https://github.com/blackdragoon26/Los-Tecnicos",
-      "technologies": [
-        "Go",
-        "TypeScript",
-        "Rust",
-        "Soroban",
-        "Raspberry Pi",
-        "ESP32"
-      ],
-      "screenshot": "auto",
-      "screenshotWaitSeconds": 7,
-      "stars": 1,
-      "image": "/generated/projects/los-tecnicos.jpg",
-      "resume": {
-        "include": false,
-        "objective": "Build a decentralized energy grid that tokenizes renewable-energy production on the Stellar ecosystem.",
-        "approach": [
-          "Built a Go backend and 4 Soroban smart contracts",
-          "Integrated a Raspberry Pi/ESP32 hardware mesh with the platform"
-        ],
-        "impact": "Won Asia-Pacific Web3 bounties and received recognition from the Government of India."
-      }
-    },
-    {
-      "id": "dmie",
-      "title": "DMIE",
-      "description": "A simple solution to every person's question, does my idea already exists, and also get your idea's comparative analysis of existing competition as we scraped and built on 500,000 Indian Startups. Private Repo in Collab with a Cracked DevFriend of mine.",
-      "href": "https://www.doesmyideaexist.com/",
-      "liveUrl": "https://www.doesmyideaexist.com/",
-      "repository": null,
-      "repositoryUrl": null,
-      "technologies": [
-        "Next.js",
-        "TypeScript",
-        "Python",
-        "FastAPI",
-        "Vector DB",
-        "LLM"
-      ],
-      "screenshot": "auto",
-      "screenshotWaitSeconds": 7,
-      "stars": null,
-      "image": "/generated/projects/dmie.jpg",
-      "resume": {
-        "include": true,
-        "objective": "Determine whether a startup idea already exists by comparing it against more than 500,000 company records.",
-        "approach": [
-          "Built a scheduled scraper that keeps the startup dataset current",
-          "Combined LLM query with vector search and backend filters"
-        ],
-        "impact": "Raised USD 10,000 and serves more than 100 users worldwide."
-      }
-    },
-    {
-      "id": "do-it",
-      "title": "Do-It",
-      "description": "A self-hosted binary (for Raspberry Pi, adv. routers, old phones), built in Go, running SSE/HTTP server, allowing simple synced notes/multimedia files across all devices connected to ur local home wifi.",
-      "href": "https://repo-tawny-iota.vercel.app/",
-      "liveUrl": "https://repo-tawny-iota.vercel.app/",
-      "repository": "blackdragoon26/Do-It",
-      "repositoryUrl": "https://github.com/blackdragoon26/Do-It",
-      "technologies": [
-        "Go",
-        "SSE",
-        "HTTP",
-        "Raspberry Pi",
-        "Local-first"
-      ],
-      "screenshot": "auto",
-      "screenshotWaitSeconds": 7,
-      "stars": 1,
-      "image": "/generated/projects/do-it.jpg",
-      "resume": {
-        "include": false,
-        "objective": "Provide private, synchronized notes and media across devices on a local network.",
-        "approach": [
-          "Packaged a lightweight Go SSE and HTTP server for Raspberry Pi, routers, and repurposed phones"
-        ],
-        "impact": "Delivers self-hosted, account-free synchronization without sending household data to a cloud service."
-      }
-    },
-    {
-      "id": "gsoc-splidt-scaling-stateful-decision-tree-algorithms-in-p4",
-      "title": "GSoC- SpliDT: Scaling Stateful Decision Tree Algorithms in P4",
-      "description": "It is a switch-native compiler framework that enables stateful decision tree inference directly in programmable switches, bringing real-time machine learning into the network data plane. IT helps to compile high-performance decision tree models to enable detection and observability of security-significant flow behaviors across diverse traffic workloads on Intel Tofino ASICs. (Codebase Private due to Research nature of the project)",
-      "href": "https://splidt-showcase.vercel.app/",
-      "liveUrl": "https://splidt-showcase.vercel.app/",
-      "repository": "p4lang/gsoc",
-      "repositoryUrl": "https://github.com/p4lang/gsoc",
-      "technologies": [
-        "P4",
-        "Python",
-        "P4Runtime",
-        "Docker",
-        "C++",
-        "Intel Tofino"
-      ],
-      "screenshot": "auto",
-      "screenshotWaitSeconds": 7,
-      "stars": 33,
-      "image": "/generated/projects/gsoc-splidt-scaling-stateful-decision-tree-algorithms-in-p4.jpg",
-      "resume": {
-        "include": false,
-        "objective": "Compile machine-learning decision trees directly into P4 data planes using Partitioned Decision Trees.",
-        "approach": [
-          "Architected a switch-native inference framework around Subtree ID recirculation",
-          "Automated P4Runtime validation across Tofino and Mininet test environments"
-        ],
-        "impact": "Achieved 10 Gbps line-rate throughput and 5x lower latency than control-plane inference."
-      }
-    },
-    {
-      "id": "p4lens",
-      "title": "p4Lens",
-      "description": "An Interactive P4 Program Visualiser, which allows to Upload and visualise P4 programs with an intuitive and interactive pipeline flow diagram, to those who are beginning to learn P4Lang.",
-      "href": "https://p4lens.vercel.app/",
-      "liveUrl": "https://p4lens.vercel.app/",
-      "repository": "openlabnetworks/p4Lens",
-      "repositoryUrl": "https://github.com/openlabnetworks/p4Lens",
-      "technologies": [
-        "React",
-        "FastAPI",
-        "Docker",
-        "React Flow",
-        "P4"
-      ],
-      "screenshot": "auto",
-      "screenshotWaitSeconds": 7,
-      "stars": 3,
-      "image": "/generated/projects/p4lens.jpg",
-      "resume": {
-        "include": false,
-        "objective": "Make P4 programs easier to learn and debug through an interactive visualization of their processing pipeline.",
-        "approach": [
-          "Built a parser for P4-14 and P4-16 programs",
-          "Rendered headers, parsers, controls, and deparsers as interactive React Flow topologies"
-        ],
-        "impact": "Renders pipeline diagrams in under 200 ms and reduces control-plane debugging effort by approximately 40 percent."
-      }
-    },
-    {
-      "id": "slix",
-      "title": "Slix",
-      "description": "A full-stack movie streaming and review platform, built with React and Go, where admins can add movies and reviews, and Azure OpenAI does sentiment analysis on curator reviews so users can understand movie vibe at a glance.",
-      "href": "https://magic-stream-movies-beige.vercel.app/",
-      "liveUrl": "https://magic-stream-movies-beige.vercel.app/",
-      "repository": "blackdragoon26/Slix",
-      "repositoryUrl": "https://github.com/blackdragoon26/Slix",
-      "technologies": [
-        "React",
-        "Go",
-        "Azure OpenAI",
-        "REST API"
-      ],
-      "screenshot": "auto",
-      "screenshotWaitSeconds": 150,
-      "stars": 1,
-      "image": "/generated/projects/slix.jpg",
-      "resume": {
-        "include": true,
-        "objective": "Combine movie streaming, reviews, and machine-generated sentiment summaries in one full-stack application.",
-        "approach": [
-          "Built the frontend in React and the service layer in Go",
-          "Added Azure OpenAI sentiment analysis for curator reviews"
-        ],
-        "impact": "Gives viewers a concise representation of a movie's tone before watching."
-      }
-    },
-    {
-      "id": "moodish",
-      "title": "Moodish",
-      "description": "A mood-based food planning app for Swiggy-style ordering, where user gives craving, budget and diet needs, and it gives ranked meal options with transparent AI summary, recommendation trace and safe cart preview.",
-      "href": "https://moodish.onrender.com/",
-      "liveUrl": "https://moodish.onrender.com/",
-      "repository": "blackdragoon26/Moodish",
-      "repositoryUrl": "https://github.com/blackdragoon26/Moodish",
-      "technologies": [
-        "JavaScript",
-        "Node.js",
-        "OpenAI API",
-        "MCP"
-      ],
-      "screenshot": "auto",
-      "screenshotWaitSeconds": 180,
-      "stars": 1,
-      "image": "/generated/projects/moodish.jpg",
-      "resume": {
-        "include": false,
-        "objective": "Rank meal options from a user's craving, budget, and dietary constraints while keeping the recommendation explainable.",
-        "approach": [
-          "Built intent extraction and deterministic ranking around an AI-generated summary",
-          "Added a recommendation trace and confirmation-gated cart preview"
-        ],
-        "impact": "Produces safer, inspectable food recommendations instead of opaque model output."
-      }
-    },
-    {
-      "id": "ebpf-mcp-tracer",
-      "title": "ebpf-mcp-tracer",
-      "description": "A secure MCP server which lets LLMs write and run bpftrace scripts against Linux kernel, with strict probe allowlist, dry-run validation and hard timeout, so AI agents can debug system bottlenecks without raw unsafe eBPF access.",
-      "href": "https://github.com/blackdragoon26/ebpf-mcp-tracer",
-      "liveUrl": null,
-      "repository": "blackdragoon26/ebpf-mcp-tracer",
-      "repositoryUrl": "https://github.com/blackdragoon26/ebpf-mcp-tracer",
-      "technologies": [
-        "Python",
-        "bpftrace",
-        "eBPF",
-        "Linux",
-        "MCP"
-      ],
-      "screenshot": "auto",
-      "screenshotWaitSeconds": 7,
-      "stars": 1,
-      "image": "/generated/projects/ebpf-mcp-tracer.svg",
-      "resume": {
-        "include": false,
-        "objective": "Let AI debugging agents inspect Linux performance without granting unrestricted eBPF execution.",
-        "approach": [
-          "Implemented a strict probe allowlist, dry-run validation, and execution timeouts around bpftrace",
-          "Exposed the guarded tracing workflow through MCP"
-        ],
-        "impact": "Enables kernel-level diagnostics while reducing command-injection and runaway-probe risk."
-      }
-    },
-    {
-      "id": "myprod",
-      "title": "Myprod",
-      "description": "A Go CLI and operator dashboard that turns free-tier and low-cost VPS machines into a personal compute pool for deploying backend services with centralized scheduling, ingress, networking, and guarded node controls.",
-      "href": "https://myprod-control.vercel.app/",
-      "liveUrl": "https://myprod-control.vercel.app/",
-      "repository": "blackdragoon26/Myprod",
-      "repositoryUrl": "https://github.com/blackdragoon26/Myprod",
-      "technologies": [
-        "Go",
-        "Nomad",
-        "Traefik",
-        "WireGuard",
-        "Docker",
-        "Netlify DNS",
-        "SOPS"
-      ],
-      "screenshot": "auto",
-      "screenshotWaitSeconds": 7,
-      "stars": 1,
-      "image": "/generated/projects/myprod.jpg",
-      "resume": {
-        "include": true,
-        "objective": "Turn manually provisioned VPS machines into a low-overhead personal compute pool for backend services.",
-        "approach": [
-          "Built a Go CLI and operator dashboard around Nomad scheduling, Traefik ingress, and WireGuard networking",
-          "Added guarded node lifecycle controls, application registration, live resource metrics, and idempotent Netlify DNS management"
-        ],
-        "impact": "Provides one control surface for deploying applications and managing heterogeneous free-tier and temporary compute capacity."
-      }
-    },
-    {
-      "id": "open-claw-lab",
-      "title": "Open Claw Lab",
-      "description": "An Oracle Cloud-hosted, multi-agent career intelligence system that finds high-signal engineering opportunities, validates every lead through deterministic evidence gates and independent review, and delivers a verified Telegram digest without automatically contacting anyone.",
-      "href": "https://github.com/blackdragoon26/open-claw-lab",
-      "liveUrl": null,
-      "repository": "blackdragoon26/open-claw-lab",
-      "repositoryUrl": "https://github.com/blackdragoon26/open-claw-lab",
-      "technologies": [
-        "Node.js",
-        "OpenClaw",
-        "Gemini",
-        "Oracle Cloud",
-        "systemd",
-        "Telegram"
-      ],
-      "screenshot": "auto",
-      "screenshotWaitSeconds": 7,
-      "stars": 1,
-      "image": "/generated/projects/open-claw-lab.svg",
-      "resume": {
-        "include": false,
-        "objective": "Discover high-signal engineering opportunities while preventing unsupported or stale leads from reaching the user.",
-        "approach": [
-          "Built a multi-agent discovery and independent-review pipeline around typed lead records",
-          "Added deterministic freshness, eligibility, contact relevance, relocation evidence, and deduplication gates"
-        ],
-        "impact": "Delivers an evidence-backed Telegram digest while rejecting guessed contacts, unsupported geography, stale roles, and duplicate leads."
-      }
-    },
-    {
       "id": "xnic-v1",
       "title": "XNIC v1",
-      "description": "An interview-grade Linux networking-driver lab built around a clean-room Intel 82540EM/e1000 PCI Ethernet driver, with BAR0 MMIO, DMA descriptor rings, interrupt-driven NAPI, TX backpressure, ethtool telemetry, fault injection, and serialized timeout/reset recovery. It also includes a software-qualified W5500 SPI driver path and a gated DPDK L2 forwarder, while keeping physical-silicon, ENA, and RDMA validation explicitly out of scope until real hardware evidence exists. · Technical docs",
+      "description": "Clean-room Intel 82540EM/e1000 PCI Ethernet driver lab in Linux C with BAR0 MMIO, DMA descriptor rings, NAPI, `ethtool` telemetry, fault injection, and reset recovery (technical docs). Also includes a W5500 SPI path and a gated DPDK L2 forwarder, keeping physical-silicon claims strictly out of scope until real hardware runs exist.",
       "href": "https://xnic-v1.vercel.app/",
       "liveUrl": "https://xnic-v1.vercel.app/",
       "repository": "blackdragoon26/xnic-v1",
@@ -384,7 +60,7 @@
     {
       "id": "proofinfer",
       "title": "proofinfer",
-      "description": "A Llama inference engine written in Rust with zero external crates, built around proving it actually computes the right thing. It is differentially tested against the PyTorch reference from karpathy/llama2.c across 6 configurations (every logit at every position), produces byte-identical greedy output against `run.c`, has mutation testing on both the harness and the Rust test suite so neither can silently fail to fail, and carries a machine-checked Verus proof of KV-cache index safety. Limits are documented honestly, including where the proof stops and where `run.c -Ofast` is still faster. · Technical docs",
+      "description": "Zero-dependency Llama inference engine in pure Rust built around proving correctness rather than assuming it. Differentially tested against PyTorch (`karpathy/llama2.c`) across 6 configs, byte-identical to `run.c`, mutation-tested on both harness and tests, and backed by a 36-VC Verus proof of KV-cache safety (technical docs).",
       "href": "https://proofinfer.vercel.app/",
       "liveUrl": "https://proofinfer.vercel.app/",
       "repository": "blackdragoon26/proofinfer",
@@ -407,13 +83,426 @@
       "stars": 1,
       "image": "/generated/projects/proofinfer.jpg",
       "resume": {
-        "include": false,
+        "include": true,
         "objective": "Build a dependency-free Llama inference engine whose correctness is backed by independent evidence rather than claimed.",
         "approach": [
           "Implemented Llama inference in pure Rust with an 8-lane dot product and no external crates",
           "Verified it through PyTorch differential testing, byte-identical comparison against run.c, mutation testing of both harness and tests, and a Verus proof of KV-cache index safety"
         ],
-        "impact": "Passed 6/6 differential configurations at max error 1.0e-5 and 200/200 top-1 on real stories15M weights; caught 10/10 harness and 21/21 test-suite mutants; 24 Verus obligations verified with 0 errors; 835 tok/s single-threaded, 5.4x over the naive dot product."
+        "impact": "Passed 6/6 differential configurations at max error 1.0e-5 and 200/200 top-1 on real stories15M weights; caught 10/10 harness and 21/21 test-suite mutants; 36 Verus obligations verified with 0 errors; 835 tok/s single-threaded, 5.4x over the naive dot product."
+      }
+    },
+    {
+      "id": "gsoc-splidt-scaling-stateful-decision-tree-algorithms-in-p4",
+      "title": "GSoC- SpliDT: Scaling Stateful Decision Tree Algorithms in P4",
+      "description": "Switch-native compiler framework for stateful decision tree inference directly inside Intel Tofino programmable switches, bringing real-time ML classification into the network data plane (codebase private due to research paper).",
+      "href": "https://splidt-showcase.vercel.app/",
+      "liveUrl": "https://splidt-showcase.vercel.app/",
+      "repository": "p4lang/gsoc",
+      "repositoryUrl": "https://github.com/p4lang/gsoc",
+      "technologies": [
+        "P4",
+        "Python",
+        "P4Runtime",
+        "Docker",
+        "C++",
+        "Intel Tofino"
+      ],
+      "screenshot": "auto",
+      "screenshotWaitSeconds": 7,
+      "stars": 33,
+      "image": "/generated/projects/gsoc-splidt-scaling-stateful-decision-tree-algorithms-in-p4.jpg",
+      "resume": {
+        "include": false,
+        "objective": "Compile machine-learning decision trees directly into P4 data planes using Partitioned Decision Trees.",
+        "approach": [
+          "Architected a switch-native inference framework around Subtree ID recirculation",
+          "Automated P4Runtime validation across Tofino and Mininet test environments"
+        ],
+        "impact": "Achieved 10 Gbps line-rate throughput and 5x lower latency than control-plane inference."
+      }
+    },
+    {
+      "id": "hami-core-init-bench",
+      "title": "hami-core-init-bench",
+      "description": "GPU-free C test bench reproducing concurrent `libvgpu.so` initialization contention for `Project-HAMi/HAMi#1662`. Links directly against real HAMi-core object files (`multiprocess_memory_limit.o`, `utils.o`) in Docker to benchmark shared-memory, semaphore, and procfs locking without an NVIDIA GPU.",
+      "href": "https://github.com/blackdragoon26/hami-core-init-bench",
+      "liveUrl": null,
+      "repository": "blackdragoon26/hami-core-init-bench",
+      "repositoryUrl": "https://github.com/blackdragoon26/hami-core-init-bench",
+      "technologies": [
+        "C",
+        "POSIX",
+        "Linux",
+        "Docker",
+        "HAMi-core",
+        "Concurrency",
+        "Benchmarking"
+      ],
+      "screenshot": "auto",
+      "screenshotWaitSeconds": 7,
+      "stars": 1,
+      "image": "/generated/projects/hami-core-init-bench.svg",
+      "resume": {
+        "include": false,
+        "objective": "Reproduce and benchmark HAMi-core concurrent initialization contention without requiring physical GPUs.",
+        "approach": [
+          "Linked directly against HAMi-core object files inside Docker to exercise real shared-memory, semaphore, and procfs paths"
+        ],
+        "impact": "Enables deterministic, GPU-free profiling and patch verification for Project-HAMi/HAMi#1662."
+      }
+    },
+    {
+      "id": "myprod",
+      "title": "Myprod",
+      "description": "Go CLI and operator dashboard turning free-tier and cheap VPS machines into a personal compute pool, with Nomad scheduling, Traefik ingress, WireGuard networking, idempotent Netlify DNS, and guarded node controls.",
+      "href": "https://myprod-control.vercel.app/",
+      "liveUrl": "https://myprod-control.vercel.app/",
+      "repository": "blackdragoon26/Myprod",
+      "repositoryUrl": "https://github.com/blackdragoon26/Myprod",
+      "technologies": [
+        "Go",
+        "Nomad",
+        "Traefik",
+        "WireGuard",
+        "Docker",
+        "Netlify DNS",
+        "SOPS"
+      ],
+      "screenshot": "auto",
+      "screenshotWaitSeconds": 7,
+      "stars": 1,
+      "image": "/generated/projects/myprod.jpg",
+      "resume": {
+        "include": true,
+        "objective": "Turn manually provisioned VPS machines into a low-overhead personal compute pool for backend services.",
+        "approach": [
+          "Built a Go CLI and operator dashboard around Nomad scheduling, Traefik ingress, and WireGuard networking",
+          "Added guarded node lifecycle controls, application registration, live resource metrics, and idempotent Netlify DNS management"
+        ],
+        "impact": "Provides one control surface for deploying applications and managing heterogeneous free-tier and temporary compute capacity."
+      }
+    },
+    {
+      "id": "secondtrust",
+      "title": "SecondTrust",
+      "description": "One-command Windows, Linux, and macOS audit tool to verify a new or second-hand laptop before the return window closes. Checks invoice specs, Secure Boot/BIOS/MDM tampering, raw SSD power-on hours/TBW, battery wear, and CPU/RAM/VRAM stability under load.",
+      "href": "https://secondtrust.sankalpjha.dev/",
+      "liveUrl": "https://secondtrust.sankalpjha.dev/",
+      "repository": "blackdragoon26/stressTestIt_beforeReturnWindowCloses",
+      "repositoryUrl": "https://github.com/blackdragoon26/stressTestIt_beforeReturnWindowCloses",
+      "technologies": [
+        "PowerShell",
+        "Bash",
+        "Linux",
+        "macOS",
+        "Windows",
+        "Firmware",
+        "Hardware Diagnostics"
+      ],
+      "screenshot": "auto",
+      "screenshotWaitSeconds": 7,
+      "stars": 1,
+      "image": "/generated/projects/secondtrust.jpg",
+      "resume": {
+        "include": false,
+        "objective": "Audit newly purchased or second-hand laptops for hardware authenticity, tampering, wear, and stability before the return window closes.",
+        "approach": [
+          "Built cross-platform PowerShell and shell audit scripts reading firmware, SMART/NVMe wear, MDM enrollment, and memory/CPU/VRAM stress checks",
+          "Paired with an interactive web report viewer"
+        ],
+        "impact": "Gives buyers a single repeatable hardware and tamper check across Windows, Linux, and macOS."
+      }
+    },
+    {
+      "id": "localchat",
+      "title": "LocalChat",
+      "description": "Single-binary, zero-dependency Go web chat and Android APK for personal devices over Tailscale, built because scanning WhatsApp Web every day got old. Uses ~8.5 MB RAM open (0 MB idle after 5 min auto-shutdown), syncs offline queues across devices, and streams 250 MB uploads with HTTP `Range` media playback.",
+      "href": "https://github.com/blackdragoon26/localchat",
+      "liveUrl": null,
+      "repository": "blackdragoon26/localchat",
+      "repositoryUrl": "https://github.com/blackdragoon26/localchat",
+      "technologies": [
+        "Go",
+        "Tailscale",
+        "HTTP",
+        "Android",
+        "Local-first"
+      ],
+      "screenshot": "auto",
+      "screenshotWaitSeconds": 7,
+      "stars": 1,
+      "image": "/generated/projects/localchat.svg",
+      "resume": {
+        "include": false,
+        "objective": "Sync personal messages, code snippets, and large files across personal devices over Tailscale without cloud accounts or background daemons.",
+        "approach": [
+          "Built a zero-dependency Go binary and Android wrapper with per-device local storage, explicit offline delivery queue, and streamed 250 MB uploads"
+        ],
+        "impact": "Replaces cloud self-messaging with an 8.5 MB active / 0 MB idle self-hosted chat tool across desktop and mobile."
+      }
+    },
+    {
+      "id": "cutable",
+      "title": "Cutable",
+      "description": "Agentic software-engineering workspace turning prompts and visual references into editable React apps. A Go backend streams planning, tool calls, builds, and live previews from isolated E2B sandboxes over WebSockets while persisting projects in PostgreSQL.",
+      "href": "https://cutable.sankalpjha.dev/",
+      "liveUrl": "https://cutable.sankalpjha.dev/",
+      "repository": "blackdragoon26/Cutable",
+      "repositoryUrl": "https://github.com/blackdragoon26/Cutable",
+      "technologies": [
+        "Go",
+        "Next.js",
+        "PostgreSQL",
+        "OpenRouter",
+        "E2B",
+        "WebSockets",
+        "Nomad"
+      ],
+      "screenshot": "auto",
+      "screenshotWaitSeconds": 7,
+      "stars": 0,
+      "image": "/generated/projects/cutable.jpg",
+      "resume": {
+        "include": true,
+        "objective": "Generate editable React applications from text and visual requirements.",
+        "approach": [
+          "Orchestrated OpenRouter tools and E2B sandboxes in Go",
+          "Streamed code and live previews to Next.js over WebSockets"
+        ],
+        "impact": "Ships multimodal BYOK generation, persistent projects, and health-gated deployments."
+      }
+    },
+    {
+      "id": "ebpf-mcp-tracer",
+      "title": "ebpf-mcp-tracer",
+      "description": "Guarded MCP server letting LLMs write and run `bpftrace` scripts against Linux kernels behind an explicit probe allowlist, blocked dangerous builtins, dry-run validation, and hard execution timeouts.",
+      "href": "https://github.com/blackdragoon26/ebpf-mcp-tracer",
+      "liveUrl": null,
+      "repository": "blackdragoon26/ebpf-mcp-tracer",
+      "repositoryUrl": "https://github.com/blackdragoon26/ebpf-mcp-tracer",
+      "technologies": [
+        "Python",
+        "bpftrace",
+        "eBPF",
+        "Linux",
+        "MCP"
+      ],
+      "screenshot": "auto",
+      "screenshotWaitSeconds": 7,
+      "stars": 1,
+      "image": "/generated/projects/ebpf-mcp-tracer.png",
+      "resume": {
+        "include": false,
+        "objective": "Let AI debugging agents inspect Linux performance without granting unrestricted eBPF execution.",
+        "approach": [
+          "Implemented a strict probe allowlist, dry-run validation, and execution timeouts around bpftrace",
+          "Exposed the guarded tracing workflow through MCP"
+        ],
+        "impact": "Enables kernel-level diagnostics while reducing command-injection and runaway-probe risk."
+      }
+    },
+    {
+      "id": "do-it",
+      "title": "Do-It",
+      "description": "Self-hosted Go binary (SSE/HTTP) for Raspberry Pi, routers, or spare phones, syncing notes, tasks, and media across every device on your local home Wi-Fi with zero cloud accounts.",
+      "href": "https://repo-tawny-iota.vercel.app/",
+      "liveUrl": "https://repo-tawny-iota.vercel.app/",
+      "repository": "blackdragoon26/Do-It",
+      "repositoryUrl": "https://github.com/blackdragoon26/Do-It",
+      "technologies": [
+        "Go",
+        "SSE",
+        "HTTP",
+        "Raspberry Pi",
+        "Local-first"
+      ],
+      "screenshot": "auto",
+      "screenshotWaitSeconds": 7,
+      "stars": 1,
+      "image": "/generated/projects/do-it.jpg",
+      "resume": {
+        "include": false,
+        "objective": "Provide private, synchronized notes and media across devices on a local network.",
+        "approach": [
+          "Packaged a lightweight Go SSE and HTTP server for Raspberry Pi, routers, and repurposed phones"
+        ],
+        "impact": "Delivers self-hosted, account-free synchronization without sending household data to a cloud service."
+      }
+    },
+    {
+      "id": "p4lens",
+      "title": "p4Lens",
+      "description": "Interactive P4-14/P4-16 program visualizer that parses headers, parsers, controls, and deparsers into a React Flow pipeline diagram for learning and debugging P4Lang.",
+      "href": "https://p4lens.vercel.app/",
+      "liveUrl": "https://p4lens.vercel.app/",
+      "repository": "openlabnetworks/p4Lens",
+      "repositoryUrl": "https://github.com/openlabnetworks/p4Lens",
+      "technologies": [
+        "React",
+        "FastAPI",
+        "Docker",
+        "React Flow",
+        "P4"
+      ],
+      "screenshot": "auto",
+      "screenshotWaitSeconds": 7,
+      "stars": 3,
+      "image": "/generated/projects/p4lens.jpg",
+      "resume": {
+        "include": false,
+        "objective": "Make P4 programs easier to learn and debug through an interactive visualization of their processing pipeline.",
+        "approach": [
+          "Built a parser for P4-14 and P4-16 programs",
+          "Rendered headers, parsers, controls, and deparsers as interactive React Flow topologies"
+        ],
+        "impact": "Renders pipeline diagrams in under 200 ms and reduces control-plane debugging effort by approximately 40 percent."
+      }
+    },
+    {
+      "id": "moodish",
+      "title": "Moodish",
+      "description": "Mood-based meal planner on the Swiggy MCP taking cravings, budget, and diet constraints to return ranked meal options with a transparent AI summary, recommendation trace, and confirmation-gated cart preview.",
+      "href": "https://moodish.sankalpjha.dev/",
+      "liveUrl": "https://moodish.sankalpjha.dev/",
+      "repository": "blackdragoon26/Moodish",
+      "repositoryUrl": "https://github.com/blackdragoon26/Moodish",
+      "technologies": [
+        "JavaScript",
+        "Node.js",
+        "OpenAI API",
+        "MCP"
+      ],
+      "screenshot": "auto",
+      "screenshotWaitSeconds": 7,
+      "stars": 1,
+      "image": "/generated/projects/moodish.jpg",
+      "resume": {
+        "include": false,
+        "objective": "Rank meal options from a user's craving, budget, and dietary constraints while keeping the recommendation explainable.",
+        "approach": [
+          "Built intent extraction and deterministic ranking around an AI-generated summary",
+          "Added a recommendation trace and confirmation-gated cart preview"
+        ],
+        "impact": "Produces safer, inspectable food recommendations instead of opaque model output."
+      }
+    },
+    {
+      "id": "open-claw-lab",
+      "title": "Open Claw Lab",
+      "description": "Oracle Cloud-hosted multi-agent career intelligence pipeline that finds engineering roles, filters every lead through deterministic evidence gates and independent review, and sends a verified Telegram digest without automated outreach.",
+      "href": "https://github.com/blackdragoon26/open-claw-lab",
+      "liveUrl": null,
+      "repository": "blackdragoon26/open-claw-lab",
+      "repositoryUrl": "https://github.com/blackdragoon26/open-claw-lab",
+      "technologies": [
+        "Node.js",
+        "OpenClaw",
+        "Gemini",
+        "Oracle Cloud",
+        "systemd",
+        "Telegram"
+      ],
+      "screenshot": "auto",
+      "screenshotWaitSeconds": 7,
+      "stars": 1,
+      "image": "/generated/projects/open-claw-lab.png",
+      "resume": {
+        "include": false,
+        "objective": "Discover high-signal engineering opportunities while preventing unsupported or stale leads from reaching the user.",
+        "approach": [
+          "Built a multi-agent discovery and independent-review pipeline around typed lead records",
+          "Added deterministic freshness, eligibility, contact relevance, relocation evidence, and deduplication gates"
+        ],
+        "impact": "Delivers an evidence-backed Telegram digest while rejecting guessed contacts, unsupported geography, stale roles, and duplicate leads."
+      }
+    },
+    {
+      "id": "los-tecnicos",
+      "title": "Los-Tecnicos",
+      "description": "Decentralized energy grid on Stellar turning solar power into tokenized assets and stable income (Go backend, 4 Soroban smart contracts, Raspberry Pi + ESP32 hardware mesh). Built during the Stellar McLeod Residency.",
+      "href": "https://los-tecnicos.vercel.app/",
+      "liveUrl": "https://los-tecnicos.vercel.app/",
+      "repository": "blackdragoon26/Los-Tecnicos",
+      "repositoryUrl": "https://github.com/blackdragoon26/Los-Tecnicos",
+      "technologies": [
+        "Go",
+        "TypeScript",
+        "Rust",
+        "Soroban",
+        "Raspberry Pi",
+        "ESP32"
+      ],
+      "screenshot": "auto",
+      "screenshotWaitSeconds": 7,
+      "stars": 1,
+      "image": "/generated/projects/los-tecnicos.jpg",
+      "resume": {
+        "include": false,
+        "objective": "Build a decentralized energy grid that tokenizes renewable-energy production on the Stellar ecosystem.",
+        "approach": [
+          "Built a Go backend and 4 Soroban smart contracts",
+          "Integrated a Raspberry Pi/ESP32 hardware mesh with the platform"
+        ],
+        "impact": "Won Asia-Pacific Web3 bounties and received recognition from the Government of India."
+      }
+    },
+    {
+      "id": "dmie",
+      "title": "DMIE",
+      "description": "Checks if your startup idea already exists with competitor analysis built over 500,000+ scraped Indian startups. Private repo built in collab with a cracked dev friend of mine.",
+      "href": "https://www.doesmyideaexist.com/",
+      "liveUrl": "https://www.doesmyideaexist.com/",
+      "repository": null,
+      "repositoryUrl": null,
+      "technologies": [
+        "Next.js",
+        "TypeScript",
+        "Python",
+        "FastAPI",
+        "Vector DB",
+        "LLM"
+      ],
+      "screenshot": "auto",
+      "screenshotWaitSeconds": 7,
+      "stars": null,
+      "image": "/generated/projects/dmie.jpg",
+      "resume": {
+        "include": true,
+        "objective": "Determine whether a startup idea already exists by comparing it against more than 500,000 company records.",
+        "approach": [
+          "Built a scheduled scraper that keeps the startup dataset current",
+          "Combined LLM query with vector search and backend filters"
+        ],
+        "impact": "Raised USD 10,000 and serves more than 100 users worldwide."
+      }
+    },
+    {
+      "id": "slix",
+      "title": "Slix",
+      "description": "Full-stack React + Go movie streaming and review platform using Azure OpenAI sentiment analysis on curator reviews so viewers get the movie vibe at a glance.",
+      "href": "https://magic-stream-movies-beige.vercel.app/",
+      "liveUrl": "https://magic-stream-movies-beige.vercel.app/",
+      "repository": "blackdragoon26/Slix",
+      "repositoryUrl": "https://github.com/blackdragoon26/Slix",
+      "technologies": [
+        "React",
+        "Go",
+        "Azure OpenAI",
+        "REST API"
+      ],
+      "screenshot": "auto",
+      "screenshotWaitSeconds": 150,
+      "stars": 1,
+      "image": "/generated/projects/slix.jpg",
+      "resume": {
+        "include": false,
+        "objective": "Combine movie streaming, reviews, and machine-generated sentiment summaries in one full-stack application.",
+        "approach": [
+          "Built the frontend in React and the service layer in Go",
+          "Added Azure OpenAI sentiment analysis for curator reviews"
+        ],
+        "impact": "Gives viewers a concise representation of a movie's tone before watching."
       }
     }
   ],
@@ -427,7 +516,7 @@
       "repositoryUrl": "https://github.com/Project-HAMi/HAMi",
       "repositoryDescription": "Heterogeneous GPU Sharing on Kubernetes",
       "organizationLogo": "/generated/organizations/project-hami.jpg",
-      "stars": 5084,
+      "stars": 5086,
       "mergedAt": "2026-11-15T14:07:15Z",
       "additions": 580,
       "deletions": 21,
@@ -611,7 +700,7 @@
       "repositoryUrl": "https://github.com/Project-HAMi/HAMi",
       "repositoryDescription": "Heterogeneous GPU Sharing on Kubernetes",
       "organizationLogo": "/generated/organizations/project-hami.jpg",
-      "stars": 5084,
+      "stars": 5086,
       "mergedAt": "2026-10-04T08:52:26Z",
       "additions": 1,
       "deletions": 0,
@@ -629,7 +718,7 @@
       "repositoryUrl": "https://github.com/Project-HAMi/HAMi",
       "repositoryDescription": "Heterogeneous GPU Sharing on Kubernetes",
       "organizationLogo": "/generated/organizations/project-hami.jpg",
-      "stars": 5084,
+      "stars": 5086,
       "mergedAt": "2026-10-04T08:52:13Z",
       "additions": 0,
       "deletions": 4,
@@ -738,7 +827,7 @@
       "repositoryUrl": "https://github.com/meta/bpfilter",
       "repositoryDescription": "eBPF-based packet filtering framework",
       "organizationLogo": "/generated/organizations/meta.jpg",
-      "stars": 406,
+      "stars": 407,
       "mergedAt": "2026-09-08T12:50:05Z",
       "additions": 601,
       "deletions": 74,
@@ -760,7 +849,7 @@
       "repositoryUrl": "https://github.com/Project-HAMi/HAMi",
       "repositoryDescription": "Heterogeneous GPU Sharing on Kubernetes",
       "organizationLogo": "/generated/organizations/project-hami.jpg",
-      "stars": 5084,
+      "stars": 5086,
       "mergedAt": "2026-09-02T07:31:27Z",
       "additions": 51,
       "deletions": 9,
@@ -779,7 +868,7 @@
       "repositoryUrl": "https://github.com/Project-HAMi/HAMi",
       "repositoryDescription": "Heterogeneous GPU Sharing on Kubernetes",
       "organizationLogo": "/generated/organizations/project-hami.jpg",
-      "stars": 5084,
+      "stars": 5086,
       "mergedAt": "2026-08-27T02:38:43Z",
       "additions": 101,
       "deletions": 12,
@@ -799,7 +888,7 @@
       "repositoryUrl": "https://github.com/Project-HAMi/HAMi",
       "repositoryDescription": "Heterogeneous GPU Sharing on Kubernetes",
       "organizationLogo": "/generated/organizations/project-hami.jpg",
-      "stars": 5084,
+      "stars": 5086,
       "mergedAt": "2026-08-20T10:01:08Z",
       "additions": 27,
       "deletions": 175,
@@ -817,7 +906,7 @@
       "repositoryUrl": "https://github.com/Project-HAMi/HAMi",
       "repositoryDescription": "Heterogeneous GPU Sharing on Kubernetes",
       "organizationLogo": "/generated/organizations/project-hami.jpg",
-      "stars": 5084,
+      "stars": 5086,
       "mergedAt": "2026-08-17T07:23:52Z",
       "additions": 514,
       "deletions": 15,
@@ -836,7 +925,7 @@
       "repositoryUrl": "https://github.com/Project-HAMi/HAMi",
       "repositoryDescription": "Heterogeneous GPU Sharing on Kubernetes",
       "organizationLogo": "/generated/organizations/project-hami.jpg",
-      "stars": 5084,
+      "stars": 5086,
       "mergedAt": "2026-08-17T07:23:04Z",
       "additions": 23,
       "deletions": 0,
@@ -854,7 +943,7 @@
       "repositoryUrl": "https://github.com/Project-HAMi/HAMi",
       "repositoryDescription": "Heterogeneous GPU Sharing on Kubernetes",
       "organizationLogo": "/generated/organizations/project-hami.jpg",
-      "stars": 5084,
+      "stars": 5086,
       "mergedAt": "2026-08-04T08:51:52Z",
       "additions": 57,
       "deletions": 5,
@@ -872,7 +961,7 @@
       "repositoryUrl": "https://github.com/Project-HAMi/HAMi",
       "repositoryDescription": "Heterogeneous GPU Sharing on Kubernetes",
       "organizationLogo": "/generated/organizations/project-hami.jpg",
-      "stars": 5084,
+      "stars": 5086,
       "mergedAt": "2026-08-04T03:55:50Z",
       "additions": 134,
       "deletions": 41,
@@ -890,7 +979,7 @@
       "repositoryUrl": "https://github.com/Project-HAMi/HAMi",
       "repositoryDescription": "Heterogeneous GPU Sharing on Kubernetes",
       "organizationLogo": "/generated/organizations/project-hami.jpg",
-      "stars": 5084,
+      "stars": 5086,
       "mergedAt": "2026-08-02T09:42:49Z",
       "additions": 123,
       "deletions": 3,
@@ -908,7 +997,7 @@
       "repositoryUrl": "https://github.com/Project-HAMi/HAMi",
       "repositoryDescription": "Heterogeneous GPU Sharing on Kubernetes",
       "organizationLogo": "/generated/organizations/project-hami.jpg",
-      "stars": 5084,
+      "stars": 5086,
       "mergedAt": "2026-07-31T10:46:46Z",
       "additions": 158,
       "deletions": 21,
@@ -926,7 +1015,7 @@
       "repositoryUrl": "https://github.com/Project-HAMi/HAMi",
       "repositoryDescription": "Heterogeneous GPU Sharing on Kubernetes",
       "organizationLogo": "/generated/organizations/project-hami.jpg",
-      "stars": 5084,
+      "stars": 5086,
       "mergedAt": "2026-07-31T10:37:47Z",
       "additions": 7,
       "deletions": 0,
@@ -944,7 +1033,7 @@
       "repositoryUrl": "https://github.com/meta/bpfilter",
       "repositoryDescription": "eBPF-based packet filtering framework",
       "organizationLogo": "/generated/organizations/meta.jpg",
-      "stars": 406,
+      "stars": 407,
       "mergedAt": "2026-04-24T10:52:56Z",
       "additions": 7,
       "deletions": 4,

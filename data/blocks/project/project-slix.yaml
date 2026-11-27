@@ -6,7 +6,7 @@ tags:
   - backend
   - frontend
 machine:
-  description: A full-stack movie streaming and review platform, built with React and Go, where admins can add movies and reviews, and Azure OpenAI does sentiment analysis on curator reviews so users can understand movie vibe at a glance.
+  description: Full-stack React + Go movie streaming and review platform using Azure OpenAI sentiment analysis on curator reviews so viewers get the movie vibe at a glance.
   liveUrl: https://magic-stream-movies-beige.vercel.app/
   repository: blackdragoon26/Slix
   repositoryUrl: https://github.com/blackdragoon26/Slix

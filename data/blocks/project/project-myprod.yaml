@@ -6,7 +6,7 @@ tags:
   - infra
   - networking
 machine:
-  description: A Go CLI and operator dashboard that turns free-tier and low-cost VPS machines into a personal compute pool for deploying backend services with centralized scheduling, ingress, networking, and guarded node controls.
+  description: Go CLI and operator dashboard turning free-tier and cheap VPS machines into a personal compute pool, with Nomad scheduling, Traefik ingress, WireGuard networking, idempotent Netlify DNS, and guarded node controls.
   liveUrl: https://myprod-control.vercel.app/
   repository: blackdragoon26/Myprod
   repositoryUrl: https://github.com/blackdragoon26/Myprod

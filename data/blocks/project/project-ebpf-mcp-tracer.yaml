@@ -6,7 +6,7 @@ tags:
   - kernel
   - systems
 machine:
-  description: A secure MCP server which lets LLMs write and run bpftrace scripts against Linux kernel, with strict probe allowlist, dry-run validation and hard timeout, so AI agents can debug system bottlenecks without raw unsafe eBPF access.
+  description: Guarded MCP server letting LLMs write and run `bpftrace` scripts against Linux kernels behind an explicit probe allowlist, blocked dangerous builtins, dry-run validation, and hard execution timeouts.
   liveUrl: ""
   repository: blackdragoon26/ebpf-mcp-tracer
   repositoryUrl: https://github.com/blackdragoon26/ebpf-mcp-tracer

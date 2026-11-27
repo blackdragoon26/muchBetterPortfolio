@@ -1,0 +1,28 @@
+id: project:hami-core-init-bench
+kind: project
+source: readme
+tags:
+  - infra
+  - systems
+machine:
+  description: GPU-free C test bench reproducing concurrent `libvgpu.so` initialization contention for `Project-HAMi/HAMi#1662`. Links directly against real HAMi-core object files (`multiprocess_memory_limit.o`, `utils.o`) in Docker to benchmark shared-memory, semaphore, and procfs locking without an NVIDIA GPU.
+  liveUrl: ""
+  repository: blackdragoon26/hami-core-init-bench
+  repositoryUrl: https://github.com/blackdragoon26/hami-core-init-bench
+  stars: 1
+  technologies:
+    - C
+    - POSIX
+    - Linux
+    - Docker
+    - HAMi-core
+    - Concurrency
+    - Benchmarking
+content:
+  approach:
+    - Linked directly against HAMi-core object files inside Docker to exercise real shared-memory, semaphore, and procfs paths
+  impact: Enables deterministic, GPU-free profiling and patch verification for Project-HAMi/HAMi#1662.
+  link: https://github.com/blackdragoon26/hami-core-init-bench
+  objective: Reproduce and benchmark HAMi-core concurrent initialization contention without requiring physical GPUs.
+  stack: C, POSIX, Linux, Docker, HAMi-core, Concurrency, Benchmarking
+  title: hami-core-init-bench

@@ -8,7 +8,7 @@ tags:
   - networking
   - systems
 machine:
-  description: An interview-grade Linux networking-driver lab built around a clean-room Intel 82540EM/e1000 PCI Ethernet driver, with BAR0 MMIO, DMA descriptor rings, interrupt-driven NAPI, TX backpressure, ethtool telemetry, fault injection, and serialized timeout/reset recovery. It also includes a software-qualified W5500 SPI driver path and a gated DPDK L2 forwarder, while keeping physical-silicon, ENA, and RDMA validation explicitly out of scope until real hardware evidence exists. · Technical docs
+  description: Clean-room Intel 82540EM/e1000 PCI Ethernet driver lab in Linux C with BAR0 MMIO, DMA descriptor rings, NAPI, `ethtool` telemetry, fault injection, and reset recovery (technical docs). Also includes a W5500 SPI path and a gated DPDK L2 forwarder, keeping physical-silicon claims strictly out of scope until real hardware runs exist.
   liveUrl: https://xnic-v1.vercel.app/
   repository: blackdragoon26/xnic-v1
   repositoryUrl: https://github.com/blackdragoon26/xnic-v1

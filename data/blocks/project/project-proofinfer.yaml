@@ -4,7 +4,7 @@ source: readme
 tags:
   - systems
 machine:
-  description: A Llama inference engine written in Rust with zero external crates, built around proving it actually computes the right thing. It is differentially tested against the PyTorch reference from karpathy/llama2.c across 6 configurations (every logit at every position), produces byte-identical greedy output against `run.c`, has mutation testing on both the harness and the Rust test suite so neither can silently fail to fail, and carries a machine-checked Verus proof of KV-cache index safety. Limits are documented honestly, including where the proof stops and where `run.c -Ofast` is still faster. · Technical docs
+  description: Zero-dependency Llama inference engine in pure Rust built around proving correctness rather than assuming it. Differentially tested against PyTorch (`karpathy/llama2.c`) across 6 configs, byte-identical to `run.c`, mutation-tested on both harness and tests, and backed by a 36-VC Verus proof of KV-cache safety (technical docs).
   liveUrl: https://proofinfer.vercel.app/
   repository: blackdragoon26/proofinfer
   repositoryUrl: https://github.com/blackdragoon26/proofinfer
